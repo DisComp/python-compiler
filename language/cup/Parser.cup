@@ -1,0 +1,66 @@
+package com.language.parser;
+
+import java.util.*;
+import java_cup.runtime.*;
+import com.language.model.expression.*;
+import com.language.exceptions.*;
+
+terminal PLUS, MINUS;
+terminal TIMES, DIV;
+terminal LPAREN, RPAREN;
+
+terminal String ID;
+terminal String INTEGRAL;
+terminal String DECIMAL;
+terminal String STRING;
+
+non terminal Expression expr;
+
+precedence left PLUS, MINUS;
+precedence left TIMES, DIV;
+
+expr	::= INTEGRAL:i
+			{:
+				RESULT = new Expression(i);
+			:}
+
+		| DECIMAL:d
+			{:
+				RESULT = new Expression(d);
+			:}
+
+		| STRING:s
+			{:
+				RESULT = new Expression(s);
+			:}
+
+		| expr:l PLUS expr:r
+			{:
+				RESULT = new Expression("+", l, r);
+			:}
+
+		| expr:l MINUS expr:r
+			{:
+				RESULT = new Expression("-", l, r);
+			:}
+
+		| expr:l TIMES expr:r
+			{:
+				RESULT = new Expression("*", l, r);
+			:}
+
+		| expr:l DIV expr:r
+			{:
+				RESULT = new Expression("/", l, r);
+			:}
+
+		| ID:i
+			{:
+				RESULT = new Expression(i, null);
+			:}
+
+		| LPAREN expr:e RPAREN
+			{:
+				RESULT = e;
+			:}
+		;
