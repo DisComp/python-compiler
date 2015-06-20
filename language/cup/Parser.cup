@@ -8,6 +8,7 @@ import com.language.exceptions.*;
 terminal PLUS, MINUS;
 terminal TIMES, DIV;
 terminal LPAREN, RPAREN;
+terminal LBRACKET, RBRACKET;
 
 terminal String ID;
 terminal String INTEGRAL;
@@ -60,6 +61,11 @@ expr	::= INTEGRAL:i
 			:}
 
 		| LPAREN expr:e RPAREN
+			{:
+				RESULT = e;
+			:}
+		
+		| LBRACKET expr:e RBRACKET
 			{:
 				RESULT = e;
 			:}
