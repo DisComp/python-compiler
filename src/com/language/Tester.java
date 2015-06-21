@@ -12,21 +12,22 @@ public class Tester {
 	public static void main(String[] args) throws IOException {
 				
 		BufferedReader br = new BufferedReader(new FileReader("tests/Test1.txt"));
+		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         while (line != null) {         
-            
-	        String exptext = line.toString();
-			
-			System.out.println(exptext);
-			Expression expobj = ExpressionParser.parse(exptext);
-			
-			System.out.println("Expresion obtenida: ");
-			System.out.println(expobj.toString());
-			
-			line = br.readLine();
+			 sb.append(line);
+			 line = br.readLine();
+			 if(line != null) {
+			 	sb.append("\n");
+			 }
         }
-        br.close();
-		
+		String exptext = sb.toString();
+		br.close();
+		System.out.println(exptext);
+		Expression expobj = ExpressionParser.parse(exptext);
+			
+		System.out.println("Expresion obtenida: ");
+		System.out.println(expobj.toString());		
 	}
 	
 }

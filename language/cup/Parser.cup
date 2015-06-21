@@ -14,13 +14,18 @@ terminal String ID;
 terminal String INTEGRAL;
 terminal String DECIMAL;
 terminal String STRING;
+terminal String TRUE;
+terminal String FALSE;
+
+terminal String ASSIGN;
 
 non terminal Expression expr;
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
+precedence left ASSIGN;
 
-expr	::= INTEGRAL:i
+expr  ::= INTEGRAL:i
 			{:
 				RESULT = new Expression(i);
 			:}
@@ -68,5 +73,20 @@ expr	::= INTEGRAL:i
 		| LBRACKET expr:e RBRACKET
 			{:
 				RESULT = e;
+			:}
+			
+		| TRUE:t
+			{:
+				RESULT = new Expression(t);
+			:}
+			
+		| FALSE:f
+			{:
+				RESULT = new Expression(f);
+			:}
+		
+		| expr:l ASSIGN expr:r
+			{:
+				RESULT = new Expression("=", l, r);
 			:}
 		;

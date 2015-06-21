@@ -30,6 +30,8 @@ import com.language.model.expression.*;
 	}
 %}
 
+%state COMMENT_LINE
+
 %eofval{
     return symbol(sym.EOF);
 %eofval}
@@ -39,32 +41,47 @@ WhiteSpace     = {LineTerminator} | [ \t\f]
 
 Identifier = [:jletter:][:jletterdigit:]* 
 
-IntegerLiteral = 0 | [1-9][0-9]*
-FloatLiteral = (0 | [1-9][0-9]*)\.[0-9]+
+IntegerLiteral =  0 | [1-9][0-9]*
+FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 
 %%
 
-"+" 				{ return symbol(sym.PLUS, "+"); }
-"-" 				{ return symbol(sym.MINUS, "-"); }
-"*" 				{ return symbol(sym.TIMES, "*"); }
-"/" 				{ return symbol(sym.DIV, "/"); }
+<YYINITIAL> {
 
-"(" 				{ return symbol(sym.LPAREN, "("); }
-")" 				{ return symbol(sym.RPAREN, ")"); }
-"[" 				{ return symbol(sym.LBRACKET, ")"); }
-"]" 				{ return symbol(sym.RBRACKET, ")"); }
+	"+" 				{ return symbol(sym.PLUS, "+"); }
+	"-" 				{ return symbol(sym.MINUS, "-"); }
+	"*" 				{ return symbol(sym.TIMES, "*"); }
+	"/" 				{ return symbol(sym.DIV, "/"); }
+	
+	"(" 				{ return symbol(sym.LPAREN, "("); }
+	")" 				{ return symbol(sym.RPAREN, ")"); }
+	"[" 				{ return symbol(sym.LBRACKET, ")"); }
+	"]" 				{ return symbol(sym.RBRACKET, ")"); }
+	
+	"True"				{ return symbol(sym.TRUE, yytext()); }
+	"False"				{ return symbol(sym.FALSE, yytext()); }
+	
+	"="					{ return symbol(sym.ASSIGN, yytext()); }
+	
+	\"([^\"\r\n\t]*)\"	{ return symbol(sym.STRING, yytext()); }
+	'([^\"\r\n\t]*)'	{ return symbol(sym.STRING, yytext()); }
+	
+	{Identifier}		{ return symbol(sym.ID, yytext()); }
+	
+	{IntegerLiteral}	{ return symbol(sym.INTEGRAL, yytext()); }
+						
+	{FloatLiteral} 		{ return symbol(sym.DECIMAL, yytext()); }
+	
+	{WhiteSpace}        { /* ignore */ }
 
-\"([^\"\r\n\t]*)\"	{ return symbol(sym.STRING, yytext()); }
+}
 
-'([^\"\r\n\t]*)'	{ return symbol(sym.STRING, yytext()); }
+<YYINITIAL> 		"//" 		{ yybegin(COMMENT_LINE); }
+<COMMENT_LINE> { 	
+					[^\n] 		{ } //dismiss everything until eol
+				 	[\n] 		{ yybegin(YYINITIAL); }
+}
 
-{Identifier}		{ return symbol(sym.ID, yytext()); }
-
-{IntegerLiteral}	{ return symbol(sym.INTEGRAL, yytext()); }
-					
-{FloatLiteral} 		{ return symbol(sym.DECIMAL, yytext()); }
-
-{WhiteSpace}        { /* ignore */ }
 
 . 					{
 						throw new ParsingException("Illegal character at line " + yyline + ", column " + yycolumn + " >> " + yytext());
