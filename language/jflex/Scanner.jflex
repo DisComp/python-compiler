@@ -68,15 +68,19 @@ FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 	
 	{Identifier}		{ return symbol(sym.ID, yytext()); }
 	
-	{IntegerLiteral}	{ return symbol(sym.INTEGRAL, yytext()); }
+	{IntegerLiteral}	{ return symbol(sym.INTEGER, yytext()); }
 						
 	{FloatLiteral} 		{ return symbol(sym.DECIMAL, yytext()); }
 	
 	{WhiteSpace}        { /* ignore */ }
+	
+	/* Functions */
+	
+	"type"            {return symbol(sym.TYPE_FUNC, "type"); }
 
 }
 
-<YYINITIAL> 		"//" 		{ yybegin(COMMENT_LINE); }
+<YYINITIAL> 		"#" 		{ yybegin(COMMENT_LINE); }
 <COMMENT_LINE> { 	
 					[^\n] 		{ } //dismiss everything until eol
 				 	[\n] 		{ yybegin(YYINITIAL); }

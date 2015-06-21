@@ -11,7 +11,7 @@ terminal LPAREN, RPAREN;
 terminal LBRACKET, RBRACKET;
 
 terminal String ID;
-terminal String INTEGRAL;
+terminal String INTEGER;
 terminal String DECIMAL;
 terminal String STRING;
 terminal String TRUE;
@@ -25,7 +25,7 @@ precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 precedence left ASSIGN;
 
-expr  ::= INTEGRAL:i
+expr  ::= INTEGER:i
 			{:
 				RESULT = new Expression(i);
 			:}
