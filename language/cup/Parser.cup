@@ -5,14 +5,18 @@ import java_cup.runtime.*;
 import com.language.model.expression.*;
 import com.language.exceptions.*;
 
-terminal PLUS, MINUS;
-terminal TIMES, DIV;
+/* Numbers */
+terminal String INTEGER, FLOAT;
+
+/*Arithmetic operators*/
+terminal PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
+
 terminal LPAREN, RPAREN;
 terminal LBRACKET, RBRACKET;
 
 terminal String ID;
-terminal String INTEGER;
-terminal String DECIMAL;
+
+
 terminal String STRING;
 terminal String TRUE;
 terminal String FALSE;
@@ -20,22 +24,17 @@ terminal String FALSE;
 terminal String ASSIGN;
 
 non terminal Expression expr;
+non terminal NumberExpression numExpr;
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 precedence left ASSIGN;
 
-expr  ::= INTEGER:i
-			{:
-				RESULT = new Expression(i);
-			:}
+numExpr ::= 
+			INTEGER : i {: RESULT = NumberExpression.createInteger(i); :}
+		|	FLOAT : f {: RESULT = NumberExpression.createFloat(f); :};
 
-		| DECIMAL:d
-			{:
-				RESULT = new Expression(d);
-			:}
-
-		| STRING:s
+expr  ::=  STRING:s
 			{:
 				RESULT = new Expression(s);
 			:}

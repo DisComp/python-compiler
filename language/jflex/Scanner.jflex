@@ -51,7 +51,7 @@ FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 	/* Numbers */
 	
 	{IntegerLiteral}	{ return symbol(sym.INTEGER, yytext()); }						
-	{FloatLiteral} 		{ return symbol(sym.DECIMAL, yytext()); }
+	{FloatLiteral} 		{ return symbol(sym.FLOAT, yytext()); }
 	
 	/*Arithmetic operators*/
 	
