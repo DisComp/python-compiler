@@ -8,35 +8,70 @@ import com.language.exceptions.*;
 /* Numbers */
 terminal String INTEGER, FLOAT;
 
-/*Arithmetic operators*/
-terminal PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
+/* Arithmetic operators */
+terminal String PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
 
-terminal LPAREN, RPAREN;
-terminal LBRACKET, RBRACKET;
+/* Bitwise operators */
+terminal String AND_BIT, OR_BIT, XOR_BIT, NOT_BIT, LSHIFT, RSHIFT;
 
+/* Strings */
+terminal String STRING, ESCAPE, TAB;
+
+/* Boolean */
+terminal String TRUE, FALSE;
+
+/* Boolean operators */
+terminal String AND, OR, NOT, EQUALS, DISTINCT, LESS, GREATER, LESS_EQUAL, GREATER_EQUAL;
+
+/* Punctuation chars */
+terminal String POINT, SEMICOLON, COMMA, COLON, LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, ASSIGN;
+
+/* Structure control */
+terminal String IF, ELSE, WHILE, BREAK, CONTINUE, FOR, IN, DEF, RETURN;
+
+/* Predefined functions */
+	
+/* Dictionaries */
+terminal String HAS_KEY_FUNC, ITEMS_FUNC, KEYS_FUNC, POP_FUNC, VALUES_FUNC;
+	
+/* Strings */
+terminal String COUNT_FUNC, FIND_FUNC, JOIN_FUNC, SPLIT_FUNC, REPLACE_FUNC, LENGTH_FUNC;
+
+/* Lists */
+terminal String APPEND_FUNC, EXTEND_FUNC, INDEX_FUNC, INSERT_FUNC, SIZE_FUNC;
+	
+/* Input/Output */
+terminal String RAW_INPUT_FUNC, PRINT_FUNC;
+
+/* Type conversion */
+terminal String INT_FUNC, FLOAT_FUNC, STR_FUNC, TUPLE_FUNC, LIST_FUNC, DICT_FUNC;
+	
+/* Others */
+terminal String NONE; 
+terminal String TYPE_FUNC; 
 terminal String ID;
 
-
-terminal String STRING;
-terminal String TRUE;
-terminal String FALSE;
-
-terminal String ASSIGN;
-
+/* NON TERMINALS */
 non terminal Expression expr;
-non terminal NumberExpression numExpr;
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 precedence left ASSIGN;
 
-numExpr ::= 
-			INTEGER : i {: RESULT = NumberExpression.createInteger(i); :}
-		|	FLOAT : f {: RESULT = NumberExpression.createFloat(f); :};
+expr  ::= 
+		 INTEGER : i 
+				{: 
+					RESULT = NumberExpression.createInteger(i); 
+				:}
+				
+		| FLOAT : f 
+				{: 
+					RESULT = NumberExpression.createFloat(f); 
+				:}
 
-expr  ::=  STRING:s
+		| STRING:s
 			{:
-				RESULT = new Expression(s);
+				RESULT = new Expression(s, null, null);
 			:}
 
 		| expr:l PLUS expr:r
@@ -57,11 +92,6 @@ expr  ::=  STRING:s
 		| expr:l DIV expr:r
 			{:
 				RESULT = new Expression("/", l, r);
-			:}
-
-		| ID:i
-			{:
-				RESULT = new Expression(i, null);
 			:}
 
 		| LPAREN expr:e RPAREN

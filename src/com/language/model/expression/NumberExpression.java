@@ -1,48 +1,26 @@
 package com.language.model.expression;
 
-import java.util.ArrayList;
-import java.util.List;
 
-
-public class NumberExpression {
+public class NumberExpression extends Expression {
 	
-	private static final int INTEGER 	= 1;
-	private static final int FLOAT 		= 2;
+	private static final String INTEGER = "Integer";
+	private static final String FLOAT = "Float";	
 	
-	private Integer type;
-	private Object value; 
-	private NumberExpression left, right;
-	
-	public Object getType() {
-		return type;
+	public NumberExpression(){
+		super();
 	}
 	
-	public void setType(Integer type) {
-		this.type = type;
-	}
+	public NumberExpression(String type, Integer value, NumberExpression left, NumberExpression right){
+		super();
+	}	
 	
-	public Object getValue() {
-		return value;
-	}
-	
-	public void setValue(Object value) {
-		this.value = value;
-	}
-	
-	public NumberExpression(Integer type, Object value, NumberExpression left, NumberExpression right) {
-		this.type 	= type;
-		this.value 	= value;
-		this.left 	= left;
-		this.right 	= right;
-	}
-	
-	public static NumberExpression createInteger(Object value) {
+	public Expression createInteger(Object value) {
 		Integer intValue = new Integer((String)value);
 		return new NumberExpression(INTEGER, intValue, null, null);
 	}
 	
-	public static NumberExpression createFloat(Object value) {
+	public static Expression createFloat(Object value) {
 		Float floatValue = new Float((String)value);
-		return new NumberExpression(FLOAT, floatValue, null, null);
+		return new Expression(FLOAT, floatValue, null, null);
 	}
 }

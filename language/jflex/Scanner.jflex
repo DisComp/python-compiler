@@ -94,7 +94,7 @@ FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 	"or"				{ return symbol(sym.OR, "or"); }
 	"not"				{ return symbol(sym.NOT, "not"); }
 	"=="				{ return symbol(sym.EQUALS, "=="); }
-	"!="				{ return symbol(sym.DISCTINT, "!="); }
+	"!="				{ return symbol(sym.DISTINCT, "!="); }
 	"<"					{ return symbol(sym.LESS, "<"); }
 	">"					{ return symbol(sym.GREATER, ">"); }
 	"<="				{ return symbol(sym.LESS_EQUAL, ">"); }

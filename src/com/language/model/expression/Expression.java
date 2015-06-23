@@ -1,33 +1,41 @@
 package com.language.model.expression;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class Expression {
-
+public class Expression {	
+	
+	private String type;
 	private Object value; 
-	private List<Expression> arguments;
+	private Expression left, right;
+	
+	public Expression(){
+		
+	}
 	
 	public Expression(Object value) {
 		this.value = value;
-		this.arguments = new ArrayList<Expression>();
-	}
-	
-	public Expression(Object value, List<Expression> arguments) {
-		this.value = value;
-		this.arguments = arguments;
-		if (this.arguments == null) {
-			this.arguments = new ArrayList<Expression>();
-		}
 	}
 	
 	public Expression(Object value, Expression left, Expression right) {
 		this.value = value;
-		this.arguments = new ArrayList<Expression>();
-		this.arguments.add(left);
-		this.arguments.add(right);
+		this.left = left;
+		this.right = right;
+	}
+	
+	public Expression(String type, Object value, Expression left, Expression right) {
+		this.type = type;
+		this.value = value;		
+		this.left = left;
+		this.right = right;
 	}
 
+	public String getType() {
+		return type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	public Object getValue() {
 		return value;
 	}
@@ -36,19 +44,29 @@ public class Expression {
 		this.value = value;
 	}
 	
-	public List<Expression> getArguments() {
-		return arguments;
+	public String toString(){
+		StringBuffer sb = new StringBuffer();		
+		String tab = "	";
+		
+		sb.append(this.value);
+		sb.append("\n");
+		if(this.left != null){
+			Expression exprL = this.left;
+			sb.append(tab);
+			String exprLStr = exprL.toString();
+			sb.append(exprLStr);
+		}
+		if(this.right != null){
+			Expression exprR = this.right;
+			sb.append(tab);
+			String exprRStr = exprR.toString();			
+			sb.append(exprRStr);
+		}
+		sb.append(tab);
+		return sb.toString();
 	}
-	
-	public void setArguments(List<Expression> arguments) {
-		this.arguments = arguments;
-	} 
 
-	public String toString() {
-		return this.toString(0);
-	}
-
-	public String toString(int level) {
+	/*public String toString(int level) {
 		StringBuffer sb = new StringBuffer();
 		
 		String tab = "";
@@ -79,5 +97,5 @@ public class Expression {
 		sb.append("\n");
 		
 		return sb.toString();
-	}
+	}*/
 }
