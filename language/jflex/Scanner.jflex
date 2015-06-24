@@ -177,7 +177,7 @@ FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 
 <YYINITIAL> 		"#" 		{ yybegin(COMMENT_LINE); }
 <COMMENT_LINE> { 	
-					[^\n] 		{ //dismiss everything until eol } 
+					[^\n] 		{ /*dismiss everything until eol*/}
 				 	[\n] 		{ yybegin(YYINITIAL); }
 }
 
