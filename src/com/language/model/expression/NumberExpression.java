@@ -14,7 +14,7 @@ public class NumberExpression extends Expression {
 		super();
 	}	
 	
-	public Expression createInteger(Object value) {
+	public static Expression createInteger(Object value) {
 		Integer intValue = new Integer((String)value);
 		return new NumberExpression(INTEGER, intValue, null, null);
 	}
