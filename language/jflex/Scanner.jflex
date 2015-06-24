@@ -157,6 +157,7 @@ FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 	"print"				{ return symbol(sym.PRINT_FUNC, "print"); }
 	
 	/* Type conversion */
+	"string"			{ return symbol(sym.STRING_FUNC, "string"); }
 	"int"				{ return symbol(sym.INT_FUNC, "int"); }
 	"long"				{ return symbol(sym.LONG_FUNC, "long"); }
 	"float"				{ return symbol(sym.FLOAT_FUNC, "float"); }
