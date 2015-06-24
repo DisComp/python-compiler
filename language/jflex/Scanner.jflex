@@ -74,9 +74,10 @@ FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 	
 	/* Strings */
 	
-	\"([^\"\r\n\t]*)\"	{ return symbol(sym.STRING, yytext()); } /*Double quotes*/
-	'([^\"\r\n\t]*)'	{ return symbol(sym.STRING, yytext()); } /*Single quotes*/
-	"\\" 				{ return symbol(sym.ESCAPE, "\\"); }
+	\"\"\"([^\"\r\t]*)\"\"\"	{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
+	\"([^\"\r\n\t]*)\"			{ return symbol(sym.STRING, yytext()); } /*Double quotes*/
+	'([^\"\r\n\t]*)'			{ return symbol(sym.STRING, yytext()); } /*Single quotes*/
+	"\\" 						{ return symbol(sym.ESCAPE, "\\"); }
 																/*Three Double quotes*/
 																/*Three Single quotes*/
 	"\t"				{ return symbol(sym.TAB, "\t"); }
@@ -157,6 +158,7 @@ FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
 	
 	/* Type conversion */
 	"int"				{ return symbol(sym.INT_FUNC, "int"); }
+	"long"				{ return symbol(sym.LONG_FUNC, "long"); }
 	"float"				{ return symbol(sym.FLOAT_FUNC, "float"); }
 	"str"				{ return symbol(sym.STR_FUNC, "str"); }
 	"tuple"				{ return symbol(sym.TUPLE_FUNC, "tuple"); }
