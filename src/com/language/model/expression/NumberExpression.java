@@ -6,13 +6,13 @@ public class NumberExpression extends Expression {
 	private static final String INTEGER = "Integer";
 	private static final String FLOAT = "Float";	
 	
-	public NumberExpression(){
+	public NumberExpression() {
 		super();
 	}
 	
-	public NumberExpression(String type, Integer value, NumberExpression left, NumberExpression right){
-		super();
-	}	
+	public NumberExpression(String type, Integer value, NumberExpression left, NumberExpression right) {
+		super(type,value,left,right);
+	}
 	
 	public static Expression createInteger(Object value) {
 		Integer intValue = new Integer((String)value);
@@ -23,4 +23,5 @@ public class NumberExpression extends Expression {
 		Float floatValue = new Float((String)value);
 		return new Expression(FLOAT, floatValue, null, null);
 	}
+	
 }
