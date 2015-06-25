@@ -45,18 +45,36 @@ terminal String RAW_INPUT_FUNC, PRINT_FUNC;
 
 /* Type conversion */
 terminal String INT_FUNC, FLOAT_FUNC, STR_FUNC, TUPLE_FUNC, LIST_FUNC, DICT_FUNC;
+
+/* Long */
+terminal String LONG_FUNC;
+
+/* String */
+terminal String STRING_FUNC;
 	
 /* Others */
 terminal String NONE; 
 terminal String TYPE_FUNC; 
 terminal String ID;
 
+/* Line Terminator*/
+terminal String LINE_TERMINATOR;
+
 /* NON TERMINALS */
 non terminal Expression expr;
+non terminal Expression instrs;
+non terminal Expression instr;
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
 precedence left ASSIGN;
+
+/* Instructions section */
+instrs ::= instr LINE_TERMINATOR
+			|
+           instr LINE_TERMINATOR instrs;
+
+instr ::= expr; // TODO: change this expresion //
 
 expr  ::= 
 		 INTEGER : i 
@@ -118,4 +136,11 @@ expr  ::=
 			{:
 				RESULT = new Expression("=", l, r);
 			:}
+			
+		| expr:l EQUALS expr:r
+			{:
+				RESULT = 
+			:}
 		;
+	
+	
