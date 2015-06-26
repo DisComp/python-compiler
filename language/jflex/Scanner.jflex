@@ -41,8 +41,10 @@ WhiteSpace     = {LineTerminator} | [ \f]
 
 Identifier = [:jletter:][:jletterdigit:]* 
 
-IntegerLiteral =  0 | [1-9][0-9]*
+LongLiteral =  (0|[1-9][0-9]*)L
 FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
+IntegerLiteral =  0 | [1-9][0-9]*
+
 
 %%
 
