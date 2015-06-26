@@ -3,8 +3,8 @@ package com.language.model.expression;
 
 public class NumberExpression extends Expression {
 	
-	private static final String INTEGER = "Integer";
-	private static final String FLOAT = "Float";	
+	public static final String INTEGER = "Integer";
+	public static final String FLOAT = "Float";	
 	
 	public NumberExpression() {
 		super();
