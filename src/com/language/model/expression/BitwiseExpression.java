@@ -1,10 +1,12 @@
 package com.language.model.expression;
 
 public class BitwiseExpression extends Expression {
-	/* PRECEDENCE:
-	 	- EXP
-	 	- TIMES, DIV, DIV_INT, MOD
-	 	- PLUS, MINUS
+	/* PRECEDENCE:	
+	    - NOT_BIT
+	    - LSHIFT, RSHIFT
+	    - AND_BIT
+	    - XOR_BIT
+	 	- OR_BIT	 		 	 
 	*/
 	public static final String OR_BIT = "OrBit";
 	public static final String AND_BIT = "AndBit";

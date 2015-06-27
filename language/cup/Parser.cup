@@ -65,18 +65,18 @@ non terminal Expression expr;
 non terminal Expression instrs;
 non terminal Expression instr;
 
-non terminal Expression or_expr;
-non terminal Expression xor_expr;
-non terminal Expression and_expr;
-non terminal Expression shift_expr;
+non terminal Expression bitwise_expr;
+non terminal Expression arithmetical_expr;
+non terminal Expression numerical_expr; 
 
-non terminal Expression additive_expr;
-non terminal Expression multiplicative_expr;
-non terminal Expression exponential_expr;
-non terminal Expression arithmetical_factor; 
-
+precedence left OR_BIT;
+precedence left XOR_BIT;
+precedence left AND_BIT;
+precedence left LSHIFT, RSHIFT;
 precedence left PLUS, MINUS;
-precedence left TIMES, DIV;
+precedence left TIMES, DIV, DIV_INT, MOD;
+precedence left NOT_BIT;
+precedence left EXP;
 precedence left ASSIGN;
 
 start with expr;
@@ -88,38 +88,28 @@ instrs ::= instr LINE_TERMINATOR
 
 instr ::= expr; // TODO: change this expression //
 
-or_expr  ::=    or_expr: l OR_BIT xor_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.OR_BIT, "|", l, r); :}   
-			  | xor_expr: x {: RESULT = x; :};		  
-			  
-xor_expr ::=    xor_expr: l XOR_BIT and_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.XOR_BIT, "^", l, r); :}
-			  | and_expr: x {: RESULT = x; :};
-              
-and_expr ::=    and_expr: l AND_BIT shift_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.AND_BIT, "&", l, r); :} 
-			  | shift_expr: x {: RESULT = x; :};
+bitwise_expr ::=    bitwise_expr: l OR_BIT  bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.OR_BIT, "|", l, r); :}
+				  | bitwise_expr: l XOR_BIT bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.XOR_BIT, "^", l, r); :}
+				  | bitwise_expr: l AND_BIT bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.AND_BIT, "&", l, r); :}
+				  | bitwise_expr: l LSHIFT  bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.LSHIFT, "<<", l, r); :}
+                  | bitwise_expr: l RSHIFT  bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.RSHIFT, ">>", l, r); :}
+				  | arithmetical_expr: x {: RESULT = x; :};				  
 
-shift_expr ::=    shift_expr: l LSHIFT additive_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.LSHIFT, "<<", l, r); :}
-                | shift_expr: l RSHIFT additive_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.RSHIFT, ">>", l, r); :}
-				| additive_expr: x {: RESULT = x; :};
-
-additive_expr ::=   additive_expr: l PLUS  multiplicative_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.PLUS, "+", l, r); :}
-				  | additive_expr: l MINUS multiplicative_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MINUS, "-", l, r); :}
-				  | multiplicative_expr: x {: RESULT = x; :};						    				   
-							
-multiplicative_expr ::=    multiplicative_expr: l TIMES   exponential_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.TIMES, "*", l, r); :} 
-				         | multiplicative_expr: l DIV     exponential_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV, "/", l, r); :}
-				         | multiplicative_expr: l DIV_INT exponential_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV_INT, "//", l, r); :}
-				         | multiplicative_expr: l MOD     exponential_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MOD, "%", l, r); :}					   
-				         | exponential_expr: x {: RESULT = x; :};
-					  
-exponential_expr ::=   exponential_expr: b EXP arithmetical_factor: e {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.EXP, "**", b, e); :}
-                     | arithmetical_factor: x {: RESULT = x; :};					  			  
+arithmetical_expr ::=    arithmetical_expr: l PLUS    arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.PLUS, "+", l, r); :}
+				       | arithmetical_expr: l MINUS   arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MINUS, "-", l, r); :}
+					   | arithmetical_expr: l TIMES   arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.TIMES, "*", l, r); :} 
+				       | arithmetical_expr: l DIV     arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV, "/", l, r); :}
+				       | arithmetical_expr: l DIV_INT arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV_INT, "//", l, r); :}
+				       | arithmetical_expr: l MOD     arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MOD, "%", l, r); :}
+                       | arithmetical_expr: b EXP     arithmetical_expr: e {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.EXP, "**", b, e); :}
+					   | numerical_expr: x {: RESULT = x; :};						  					  			  
                         
-arithmetical_factor ::=   INTEGER: i {: RESULT = NumberExpression.createInteger(i); :}				
-						| FLOAT:   f {:	RESULT = NumberExpression.createFloat(f); :};
+numerical_expr ::=   INTEGER: i {: RESULT = NumberExpression.createInteger(i); :}				
+				   | FLOAT:   f {:	RESULT = NumberExpression.createFloat(f); :};
 
 
 expr  ::= 
-		  or_expr: ae {: RESULT = ae; :}	
+		  bitwise_expr: b {: RESULT = b; :}	
 
 		| STRING:s
 			{:
