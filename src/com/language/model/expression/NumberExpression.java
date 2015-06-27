@@ -10,7 +10,11 @@ public class NumberExpression extends Expression {
 		super();
 	}
 	
-	public NumberExpression(String type, Integer value, NumberExpression left, NumberExpression right) {
+	public NumberExpression(String type, NumberExpression left, NumberExpression right) {
+		super(type, left, right);
+	}
+	
+	public NumberExpression(String type, Object value, NumberExpression left, NumberExpression right) {
 		super(type,value,left,right);
 	}
 	

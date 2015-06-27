@@ -67,7 +67,8 @@ non terminal Expression instr;
 
 non terminal Expression arithmetical_expression;
 non terminal Expression arithmetical_term;
-non terminal Expression arithmetical_factor; // should bet type NumberExpression? //
+non terminal Expression arithmetical_exponent;
+non terminal Expression arithmetical_factor; 
 
 precedence left PLUS, MINUS;
 precedence left TIMES, DIV;
@@ -80,46 +81,31 @@ instrs ::= instr LINE_TERMINATOR
 			|
            instr LINE_TERMINATOR instrs;
 
-instr ::= expr; // TODO: change this expresion //
+instr ::= expr; // TODO: change this expression //
 
-arithmetical_expression ::=   arithmetical_expression: l PLUS  arithmetical_term: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.PLUS, l, r); :}
-						    | arithmetical_expression: l MINUS arithmetical_term: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MINUS, l, r); :}
-						    | arithmetical_term: x {: RESULT = x; :};
+arithmetical_expression ::=   arithmetical_expression: l PLUS  arithmetical_term: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.PLUS, "+", l, r); :}
+						    | arithmetical_expression: l MINUS arithmetical_term: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MINUS, "-", l, r); :}
+						    | arithmetical_term: x {: RESULT = x; :};						    				   
 							
-arithmetical_term ::=   arithmetical_term: l TIMES arithmetical_factor: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.TIMES, l, r); :} 
-					  | arithmetical_term: l DIV   arithmetical_factor: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV, l, r); :} 
-					  | arithmetical_factor: x {: RESULT = x; :};
+arithmetical_term ::=   arithmetical_term: l TIMES   arithmetical_exponent: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.TIMES, "*", l, r); :} 
+					  | arithmetical_term: l DIV     arithmetical_exponent: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV, "/", l, r); :}
+					  | arithmetical_term: l DIV_INT arithmetical_exponent: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV_INT, "//", l, r); :}
+					  | arithmetical_term: l MOD arithmetical_exponent: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MOD, "%", l, r); :}					   
+					  | arithmetical_exponent: x {: RESULT = x; :};
 					  
+arithmetical_exponent ::=   arithmetical_exponent: b EXP arithmetical_factor: e {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.EXP, "**", b, e); :}
+                          | arithmetical_factor: x {: RESULT = x; :};					  			  
+                        
 arithmetical_factor ::=   INTEGER: i {: RESULT = NumberExpression.createInteger(i); :}				
 						| FLOAT:   f {:	RESULT = NumberExpression.createFloat(f); :};
 
 expr  ::= 
-		 arithmetical_expression: ae {: RESULT = ae; :} 
+		  arithmetical_expression: ae {: RESULT = ae; :}	
 
 		| STRING:s
 			{:
 				RESULT = new Expression(s, null, null);
-			:}
-
-		| expr:l PLUS expr:r
-			{:
-				RESULT = new Expression("+", l, r);
-			:}
-
-		| expr:l MINUS expr:r
-			{:
-				RESULT = new Expression("-", l, r);
-			:}
-
-		| expr:l TIMES expr:r
-			{:
-				RESULT = new Expression("*", l, r);
-			:}
-
-		| expr:l DIV expr:r
-			{:
-				RESULT = new Expression("/", l, r);
-			:}
+			:}		
 
 		| LPAREN expr:e RPAREN
 			{:
