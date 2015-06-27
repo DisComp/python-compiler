@@ -64,6 +64,8 @@ terminal String LINE_TERMINATOR;
 non terminal Expression expr;
 non terminal Expression instrs;
 non terminal Expression instr;
+non terminal Expression indent_instrs;
+non terminal Expression if_block;
 
 non terminal Expression bitwise_expr;
 non terminal Expression arithmetical_expr;
@@ -78,15 +80,24 @@ precedence left TIMES, DIV, DIV_INT, MOD;
 precedence left NOT_BIT;
 precedence left EXP;
 precedence left ASSIGN;
+precedence left IF;
 
-start with expr;
+start with if_block;
 
 /* Instructions section */
-instrs ::= instr LINE_TERMINATOR
+instrs ::= instr:i LINE_TERMINATOR
 			|
-           instr LINE_TERMINATOR instrs;
+           instr:i LINE_TERMINATOR instrs:is;
 
+indent_instrs ::= TAB instr: i LINE_TERMINATOR 
+				| TAB instr: i LINE_TERMINATOR indent_instrs:iis;
+				 
 instr ::= expr; // TODO: change this expression //
+
+/* If block */
+if_block ::= IF expr: e COLON LINE_TERMINATOR indent_instrs;
+
+
 
 bitwise_expr ::=    bitwise_expr: l OR_BIT  bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.OR_BIT, "|", l, r); :}
 				  | bitwise_expr: l XOR_BIT bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.XOR_BIT, "^", l, r); :}
