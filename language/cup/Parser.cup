@@ -67,11 +67,16 @@ non terminal Expression instr;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
 
+non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
 non terminal Expression arithmetical_expr;
 non terminal Expression numerical_expr;
 non terminal Expression literal_expr;
 
+precedence left OR;
+precedence left AND;
+precedence left NOT;
+precedence left EQUALS, DISTINCT, LESS, GREATER, LESS_EQUAL, GREATER_EQUAL;
 precedence left OR_BIT;
 precedence left XOR_BIT;
 precedence left AND_BIT;
@@ -99,12 +104,23 @@ instr ::= expr; // TODO: change this expression //
 if_block ::= IF expr: e COLON LINE_TERMINATOR indent_instrs;
 
 
+boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}
+				| boolean_expr: l AND boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.AND, "and", l, r); :}
+				| NOT boolean_expr: l {: RESULT = BooleanExpression.create(BooleanExpression.NOT, "not", l); :}
+				| boolean_expr: l EQUALS boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.EQUALS, "==", l, r); :}
+				| boolean_expr: l DISTINCT boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.DISTINCT, "!=", l, r); :}
+				| boolean_expr: l LESS boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.LESS, "<", l, r); :}
+				| boolean_expr: l GREATER boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.GREATER, ">", l, r); :}
+				| boolean_expr: l LESS_EQUAL boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.LESS_EQUAL, "<=", l, r); :}
+				| boolean_expr: l GREATER_EQUAL boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.GREATER_EQUAL, ">=", l, r); :}
+				| bitwise_expr: x {: RESULT = x; :};	
 
 bitwise_expr ::=    bitwise_expr: l OR_BIT  bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.OR_BIT, "|", l, r); :}
 				  | bitwise_expr: l XOR_BIT bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.XOR_BIT, "^", l, r); :}
 				  | bitwise_expr: l AND_BIT bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.AND_BIT, "&", l, r); :}
 				  | bitwise_expr: l LSHIFT  bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.LSHIFT, "<<", l, r); :}
                   | bitwise_expr: l RSHIFT  bitwise_expr: r {: RESULT = BitwiseExpression.create(BitwiseExpression.RSHIFT, ">>", l, r); :}
+                  | NOT_BIT  bitwise_expr: l {: RESULT = BitwiseExpression.create(BitwiseExpression.NOT_BIT, "~", l); :}
 				  | arithmetical_expr: x {: RESULT = x; :};				  
 
 arithmetical_expr ::=    arithmetical_expr: l PLUS    arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.PLUS, "+", l, r); :}
@@ -122,7 +138,7 @@ literal_expr ::=  INTEGER:  i {: RESULT = LiteralExpression.createInteger(i); :}
 				| STRING:   s {: RESULT = LiteralExpression.createString(s); :};
 
 expr  ::= 
-		  bitwise_expr: b {: RESULT = b; :}		
+		  boolean_expr: b {: RESULT = b; :}		
 
 		| LPAREN expr:e RPAREN
 			{:

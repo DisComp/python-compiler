@@ -29,5 +29,9 @@ public class BitwiseExpression extends Expression {
 	
 	public static Expression create(String type, Object value, Expression left, Expression right) {
 		return new BitwiseExpression(type, value, left, right);
-	}	
+	}
+	
+	public static Expression create(String type, Object value, Expression left) {
+		return new BitwiseExpression(type, value, left, null);
+	}
 }

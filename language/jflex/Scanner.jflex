@@ -101,8 +101,8 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	"!="				{ return symbol(sym.DISTINCT, "!="); }
 	"<"					{ return symbol(sym.LESS, "<"); }
 	">"					{ return symbol(sym.GREATER, ">"); }
-	"<="				{ return symbol(sym.LESS_EQUAL, ">"); }
-	">="				{ return symbol(sym.GREATER_EQUAL, ">"); }
+	"<="				{ return symbol(sym.LESS_EQUAL, "<="); }
+	">="				{ return symbol(sym.GREATER_EQUAL, ">="); }
 	
 	
 	/* Punctuation chars */
