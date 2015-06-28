@@ -41,9 +41,9 @@ WhiteSpace     = {LineTerminator} | [ \f]
 
 Identifier = [:jletter:][:jletterdigit:]* 
 
-LongLiteral =  (0|[1-9][0-9]*)L
-FloatLiteral   = (0 | [1-9][0-9]*)\.[0-9]+
-IntegerLiteral =  0 | [1-9][0-9]*
+LongLiteral    =  (0 | [1-9][0-9]*)L
+FloatLiteral   =  (0 | [1-9][0-9]*)\.[0-9]+
+IntegerLiteral =   0 | [1-9][0-9]*
 
 
 %%
@@ -54,6 +54,7 @@ IntegerLiteral =  0 | [1-9][0-9]*
 	
 	{IntegerLiteral}	{ return symbol(sym.INTEGER, yytext()); }						
 	{FloatLiteral} 		{ return symbol(sym.FLOAT, yytext()); }
+	{LongLiteral} 		{ return symbol(sym.LONG_INT, yytext()); }
 	
 	/*Arithmetic operators*/
 	

@@ -6,7 +6,7 @@ import com.language.model.expression.*;
 import com.language.exceptions.*;
 
 /* Numbers */
-terminal String INTEGER, FLOAT;
+terminal String INTEGER, FLOAT, LONG_INT;
 
 /* Arithmetic operators */
 terminal String PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
@@ -69,7 +69,8 @@ non terminal Expression if_block;
 
 non terminal Expression bitwise_expr;
 non terminal Expression arithmetical_expr;
-non terminal Expression numerical_expr; 
+non terminal Expression numerical_expr;
+non terminal Expression literal_expr;
 
 precedence left OR_BIT;
 precedence left XOR_BIT;
@@ -82,7 +83,7 @@ precedence left EXP;
 precedence left ASSIGN;
 precedence left IF;
 
-start with if_block;
+start with expr;
 
 /* Instructions section */
 instrs ::= instr:i LINE_TERMINATOR
@@ -113,19 +114,15 @@ arithmetical_expr ::=    arithmetical_expr: l PLUS    arithmetical_expr: r {: RE
 				       | arithmetical_expr: l DIV_INT arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV_INT, "//", l, r); :}
 				       | arithmetical_expr: l MOD     arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MOD, "%", l, r); :}
                        | arithmetical_expr: b EXP     arithmetical_expr: e {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.EXP, "**", b, e); :}
-					   | numerical_expr: x {: RESULT = x; :};						  					  			  
-                        
-numerical_expr ::=   INTEGER: i {: RESULT = NumberExpression.createInteger(i); :}				
-				   | FLOAT:   f {:	RESULT = NumberExpression.createFloat(f); :};
-
+					   | literal_expr: x {: RESULT = x; :};						  					  			  
+             
+literal_expr ::=  INTEGER:  i {: RESULT = LiteralExpression.createInteger(i); :}				
+				| FLOAT:    f {: RESULT = LiteralExpression.createFloat(f); :}
+				| LONG_INT: l {: RESULT = LiteralExpression.createLongInt(l); :}
+				| STRING:   s {: RESULT = LiteralExpression.createString(s); :};
 
 expr  ::= 
-		  bitwise_expr: b {: RESULT = b; :}	
-
-		| STRING:s
-			{:
-				RESULT = new Expression(s, null, null);
-			:}		
+		  bitwise_expr: b {: RESULT = b; :}		
 
 		| LPAREN expr:e RPAREN
 			{:
