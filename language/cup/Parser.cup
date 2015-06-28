@@ -64,13 +64,15 @@ terminal String LINE_TERMINATOR;
 non terminal Expression expr;
 non terminal Expression instrs;
 non terminal Expression instr;
+non terminal Expression stmt;
+non terminal Expression empty_stmt;
+non terminal Expression indent_block;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
 
 non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
 non terminal Expression arithmetical_expr;
-non terminal Expression numerical_expr;
 non terminal Expression literal_expr;
 
 precedence left OR;
@@ -88,20 +90,26 @@ precedence left EXP;
 precedence left ASSIGN;
 precedence left IF;
 
-start with expr;
+start with instrs;
 
 /* Instructions section */
-instrs ::= instr:i LINE_TERMINATOR
-			|
-           instr:i LINE_TERMINATOR instrs:is;
+instrs ::=    instr:  i {: RESULT = i; :}   
+			| instrs: is instr: i {: RESULT = is ; :};
 
-indent_instrs ::= TAB instr: i LINE_TERMINATOR 
-				| TAB instr: i LINE_TERMINATOR indent_instrs:iis;
+indent_instrs ::=  TAB instr: i {: RESULT = i; :};
+				 /*| indent_instrs: is instr :i {: RESULT = i; :};*/
 				 
-instr ::= expr; // TODO: change this expression //
+instr ::= expr: exp {: RESULT = exp; :}
+		| stmt: s 	{: RESULT = s ; :};
+			
+
+stmt ::=  if_block: stmt {: RESULT = stmt; :}
+		| empty_stmt: stmt {: RESULT = stmt; :};
+		 
+emtpy_stmt ::= LINE_TERMINATOR; 
 
 /* If block */
-if_block ::= IF expr: e COLON LINE_TERMINATOR indent_instrs;
+if_block ::= IF expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
 
 
 boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}
