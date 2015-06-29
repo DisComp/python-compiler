@@ -1,2 +1,1 @@
-if True:
-	True
+if True :
