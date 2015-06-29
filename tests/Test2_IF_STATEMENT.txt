@@ -1,1 +1,4 @@
 if True :
+	False
+	True
+	2 == 2

@@ -65,7 +65,7 @@ non terminal Expression expr;
 non terminal Expression instrs;
 non terminal Expression instr;
 non terminal Expression stmt;
-non terminal Expression empty_stmt;
+non terminal Expression aux;
 non terminal Expression indent_block;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
@@ -88,29 +88,28 @@ precedence left TIMES, DIV, DIV_INT, MOD;
 precedence left NOT_BIT;
 precedence left EXP;
 precedence left ASSIGN;
-precedence left IF;
+precedence left TAB;
+precedence left IF; 
 
 start with instrs;
 
 /* Instructions section */
 
-instrs ::=    instr:  i {: RESULT = i; :}   
-			| instrs: is instr: i {: RESULT = is ; :};
+instrs ::=    instrs instr : i {: RESULT = i ; :}   
+			| instr: i {: RESULT = i; :};
 
-indent_instrs ::=  TAB expr: i {: RESULT = i; :};
-				 /*| indent_instrs: is instr :i {: RESULT = i; :};*/
+indent_instrs ::=  indent_instrs TAB instr: i {: RESULT = i; :}
+	  			|  TAB instr: i {: RESULT = i; :};
 				 
 instr ::= expr: exp {: RESULT = exp; :}
-		| stmt: s 	{: RESULT = s ; :};
+		| stmt: s 	{: RESULT = s ; :}
+		| LINE_TERMINATOR;
 			
 
-stmt ::=  if_block:   stmt {: RESULT = stmt; :}
-		| empty_stmt: stmt {: RESULT = stmt; :};
-		 
-emtpy_stmt ::= LINE_TERMINATOR; 
+stmt ::=  if_block: stmt {: RESULT = stmt; :};		 
 
 /* If block */
-if_block ::= IF expr: e COLON {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e); :};
+if_block ::= IF expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
 
 
 boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}
