@@ -140,10 +140,14 @@ arithmetical_expr ::=    arithmetical_expr: l PLUS    arithmetical_expr: r {: RE
                        | arithmetical_expr: b EXP     arithmetical_expr: e {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.EXP, "**", b, e); :}
 					   | literal_expr: x {: RESULT = x; :};						  					  			  
              
-literal_expr ::=  INTEGER:  i {: RESULT = LiteralExpression.createInteger(i); :}				
-				| FLOAT:    f {: RESULT = LiteralExpression.createFloat(f); :}
-				| LONG_INT: l {: RESULT = LiteralExpression.createLongInt(l); :}
-				| STRING:   s {: RESULT = LiteralExpression.createString(s); :};
+literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}
+				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
+				| FALSE:    f  {: RESULT = LiteralExpression.createBoolean(f); :}
+				| TRUE:     t  {: RESULT = LiteralExpression.createBoolean(t); :}
+				| INTEGER:  i  {: RESULT = LiteralExpression.createInteger(i); :}				
+				| FLOAT:    f  {: RESULT = LiteralExpression.createFloat(f); :}
+				| LONG_INT: l  {: RESULT = LiteralExpression.createLongInt(l); :}
+				| STRING:   s  {: RESULT = LiteralExpression.createString(s); :};				
 
 expr  ::= 
 		  boolean_expr: b {: RESULT = b; :}		
@@ -156,16 +160,6 @@ expr  ::=
 		| LBRACKET expr:e RBRACKET
 			{:
 				RESULT = e;
-			:}
-			
-		| TRUE:t
-			{:
-				RESULT = new Expression(t);
-			:}
-			
-		| FALSE:f
-			{:
-				RESULT = new Expression(f);
 			:}
 		
 		| expr:l ASSIGN expr:r

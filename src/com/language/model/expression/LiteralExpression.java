@@ -3,6 +3,9 @@ package com.language.model.expression;
 
 public class LiteralExpression extends Expression {
 	
+	public static final String ID = "Id";
+	public static final String NONE = "None";
+	public static final String BOOLEAN = "Boolean";
 	public static final String INTEGER = "Integer";
 	public static final String FLOAT = "Float";
 	public static final String LONG_INT = "LongInt";
@@ -18,6 +21,19 @@ public class LiteralExpression extends Expression {
 	
 	public LiteralExpression(String type, Object value, LiteralExpression left, LiteralExpression right) {
 		super(type,value,left,right);
+	}
+	
+	public static Expression createIdentifier(Object value) {
+		return new LiteralExpression(ID, value, null, null);
+	}
+	
+	public static Expression createNone() {
+		return new LiteralExpression(NONE, null, null, null);
+	}
+	
+	public static Expression createBoolean(Object value) {
+		Boolean boolValue = new Boolean((String)value);
+		return new LiteralExpression(BOOLEAN, boolValue, null, null);
 	}
 	
 	public static Expression createInteger(Object value) {
