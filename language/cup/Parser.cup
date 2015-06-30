@@ -115,7 +115,7 @@ instr ::= expr: exp {: RESULT = exp; :}
 		| LINE_TERMINATOR;
 
 //parameters ::= 
-function_block ::= DEF ID LBRACKET RBRACKET COLON {: RESULT = FunctionControl.create("id"); :};
+function_block ::= DEF ID LBRACKET RBRACKET COLON {: RESULT = FunctionControl.create("id-test"); :};
 
 
 stmt ::=  if_block: stmt {: RESULT = stmt; :}
