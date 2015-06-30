@@ -64,6 +64,7 @@ terminal String LINE_TERMINATOR;
 non terminal Expression expr;
 non terminal Expression instrs;
 non terminal Expression instr;
+non terminal Expression function_block;
 non terminal Expression stmt;
 non terminal Expression aux;
 non terminal Expression indent_block;
@@ -78,6 +79,9 @@ non terminal Expression parenthesized_expr;
 non terminal Expression list_expr;
 non terminal Expression element_list;
 non terminal Expression literal_expr;
+
+non terminal Expression parameters;
+
 
 precedence left OR;
 precedence left AND;
@@ -102,13 +106,19 @@ start with instrs;
 instrs ::=    instrs instr : i {: RESULT = i ; :}   
 			| instr: i {: RESULT = i; :};
 
+
+
 indent_instrs ::=  indent_instrs TAB instr: i {: RESULT = i; :}
 	  			|  TAB instr: i {: RESULT = i; :};
 				 
 instr ::= expr: exp {: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
+		|function_block: f {: RESULT = f ; :}
 		| LINE_TERMINATOR;
-			
+
+//parameters ::= 
+function_block ::= DEF ID LBRACKET RBRACKET COLON {: RESULT = FunctionControl.create("id-test"); :};
+
 
 stmt ::=  if_block: stmt {: RESULT = stmt; :}
 		| while_block: stmt {: RESULT = stmt; :};		 
