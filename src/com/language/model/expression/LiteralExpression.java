@@ -1,5 +1,8 @@
 package com.language.model.expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class LiteralExpression extends Expression {
 	
@@ -10,6 +13,7 @@ public class LiteralExpression extends Expression {
 	public static final String FLOAT = "Float";
 	public static final String LONG_INT = "LongInt";
 	public static final String STRING = "String";
+	public static final String LIST = "List";
 	
 	public LiteralExpression() {
 		super();
@@ -57,4 +61,31 @@ public class LiteralExpression extends Expression {
 		return new Expression(STRING, stringValue, null, null);
 	}
 	
+	public static Expression createList(Object value) {		
+				
+		List<Object> listValue = new ArrayList<Object>();
+		Expression listElement = (Expression)value;
+		
+		if(listElement.getLeft() != null){
+			// One element on the list
+			Object element = ((Expression)listElement.getRight()).getValue();
+			listValue.add(0, element); 
+			listElement = (Expression)listElement.getLeft();
+			
+			// Parse tree and add leaf values
+			while(listElement.getLeft() != null){
+				element = ((Expression)listElement.getRight()).getValue();
+				listValue.add(0, element);
+				listElement = (Expression)listElement.getLeft();
+			}
+			// Last leaf contains last value
+			element = listElement.getValue();
+			listValue.add(0, element);						
+		}
+		return new Expression(LIST, listValue, null, null);
+	}
+	
+	public static Expression createListElement(Expression left, Expression right){
+		return new Expression(LIST, left, right); //type, left, right
+	}
 }

@@ -39,4 +39,4 @@ local.properties
 .texlipse
 
 language/java/
-src/language/parser/
+src/com/language/parser/

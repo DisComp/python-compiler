@@ -21,6 +21,12 @@ public class Expression {
 		this.right = right;
 	}
 	
+	public Expression(String type,  Expression left, Expression right) {
+		this.type = type;	
+		this.left = left;
+		this.right = right;
+	}
+	
 	public Expression(String type, Object value, Expression left, Expression right) {
 		this.type = type;
 		this.value = value;		
@@ -42,6 +48,22 @@ public class Expression {
 	
 	public void setValue(Object value) {
 		this.value = value;
+	}
+	
+	public Object getLeft() {
+		return left;
+	}
+	
+	public void setLeft(Expression left) {
+		this.left = left;
+	}
+	
+	public Object getRight() {
+		return right;
+	}
+	
+	public void setRight(Expression right) {
+		this.right = right;
 	}
 	
 	public String toString(){

@@ -76,6 +76,8 @@ non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
 non terminal Expression arithmetical_expr;
 non terminal Expression parenthesized_expr;
+non terminal Expression list_expr;
+non terminal Expression element_list;
 non terminal Expression literal_expr;
 
 non terminal Expression parameters;
@@ -158,6 +160,12 @@ arithmetical_expr ::=    arithmetical_expr: l PLUS    arithmetical_expr: r {: RE
 					   | literal_expr: x {: RESULT = x; :};
 					
 parenthesized_expr ::= LPAREN boolean_expr:be RPAREN {: RESULT = be; :};
+    
+list_expr ::= LBRACKET element_list:el RBRACKET {: RESULT = el; :}
+    		| LBRACKET RBRACKET {: RESULT = LiteralExpression.createListElement(null, null); :};
+    		
+element_list ::=  literal_expr:le {: RESULT = le; :}
+				| element_list:el COMMA literal_expr:le {: RESULT = LiteralExpression.createListElement(el, le); :};
              
 literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}
 				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
@@ -167,15 +175,11 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| FLOAT:    f  {: RESULT = LiteralExpression.createFloat(f); :}
 				| LONG_INT: l  {: RESULT = LiteralExpression.createLongInt(l); :}
 				| STRING:   s  {: RESULT = LiteralExpression.createString(s); :}
-				| parenthesized_expr: p {: RESULT = p; :};				
+				| parenthesized_expr: p {: RESULT = p; :}
+				| list_expr: l {: RESULT = LiteralExpression.createList(l); :};				
 
 expr  ::= 
 		  boolean_expr: b {: RESULT = b; :}
-		
-		| LBRACKET expr:e RBRACKET
-			{:
-				RESULT = e;
-			:}
 		
 		| expr:l ASSIGN expr:r
 			{:
