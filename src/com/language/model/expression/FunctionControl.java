@@ -2,10 +2,14 @@ package com.language.model.expression;
 
 public class FunctionControl extends Expression {
 	
-	public String id;
+	//TODO: agregar parámetros
+	
+	private String func_name;
+	public static final String FUNC_DECLARATION = "FuncDeclaration";
+	
 	public FunctionControl(String _id){
-		super("funC",null,null,null);
-		id=_id;
+		super(FUNC_DECLARATION,"aca va el cuerpo",null,null);
+		func_name=_id;
 		
 	}
 	
@@ -13,5 +17,15 @@ public class FunctionControl extends Expression {
 		
 		return new FunctionControl(_id);
 	}
+	
+
+	public String toString(){
+		StringBuffer sb = new StringBuffer();	
+		sb.append("def ");
+		sb.append(this.func_name);
+		sb.append("():\n\t");
+		return sb.append(super.toString()).toString();
+	}
+	
 
 }
