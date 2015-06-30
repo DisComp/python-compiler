@@ -74,6 +74,7 @@ non terminal Expression while_block;
 non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
 non terminal Expression arithmetical_expr;
+non terminal Expression parenthesized_expr;
 non terminal Expression literal_expr;
 
 precedence left OR;
@@ -144,7 +145,9 @@ arithmetical_expr ::=    arithmetical_expr: l PLUS    arithmetical_expr: r {: RE
 				       | arithmetical_expr: l DIV_INT arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.DIV_INT, "//", l, r); :}
 				       | arithmetical_expr: l MOD     arithmetical_expr: r {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.MOD, "%", l, r); :}
                        | arithmetical_expr: b EXP     arithmetical_expr: e {: RESULT = ArithmeticalExpression.create(ArithmeticalExpression.EXP, "**", b, e); :}
-					   | literal_expr: x {: RESULT = x; :};						  					  			  
+					   | literal_expr: x {: RESULT = x; :};
+					
+parenthesized_expr ::= LPAREN boolean_expr:be RPAREN {: RESULT = be; :};
              
 literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}
 				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
@@ -153,15 +156,11 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| INTEGER:  i  {: RESULT = LiteralExpression.createInteger(i); :}				
 				| FLOAT:    f  {: RESULT = LiteralExpression.createFloat(f); :}
 				| LONG_INT: l  {: RESULT = LiteralExpression.createLongInt(l); :}
-				| STRING:   s  {: RESULT = LiteralExpression.createString(s); :};				
+				| STRING:   s  {: RESULT = LiteralExpression.createString(s); :}
+				| parenthesized_expr: p {: RESULT = p; :};				
 
 expr  ::= 
-		  boolean_expr: b {: RESULT = b; :}		
-
-		| LPAREN expr:e RPAREN
-			{:
-				RESULT = e;
-			:}
+		  boolean_expr: b {: RESULT = b; :}
 		
 		| LBRACKET expr:e RBRACKET
 			{:
