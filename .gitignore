@@ -42,4 +42,8 @@ language/java/
 src/com/language/parser/Parser.java
 src/com/language/parser/Scanner.java
 src/com/language/parser/Scanner.java~
+<<<<<<< HEAD
 src/com/language/parser/sym.java
+=======
+src/com/language/parser/sym.java 
+>>>>>>> 67cbb680538a67dfa639ac0403573dcf7357eb0e
