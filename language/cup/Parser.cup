@@ -69,6 +69,7 @@ non terminal Expression aux;
 non terminal Expression indent_block;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
+non terminal Expression while_block;
 
 non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
@@ -106,10 +107,15 @@ instr ::= expr: exp {: RESULT = exp; :}
 		| LINE_TERMINATOR;
 			
 
-stmt ::=  if_block: stmt {: RESULT = stmt; :};		 
+stmt ::=  if_block: stmt {: RESULT = stmt; :}
+		| while_block: stmt {: RESULT = stmt; :};		 
 
 /* If block */
 if_block ::= IF expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
+
+/* While block */
+while_block ::= WHILE expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
+
 
 
 boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}

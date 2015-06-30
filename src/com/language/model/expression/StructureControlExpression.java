@@ -3,6 +3,7 @@ package com.language.model.expression;
 public class StructureControlExpression extends Expression {
 	
 	public static final String IF = "If";
+	public static final String WHILE = "while";
 	
 	public StructureControlExpression() {
 		super();
