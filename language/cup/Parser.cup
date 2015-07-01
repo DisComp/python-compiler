@@ -105,19 +105,24 @@ start with instrs;
 /* Instructions section */
 
 instrs ::=    instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
-			| instr: i {: RESULT = i; :};
+			| instr: i {: RESULT = i; :}
+			| function_block: f {: RESULT = f ; :};
+			
 
 
-indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: RESULT = i; :}
+indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(iis);RESULT = i; :}
 	  			|  TAB instr: i {: RESULT = i; :};
 				 
 instr ::= expr: exp {: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
-		| function_block: f {: RESULT = f ; :}
 		| var_declaration_expr: v {: RESULT = v; :};
 
 //parameters ::= 
-function_block ::= DEF ID:funct_name LPAREN RPAREN COLON LINE_TERMINATOR {: RESULT = FunctionControl.create(funct_name); :};
+function_block ::=	DEF ID:funct_name
+					LPAREN RPAREN 
+					COLON LINE_TERMINATOR 
+					indent_instrs:iis
+					{: RESULT = FunctionControl.create(funct_name,iis); :};
 
 stmt ::=  if_block: s {: RESULT = s; :}
 		| while_block: s {: RESULT = s; :};		 

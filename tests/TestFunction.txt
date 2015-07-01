@@ -1,1 +1,4 @@
 def mifuncion():
+	true
+	true
+	true
