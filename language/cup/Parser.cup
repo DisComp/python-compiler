@@ -66,7 +66,7 @@ non terminal Expression instrs;
 non terminal Expression instr;
 non terminal Expression function_block;
 non terminal Expression stmt;
-non terminal Expression aux;
+non terminal Expression var_declaration_expr;
 non terminal Expression indent_block;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
@@ -113,11 +113,11 @@ indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: RESULT = i;
 				 
 instr ::= expr: exp {: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
-		|function_block: f {: RESULT = f ; :};
+		| function_block: f {: RESULT = f ; :}
+		| var_declaration_expr: v {: RESULT = v; :};
 
 //parameters ::= 
 function_block ::= DEF ID:funct_name LPAREN RPAREN COLON {: RESULT = FunctionControl.create(funct_name); :};
-
 
 stmt ::=  if_block: s {: RESULT = s; :}
 		| while_block: s {: RESULT = s; :};		 
@@ -128,6 +128,8 @@ if_block ::= IF expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = Struct
 /* While block */
 while_block ::= WHILE expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
 
+
+var_declaration_expr ::= ID:id ASSIGN literal_expr:le {: RESULT = LiteralExpression.createAssignment(id, le); :};
 
 
 boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}
@@ -163,8 +165,8 @@ parenthesized_expr ::= LPAREN boolean_expr:be RPAREN {: RESULT = be; :};
 list_expr ::= LBRACKET element_list:el RBRACKET {: RESULT = el; :}
     		| LBRACKET RBRACKET {: RESULT = LiteralExpression.createListElement(null, null); :};
     		
-element_list ::=  literal_expr:le {: RESULT = le; :}
-				| element_list:el COMMA literal_expr:le {: RESULT = LiteralExpression.createListElement(el, le); :};
+element_list ::=  literal_expr:le COMMA element_list:el {: RESULT = LiteralExpression.createListElement(le, el); :}
+				| literal_expr:le {: RESULT = le; :};
              
 literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}
 				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
@@ -178,12 +180,6 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| list_expr: l {: RESULT = LiteralExpression.createList(l); :};				
 
 expr  ::= 
-		  boolean_expr: b {: RESULT = b; :}
-		
-		| expr:l ASSIGN expr:r
-			{:
-				RESULT = new Expression("=", l, r);
-			:}
-		;
+		  boolean_expr: b {: RESULT = b; :};
 	
 	
