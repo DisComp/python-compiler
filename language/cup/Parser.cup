@@ -97,37 +97,36 @@ precedence left NOT_BIT;
 precedence left EXP;
 precedence left ASSIGN;
 precedence left TAB;
-precedence left IF; 
+precedence left IF;
+precedence left LINE_TERMINATOR; 
 
 start with instrs;
 
 /* Instructions section */
 
-instrs ::=    instrs instr : i {: RESULT = i ; :}   
+instrs ::=    instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
 			| instr: i {: RESULT = i; :};
 
 
-
-indent_instrs ::=  indent_instrs TAB instr: i {: RESULT = i; :}
+indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: RESULT = i; :}
 	  			|  TAB instr: i {: RESULT = i; :};
 				 
 instr ::= expr: exp {: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
-		|function_block: f {: RESULT = f ; :}
-		| LINE_TERMINATOR;
+		|function_block: f {: RESULT = f ; :};
 
 //parameters ::= 
 function_block ::= DEF ID:funct_name LPAREN RPAREN COLON {: RESULT = FunctionControl.create(funct_name); :};
 
 
-stmt ::=  if_block: stmt {: RESULT = stmt; :}
-		| while_block: stmt {: RESULT = stmt; :};		 
+stmt ::=  if_block: s {: RESULT = s; :}
+		| while_block: s {: RESULT = s; :};		 
 
 /* If block */
-if_block ::= IF expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
+if_block ::= IF expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
 
 /* While block */
-while_block ::= WHILE expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
+while_block ::= WHILE expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
 
 
 
