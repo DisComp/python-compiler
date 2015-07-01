@@ -1,7 +1,9 @@
 package com.language.model.expression;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class LiteralExpression extends Expression {
@@ -14,6 +16,7 @@ public class LiteralExpression extends Expression {
 	public static final String LONG_INT = "LongInt";
 	public static final String STRING = "String";
 	public static final String LIST = "List";
+	public static final String ASSIGN = "Assign";
 	
 	public LiteralExpression() {
 		super();
@@ -61,26 +64,36 @@ public class LiteralExpression extends Expression {
 		return new Expression(STRING, stringValue, null, null);
 	}
 	
+	public static Expression createAssignment(String identifier, Object value) {
+		Map<String, Object> assignValue = new HashMap<String, Object>();
+		assignValue.put(identifier, value);
+		return new LiteralExpression(ASSIGN, assignValue, null, null);
+	}
+	
 	public static Expression createList(Object value) {		
-				
+		/*
+		 	This method builds a list as a tree, where the next item
+		 	of the list is on the right side, producing a right-balanced
+		 	tree containing all list element objects
+		*/
 		List<Object> listValue = new ArrayList<Object>();
 		Expression listElement = (Expression)value;
 		
-		if(listElement.getLeft() != null){
+		if(listElement.getRight() != null){
 			// One element on the list
-			Object element = ((Expression)listElement.getRight()).getValue();
-			listValue.add(0, element); 
-			listElement = (Expression)listElement.getLeft();
+			Object element = ((Expression)listElement.getLeft()).getValue();
+			listValue.add(element); 
+			listElement = (Expression)listElement.getRight();
 			
 			// Parse tree and add leaf values
-			while(listElement.getLeft() != null){
-				element = ((Expression)listElement.getRight()).getValue();
-				listValue.add(0, element);
-				listElement = (Expression)listElement.getLeft();
+			while(listElement.getRight() != null){
+				element = ((Expression)listElement.getLeft()).getValue();
+				listValue.add(element);
+				listElement = (Expression)listElement.getRight();
 			}
 			// Last leaf contains last value
 			element = listElement.getValue();
-			listValue.add(0, element);						
+			listValue.add(element);						
 		}
 		return new Expression(LIST, listValue, null, null);
 	}
