@@ -37,7 +37,7 @@ import com.language.model.expression.*;
 %eofval}
 
 LineTerminator = \r|\n|\r\n
-WhiteSpace     = {LineTerminator} | [ \f]
+WhiteSpace     = [ \f]
 
 Identifier = [:jletter:][:jletterdigit:]* 
 
@@ -49,6 +49,9 @@ IntegerLiteral =   0 | [1-9][0-9]*
 %%
 
 <YYINITIAL> {
+
+	/* Line Terminator */
+	{LineTerminator} 	{ return symbol(sym.LINE_TERMINATOR,yytext()); }
 
 	/* Numbers */
 	
@@ -174,7 +177,6 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	"None"				{ return symbol(sym.NONE, "none"); }
 	"type"	            { return symbol(sym.TYPE_FUNC, "type"); }
 	{Identifier}		{ return symbol(sym.ID, yytext()); }
-	{LineTerminator}	{ return symbol(sym.LINE_TERMINATOR, yytext()); }
 
 	{WhiteSpace}        { /* ignore */ }
 	
