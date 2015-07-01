@@ -120,8 +120,8 @@ instr ::= expr: exp {: RESULT = exp; :}
 function_block ::= DEF ID:funct_name LPAREN RPAREN COLON {: RESULT = FunctionControl.create(funct_name); :};
 
 
-stmt ::=  if_block: stmt {: RESULT = stmt; :}
-		| while_block: stmt {: RESULT = stmt; :};		 
+stmt ::=  if_block: s {: RESULT = s; :}
+		| while_block: s {: RESULT = s; :};		 
 
 /* If block */
 if_block ::= IF expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
