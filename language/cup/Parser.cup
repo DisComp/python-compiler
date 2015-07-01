@@ -1,6 +1,7 @@
 package com.language.parser;
 
 import java.util.*;
+import java.util.ArrayList;
 import java_cup.runtime.*;
 import com.language.model.expression.*;
 import com.language.exceptions.*;
@@ -80,7 +81,8 @@ non terminal Expression list_expr;
 non terminal Expression element_list;
 non terminal Expression literal_expr;
 
-non terminal Expression parameters;
+non terminal List<Expression> parameters;
+non terminal Expression individual_parameter;
 
 
 precedence left OR;
@@ -117,15 +119,17 @@ instr ::= expr: exp {: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
 		| var_declaration_expr: v {: RESULT = v; :};
 
-//parameters ::= 
-function_block ::=	DEF ID:funct_name
+stmt ::=  if_block: s {: RESULT = s; :}
+		| while_block: s {: RESULT = s; :};		 
+
+function_block ::=	DEF ID:funct_name 
 					LPAREN RPAREN 
 					COLON LINE_TERMINATOR 
 					indent_instrs:iis
 					{: RESULT = FunctionControl.create(funct_name,iis); :};
+				
 
-stmt ::=  if_block: s {: RESULT = s; :}
-		| while_block: s {: RESULT = s; :};		 
+//individual_parameter::= ID:id {: RESULT = id; : };
 
 /* If block */
 if_block ::= IF expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
