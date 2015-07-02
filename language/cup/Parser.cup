@@ -1,6 +1,7 @@
 package com.language.parser;
 
 import java.util.*;
+import java.util.ArrayList;
 import java_cup.runtime.*;
 import com.language.model.expression.*;
 import com.language.exceptions.*;
@@ -83,7 +84,8 @@ non terminal Expression element_dictionary;
 non terminal Expression atom_element_dictionary;
 non terminal Expression literal_expr;
 
-non terminal Expression parameters;
+non terminal List<Expression> parameters;
+non terminal Expression individual_parameter;
 
 
 precedence left OR;
@@ -100,39 +102,43 @@ precedence left NOT_BIT;
 precedence left EXP;
 precedence left ASSIGN;
 precedence left TAB;
-precedence left IF; 
+precedence left IF;
+precedence left LINE_TERMINATOR; 
 
 start with instrs;
 
 /* Instructions section */
 
-instrs ::=    instrs instr : i {: RESULT = i ; :}   
-			| instr: i {: RESULT = i; :};
+instrs ::=    instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
+			| instr: i {: RESULT = i; :}
+			| function_block: f {: RESULT = f ; :};
+			
 
 
-
-indent_instrs ::=  indent_instrs TAB instr: i {: RESULT = i; :}
+indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(iis);RESULT = i; :}
 	  			|  TAB instr: i {: RESULT = i; :};
 				 
 instr ::= expr: exp {: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
-		| function_block: f {: RESULT = f ; :}
-		| var_declaration_expr: v {: RESULT = v; :}
-		| LINE_TERMINATOR;
-
-//parameters ::= 
-function_block ::= DEF ID:funct_name LPAREN RPAREN COLON {: RESULT = FunctionControl.create(funct_name); :};
-
-
+		| var_declaration_expr: v {: RESULT = v; :};
 
 stmt ::=  if_block: s {: RESULT = s; :}
 		| while_block: s {: RESULT = s; :};		 
 
+function_block ::=	DEF ID:funct_name 
+					LPAREN RPAREN 
+					COLON LINE_TERMINATOR 
+					indent_instrs:iis
+					{: RESULT = FunctionControl.create(funct_name,iis); :};
+				
+
+//individual_parameter::= ID:id {: RESULT = id; : };
+
 /* If block */
-if_block ::= IF expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
+if_block ::= IF expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
 
 /* While block */
-while_block ::= WHILE expr COLON indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
+while_block ::= WHILE expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
 
 
 var_declaration_expr ::= ID:id ASSIGN literal_expr:le {: RESULT = LiteralExpression.createAssignment(id, le); :};

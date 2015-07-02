@@ -39,6 +39,7 @@ local.properties
 .texlipse
 
 language/java/
+src/com/language/Tester.java
 src/com/language/parser/Parser.java
 src/com/language/parser/Scanner.java
 src/com/language/parser/Scanner.java~

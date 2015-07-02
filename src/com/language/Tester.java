@@ -14,6 +14,7 @@ public class Tester {
 		BufferedReader br = new BufferedReader(new FileReader("tests/TestList.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
+        
         while (line != null) {         
 			 sb.append(line);
 			 line = br.readLine();
