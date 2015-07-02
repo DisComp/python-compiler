@@ -193,8 +193,9 @@ public class LiteralExpression extends Expression {
 			} else {
 				element = ((Expression)listElement.getLeft()).getValue();
 			}
-			listValue.add(element);						
-		} else {
+			listValue.add(element);		
+			
+		} else if(listElement.getLeft() != null){			
 			Object element = ((Expression)listElement.getLeft()).getValue();
 			listValue.add(element);
 		}
