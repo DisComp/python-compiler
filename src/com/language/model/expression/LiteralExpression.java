@@ -16,11 +16,23 @@ public class LiteralExpression extends Expression {
 	public static final String LONG_INT = "LongInt";
 	public static final String STRING = "String";
 	public static final String LIST = "List";
+	public static final String DICTIONARY = "Dictionary";
 	public static final String ASSIGN = "Assign";
+	
+	private Object variableValue;
+
+	public Object getVariableValue() {
+		return variableValue;
+	}
+
+	public void setVariableValue(Object variableValue) {
+		this.variableValue = variableValue;
+	}
 	
 	public LiteralExpression() {
 		super();
 	}
+	
 	
 	public LiteralExpression(String type, LiteralExpression left, LiteralExpression right) {
 		super(type, left, right);
@@ -65,9 +77,11 @@ public class LiteralExpression extends Expression {
 	}
 	
 	public static Expression createAssignment(String identifier, Object value) {
-		Map<String, Object> assignValue = new HashMap<String, Object>();
-		assignValue.put(identifier, value);
-		return new LiteralExpression(ASSIGN, assignValue, null, null);
+		//Map<String, Object> assignValue = new HashMap<String, Object>();
+		//assignValue.put(identifier, value);
+		LiteralExpression le = new LiteralExpression(ASSIGN, identifier, null, null);
+		le.setVariableValue(value);
+		return le;
 	}
 	
 	public static Expression createList(Object value) {		
@@ -100,5 +114,54 @@ public class LiteralExpression extends Expression {
 	
 	public static Expression createListElement(Expression left, Expression right){
 		return new Expression(LIST, left, right); //type, left, right
+	}
+	
+	public static Expression createDictionary(Object value) {		
+		/*
+		 	This method builds a dictionary as a tree, where the next key value pair
+		 	of the dictionary is on the right side, producing a right-balanced
+		 	tree containing all dictionary element objects
+		*/
+		Map<String, String> dictionaryValue = new HashMap<String, String>();
+		Expression dictionaryElement = (Expression)value;
+		
+		
+		if(dictionaryElement.getRight() != null){
+			// One element on the list
+			Object element = ((Expression)dictionaryElement.getLeft()).getValue();
+			Map<String, String> mapElement = (Map<String, String>)element;
+			
+			dictionaryValue.putAll(mapElement); 
+			dictionaryElement = (Expression)dictionaryElement.getRight();
+			
+			// Parse tree and add leaf values
+			while(dictionaryElement.getRight() != null){
+				element = ((Expression)dictionaryElement.getLeft()).getValue();
+				mapElement = (Map<String, String>)element;
+				
+				dictionaryValue.putAll(mapElement);
+				dictionaryElement = (Expression)dictionaryElement.getRight();
+			}
+			// Last leaf contains last value
+			if(dictionaryElement.getValue() != null){
+				element = dictionaryElement.getValue();
+			} else {
+				element = ((Expression)dictionaryElement.getLeft()).getValue();
+			}
+			mapElement = (Map<String, String>)element;
+			
+			dictionaryValue.putAll(mapElement);					
+		}
+		return new Expression(DICTIONARY, dictionaryValue, null, null);
+	}
+	
+	public static Expression createDictionaryElement(Expression left, Expression right){
+		return new Expression(DICTIONARY, left, right); //type, left, right
+	}
+	
+	public static Expression createAtomDictionaryElement(String key, String value){
+		Map<String, String> dictionaryKeyValue= new HashMap<String, String>();
+		dictionaryKeyValue.put(key, value);
+		return new Expression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
 }

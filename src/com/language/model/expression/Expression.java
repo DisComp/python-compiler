@@ -71,6 +71,11 @@ public class Expression {
 		String tab = "	";
 		
 		sb.append(this.value);
+		if(this.type == "Assign"){
+			LiteralExpression le = (LiteralExpression)this;
+			sb.append(" contains: ");
+			sb.append(le.getVariableValue());
+		}
 		sb.append("\n");
 		if(this.left != null){
 			Expression exprL = this.left;
