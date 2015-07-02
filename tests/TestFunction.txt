@@ -1,2 +1,3 @@
-def mifuncion():
+def fun():
+	true
 	true

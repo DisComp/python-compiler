@@ -113,13 +113,12 @@ precedence left LINE_TERMINATOR;
 start with instrucciones;
 
 /* Instructions section */
-instrucciones::= 	instr: i {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
+instrucciones::= 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
 
-				| 	instr: i LINE_TERMINATOR instrucciones: iss {: 	ScopesController.getInstance().finDeInstruccion();
-																	i.setLeft(iss);
-																	RESULT = i; :}
+				| 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}
+					instrucciones: iss {: i.setLeft(iss);RESULT = i; :}
 																	
-				|	TAB instrucciones: iss {: ScopesController.getInstance().consumirTab(); :}  
+				|	TAB instrucciones: iss {: ScopesController.getInstance().consumirTab(); RESULT = iss;:}  
 
 				|function_block: f {: RESULT = f ; :};
 			
@@ -133,10 +132,9 @@ instrucciones::= 	instr: i {:ScopesController.getInstance().finDeInstruccion(); 
 indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(iis);RESULT = i; :}
 	  			|  TAB instr: i LINE_TERMINATOR {: RESULT = i; :};*/
 				 
-instr ::= expr: exp LINE_TERMINATOR{: RESULT = exp; :}
+instr ::= expr: exp {: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
-		| var_declaration_expr: v  LINE_TERMINATOR{: RESULT = v; :}
-		;
+		| var_declaration_expr: v {: RESULT = v; :};
 
 stmt ::=  if_block: s {: RESULT = s; :}
 		| while_block: s {: RESULT = s; :};		 
@@ -151,7 +149,7 @@ function_block ::=	DEF ID: funct_name
 //individual_parameter::= ID:id {: RESULT = id; : };
 
 /* If block */
-if_block ::= IF expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
+if_block ::= IF expr COLON LINE_TERMINATOR instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
 
 /* While block */
 while_block ::= WHILE expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
