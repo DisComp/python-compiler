@@ -82,6 +82,9 @@ non terminal Expression element_list;
 non terminal Expression dictionary_expr;
 non terminal Expression element_dictionary;
 non terminal Expression atom_element_dictionary;
+non terminal Expression tuple_expr;
+non terminal Expression element_tuple;
+non terminal Expression atom_element_tuple;
 non terminal Expression literal_expr;
 
 non terminal List<Expression> parameters;
@@ -192,6 +195,16 @@ element_dictionary ::= atom_element_dictionary:atd element_dictionary:ed {: RESU
 
 atom_element_dictionary ::= STRING:key COLON STRING:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
 						|   STRING:key COLON STRING:val {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
+
+
+tuple_expr ::= LPAREN element_tuple:et RPAREN {: RESULT = et; :}
+			|  LPAREN RPAREN {: RESULT = LiteralExpression.createTupleElement(null, null); :};
+    		
+element_tuple ::= literal_expr:le atom_element_tuple:aet {: RESULT = LiteralExpression.createTupleElement(le, aet); :};
+
+atom_element_tuple ::= COMMA literal_expr: le atom_element_tuple: aet {: RESULT = LiteralExpression.createTupleElement(le, aet); :}
+					|  COMMA literal_expr: le {: RESULT = le; :}
+					|  COMMA;
              
 literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}
 				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
@@ -203,7 +216,8 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| STRING:   s  {: RESULT = LiteralExpression.createString(s); :}
 				| parenthesized_expr: p {: RESULT = p; :}
 				| list_expr: l {: RESULT = LiteralExpression.createList(l); :}
-				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :};				
+				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :}
+				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :};				
 
 expr  ::= 
 		  boolean_expr: b {: RESULT = b; :};

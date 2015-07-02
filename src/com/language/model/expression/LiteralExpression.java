@@ -17,6 +17,7 @@ public class LiteralExpression extends Expression {
 	public static final String STRING = "String";
 	public static final String LIST = "List";
 	public static final String DICTIONARY = "Dictionary";
+	public static final String TUPLE = "Tuple";
 	public static final String ASSIGN = "Assign";
 	
 	private Object variableValue;
@@ -164,4 +165,44 @@ public class LiteralExpression extends Expression {
 		dictionaryKeyValue.put(key, value);
 		return new Expression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
+	
+	public static Expression createTuple(Object value) {		
+		/*
+		 	This method builds a tuple as a tree, where the next item
+		 	of the list is on the right side, producing a right-balanced
+		 	tree containing all tuple element objects
+		*/
+		List<Object> listValue = new ArrayList<Object>();
+		Expression listElement = (Expression)value;
+		
+		if(listElement.getRight() != null){
+			// One element on the list
+			Object element = ((Expression)listElement.getLeft()).getValue();
+			listValue.add(element); 
+			listElement = (Expression)listElement.getRight();
+			
+			// Parse tree and add leaf values
+			while(listElement.getRight() != null){
+				element = ((Expression)listElement.getLeft()).getValue();
+				listValue.add(element);
+				listElement = (Expression)listElement.getRight();
+			}
+			// Last leaf contains last value
+			if(listElement.getValue() != null){
+				element = listElement.getValue();
+			} else {
+				element = ((Expression)listElement.getLeft()).getValue();
+			}
+			listValue.add(element);						
+		} else {
+			Object element = ((Expression)listElement.getLeft()).getValue();
+			listValue.add(element);
+		}
+		return new Expression(TUPLE, listValue, null, null);
+	}
+	
+	public static Expression createTupleElement(Expression left, Expression right){
+		return new Expression(TUPLE, left, right); //type, left, right
+	}
+	
 }
