@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java_cup.runtime.*;
 import com.language.model.expression.*;
 import com.language.exceptions.*;
+import com.language.controllers.*;
 
 /* Numbers */
 terminal String INTEGER, FLOAT, LONG_INT;
@@ -63,6 +64,7 @@ terminal String LINE_TERMINATOR;
 
 /* NON TERMINALS */
 non terminal Expression expr;
+non terminal Expression instrucciones;
 non terminal Expression instrs;
 non terminal Expression instr;
 non terminal Expression function_block;
@@ -108,30 +110,41 @@ precedence left TAB;
 precedence left IF;
 precedence left LINE_TERMINATOR; 
 
-start with instrs;
+start with instrucciones;
 
 /* Instructions section */
+instrucciones::= 	instr: i {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
 
-instrs ::=    instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
-			| instr: i {: RESULT = i; :}
-			| function_block: f {: RESULT = f ; :};
+				| 	instr: i LINE_TERMINATOR instrucciones: iss {: 	ScopesController.getInstance().finDeInstruccion();
+																	i.setLeft(iss);
+																	RESULT = i; :}
+																	
+				|	TAB instrucciones: iss {: ScopesController.getInstance().consumirTab(); :}  
+
+				|function_block: f {: RESULT = f ; :};
+			
+			
+			
+/*instrs ::=    instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
+			| instr: i {: RESULT = i; :};
 			
 
 
 indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(iis);RESULT = i; :}
-	  			|  TAB instr: i {: RESULT = i; :};
+	  			|  TAB instr: i LINE_TERMINATOR {: RESULT = i; :};*/
 				 
-instr ::= expr: exp {: RESULT = exp; :}
+instr ::= expr: exp LINE_TERMINATOR{: RESULT = exp; :}
 		| stmt: s 	{: RESULT = s ; :}
-		| var_declaration_expr: v {: RESULT = v; :};
+		| var_declaration_expr: v  LINE_TERMINATOR{: RESULT = v; :}
+		;
 
 stmt ::=  if_block: s {: RESULT = s; :}
 		| while_block: s {: RESULT = s; :};		 
 
-function_block ::=	DEF ID:funct_name 
+function_block ::=	DEF ID: funct_name 
 					LPAREN RPAREN 
-					COLON LINE_TERMINATOR 
-					indent_instrs:iis
+					COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(funct_name); :}
+					instrucciones:iis
 					{: RESULT = FunctionControl.create(funct_name,iis); :};
 				
 

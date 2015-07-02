@@ -86,7 +86,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	"\\" 						{ return symbol(sym.ESCAPE, "\\"); }
 																/*Three Double quotes*/
 																/*Three Single quotes*/
-	"\t"				{ return symbol(sym.TAB, "\t"); }
+	"\t"				{ return symbol(sym.TAB, "\t" ); }
 	
 	
 	/* Boolean */
