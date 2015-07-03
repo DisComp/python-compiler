@@ -88,9 +88,8 @@ non terminal Expression tuple_expr;
 non terminal Expression element_tuple;
 non terminal Expression atom_element_tuple;
 non terminal Expression literal_expr;
-
-non terminal List<Expression> parameters;
-non terminal Expression individual_parameter;
+non terminal Expression individual_parameters;
+non terminal Expression parameters;
 
 
 precedence left OR;
@@ -138,9 +137,18 @@ instr ::= expr: exp {: RESULT = exp; :}
 stmt ::=  if_block: s {: RESULT = s; :}
 		| while_block: s {: RESULT = s; :};		 
 
-function_block ::=	DEF ID: funct_name 
-					LPAREN RPAREN 
-					COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(funct_name); :}
+parameters ::= //sin parámetros
+			|individual_parameters;//con al menos un parámetro
+			
+individual_parameters ::=ID: id {: ScopesController.getInstance().addFunctionParameter(id); /*RESULT = LiteralExpression.createIdentifier(id); */:}
+						| ID: id COMMA {: ScopesController.getInstance().addFunctionParameter(id); :} individual_parameters/*: p 
+			{: 	Expression valorRetorno =  LiteralExpression.createIdentifier(id);
+				valorRetorno.setRight(p);
+				RESULT = valorRetorno :}*/ ;		
+	
+function_block ::=	DEF ID: funct_name {:ScopesController.getInstance().openScope(funct_name); :}
+					LPAREN parameters RPAREN 
+					COLON LINE_TERMINATOR 
 					instrucciones:iis
 					{: RESULT = FunctionControl.create(funct_name,iis); :};
 				

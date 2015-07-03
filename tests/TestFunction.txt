@@ -1,4 +1,4 @@
-def fun():
+def fun(a,b,c,d,e,f):
 	a = 1
 	2
 	3
@@ -12,12 +12,12 @@ def fun():
 			4
 			2
 		3
-		def fun():
+		def fun(g,h,i,j):
 			4
 			2
 			def fun():
 				4
 				2
-def fun1():
+def fun1(k):
 	6
 3

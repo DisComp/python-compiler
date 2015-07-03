@@ -59,4 +59,8 @@ public class ScopesController {
 			
 		
 	}
+	
+	public void addFunctionParameter(String par){
+		
+	}
 }
