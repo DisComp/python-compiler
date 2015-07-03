@@ -1,5 +1,7 @@
 package com.language.controllers;
 import java.util.Stack;
+
+import com.language.exceptions.ParsingException;
 public class ScopesController {
 	
 	private static ScopesController instance = null;	
@@ -24,7 +26,7 @@ public class ScopesController {
     }
 	
 	public void openScope(String scope/*se puede cambir el tipo*/){
-		tabsEsperados++;
+		tabsEsperados = tabsContados+1; //el open scope puede estar cerrando otros scopes
 		tabsContados = 0;
 		scopes.push(new Scope(scope));
 		if(logs)
@@ -36,16 +38,16 @@ public class ScopesController {
 	//}
 	
 	public void finDeInstruccion(){
-		/*if(tabsContados==tabsEsperados-1){//se cierra el scope
-			tabsEsperados--;
-		}
-		else*/
 		if(logs)
 			System.out.println("lei instr");
 		
-		if (tabsEsperados>tabsContados){
-			System.out.println("Hay "+tabsContados+" tab y se esperaban: "+tabsEsperados);
+		if (tabsContados>tabsEsperados){
+			throw new ParsingException("Hay "+tabsContados+" tab y se esperaban: "+tabsEsperados);
 		}
+		else {//si tabsContados<tabsEsperados se cierra al menos un scope, sino sigo en el mismo scope
+			tabsEsperados = tabsContados;
+		}
+		
 		tabsContados = 0;
 	}
 	
@@ -53,8 +55,8 @@ public class ScopesController {
 		tabsContados++;
 		if(logs)
 			System.out.println("cosnumo tab");
-		if (tabsEsperados<tabsContados){
-			System.out.println("Hay "+tabsContados+" tab y se esperaban: "+tabsEsperados);
-		}
+		//if (tabsContados>tabsEsperados)//se que se pasó de tabs, pero tiro el error al leer la sentencia
+			
+		
 	}
 }

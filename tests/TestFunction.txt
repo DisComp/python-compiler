@@ -8,8 +8,15 @@ def fun():
 		6
 		7
 		8
-	def fun():
-	5
+		def fun():
+			4
+			2
+		3
+		def fun():
+			4
+			2
+			def fun():
+				4
+				2
+def fun1():
 	6
-	7
-	8
