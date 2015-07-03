@@ -115,10 +115,9 @@ start with instrucciones;
 /* Instructions section */
 instrucciones::= 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
 
-				| 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}
-					instrucciones: iss {: i.setLeft(iss);RESULT = i; :}
+				| 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}instrucciones: iss {: i.setLeft(iss);RESULT = i;:}
 																	
-				|	TAB instrucciones: iss {: ScopesController.getInstance().consumirTab(); RESULT = iss;:}  
+				|	TAB  {:ScopesController.getInstance().consumirTab();:} instrucciones: iss {: RESULT = iss; :}  
 
 				|function_block: f {: RESULT = f ; :};
 			

@@ -20,11 +20,12 @@ public class FunctionControl extends Expression {
 	
 
 	public String toString(){
-		StringBuffer sb = new StringBuffer();	
+		return "funcion parseada";
+		/*StringBuffer sb = new StringBuffer();	
 		sb.append("def ");
 		sb.append(this.func_name);
 		sb.append("():\n\t");
-		return sb.append(super.toString()).toString();
+		return sb.append(super.toString()).toString();*/
 	}
 	
 

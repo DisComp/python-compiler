@@ -1,3 +1,15 @@
 def fun():
-	true
-	true
+	1
+	2
+	3
+	4
+	def fun():
+		5
+		6
+		7
+		8
+	def fun():
+	5
+	6
+	7
+	8
