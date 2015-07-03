@@ -152,7 +152,7 @@ function_block ::=	DEF ID: funct_name
 if_block ::= IF expr COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
 
 /* While block */
-while_block ::= WHILE expr COLON LINE_TERMINATOR indent_instrs: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
+while_block ::= WHILE expr COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
 
 
 var_declaration_expr ::= ID:id ASSIGN literal_expr:le {: RESULT = LiteralExpression.createAssignment(id, le); :};
