@@ -21,10 +21,15 @@ public class ExpressionParser {
 			Expression exp = (Expression) topsym.value;
 			return exp;
 
-		} catch (Throwable ex) {
-			System.out.println("ERROR DE COMPILACIÓN: "+ex.getMessage());
+		
+		} catch (ParsingException ex) {
+			System.out.println("ERROR DE COMPILACIÓN (ERROR GENERADO POR NUESTRO COMPILADOR): "+ex.getMessage());
 			return null;
+		} catch (Exception ex) {
+			throw new ParsingException("Error parsing source: " + ex.getMessage());
 		}
+	
+		
 
 	}
 }

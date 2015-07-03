@@ -20,3 +20,4 @@ def fun():
 				2
 def fun1():
 	6
+3
