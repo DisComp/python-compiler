@@ -74,6 +74,9 @@ non terminal Expression indent_instrs;
 non terminal Expression if_block;
 non terminal Expression while_block;
 
+non terminal Expression predefined_dictionary_functions;
+non terminal Expression predefined_functions_expr;
+
 non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
 non terminal Expression arithmetical_expr;
@@ -148,12 +151,13 @@ assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpr
 left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :};
 				/*| other things that can be assigned e.g lists, dicts*/  
 
-predefined_functions_expr ::= dictionary_expr: de POINT predefined_dictionary_functions: pde {: RESULT =  PredefinedFunctionsExpression.createDictionaryFunction(de, pde) :}; 
+predefined_functions_expr ::=  ID: id POINT predefined_dictionary_functions: pde {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction( LiteralExpression.createIdentifier(id), pde); :};
+							//| dictionary_expr: de POINT predefined_dictionary_functions: pde {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction(de, pde); :};
 
-predefined_dictionary_functions ::=   HAS_KEY_FUNC LPAREN String: s RPAREN {: RESULT = PredefinedFunctionsExpression.createDictionaryFunctionElement(PredefinedFunctionosExpression.HAS_KEY_FUNC, s) :}
-									| ITEMS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionsExpression.createDictionaryFunctionElement(PredefinedFunctionosExpression.ITEMS_FUNC, null) :}
-									| KEYS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionsExpression.createDictionaryFunctionElement(PredefinedFunctionosExpression.KEYS_FUNC, null) :}
-									| POP LPAREN String: s RPAREN {: RESULT = PredefinedFunctionsExpression.createDictionaryFunctionElement(PredefinedFunctionosExpression.POP, s) :};
+predefined_dictionary_functions ::=   HAS_KEY_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.HAS_KEY_FUNC,  LiteralExpression.createString(s)); :}
+									| ITEMS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.ITEMS_FUNC, null); :}
+									| KEYS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.KEYS_FUNC, null); :}
+									| POP_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.POP_FUNC,  LiteralExpression.createString(s)); :};
 
 /* The precedence starts with boolean_expr */
 boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}
@@ -229,5 +233,5 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :};				
 
 expr  ::= boolean_expr: b {: RESULT = b; :}
-		| predefined_functions_expr: pfe {: RESULT = pfe :};  
+		| predefined_functions_expr: pfe {: RESULT = pfe; :};  
 	
