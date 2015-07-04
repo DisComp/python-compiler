@@ -161,7 +161,6 @@ function_block ::=	DEF ID: funct_name {:ScopesController.getInstance().openScope
 //individual_parameter::= ID:id {: RESULT = id; : };
 
 /* If block */
-
 if_block ::= IF expr COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", iis); :};
 
 /* While block */
