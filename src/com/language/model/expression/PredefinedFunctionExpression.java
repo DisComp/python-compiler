@@ -1,5 +1,8 @@
 package com.language.model.expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PredefinedFunctionExpression extends Expression{
 	
@@ -30,21 +33,24 @@ public class PredefinedFunctionExpression extends Expression{
 	public static final String PRINT_FUNC = "PrintFunc";
 	
 	/* Type conversion */
-	public static final String  INT_FUNC = "IntFunc"; 
-	public static final String  FLOAT_FUNC = "FloatFunc";
-	public static final String  STR_FUNC = "StrFunc";
-	public static final String  TUPLE_FUNC = "TupleFunc";
-	public static final String  LIST_FUNC = "ListFunc";
+	public static final String INT_FUNC = "IntFunc"; 
+	public static final String FLOAT_FUNC = "FloatFunc";
+	public static final String STR_FUNC = "StrFunc";
+	public static final String TUPLE_FUNC = "TupleFunc";
+	public static final String LIST_FUNC = "ListFunc";
 	public static final String DICT_FUNC= "DictFunc";
 
 	/* Long */
-	public static final String  LONG_FUNC = "LongFunc";
+	public static final String LONG_FUNC = "LongFunc";
 
 	/* String */
-	public static final String  STRING_FUNC = "StringFunc";
+	public static final String STRING_FUNC = "StringFunc";
 		
 	/* Others */
-	public static final String  TYPE_FUNC = "TypeFunc"; 
+	public static final String TYPE_FUNC = "TypeFunc"; 
+	
+	/* For distinguish parameters*/
+	public static final String ARGUMENTS_FUNC = "ArgumentsFunc";
 	
 	
 	public PredefinedFunctionExpression() {
@@ -67,5 +73,24 @@ public class PredefinedFunctionExpression extends Expression{
 	public static Expression createDictionaryFunctionElement(String type, Expression right) {
 		/* Save dictionary function parameters on the right (dictionary object will be on the left) */
 		return new PredefinedFunctionExpression(type, null, right);
-	} 
+	}
+	
+	public static Expression createStringFunction(Expression string_left, Expression expr) {
+		/*e.g: S.count(x) saves D on left and x on right */
+		return new PredefinedFunctionExpression(expr.getType(), string_left, expr);
+	}
+	
+	public static Expression createStringFunctionElement(String type, Expression right) {
+		/* Save string function parameters on the right (String object will be on the left) */
+		return new PredefinedFunctionExpression(type, null, right);
+	}
+	
+	public static Expression createStringFunctionElement(String type, Expression right_param_one, Expression right_param_two) {
+		/* 
+		 	Save string function parameters on the right (String object will be on the left)
+		 	This function receives two parameters, they're saved on an argument list 
+		*/
+		Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
+		return new PredefinedFunctionExpression(type, null, arguments);
+	}
 }
