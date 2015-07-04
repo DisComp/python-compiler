@@ -1,4 +1,6 @@
 package com.language.controllers;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import com.language.exceptions.ParsingException;
@@ -8,6 +10,7 @@ public class ScopesController {
 	private int tabsContados;
 	private int tabsEsperados;
 	private Stack<Scope> scopes;
+	private Map<String,Funcion> funciones;
 	
 	private boolean logs = false;
 	
@@ -15,6 +18,7 @@ public class ScopesController {
 		tabsContados = 0;
 		tabsEsperados = 0;
 		scopes = new Stack<Scope>();
+		funciones = new HashMap<String,Funcion>();
 		scopes.push(new Scope("main"));
     }
 	
@@ -44,8 +48,13 @@ public class ScopesController {
 		if (tabsContados>tabsEsperados){
 			throw new ParsingException("Hay "+tabsContados+" tab y se esperaban: "+tabsEsperados);
 		}
-		else {//si tabsContados<tabsEsperados se cierra al menos un scope, sino sigo en el mismo scope
-			tabsEsperados = tabsContados;
+		else {
+			//cierro todos los scopes segun la tabulacion
+			while(tabsEsperados != tabsContados){
+				tabsEsperados--;
+				scopes.pop();
+			}
+				
 		}
 		
 		tabsContados = 0;
