@@ -88,7 +88,26 @@ public class PredefinedFunctionExpression extends Expression{
 	public static Expression createStringFunctionElement(String type, Expression right_param_one, Expression right_param_two) {
 		/* 
 		 	Save string function parameters on the right (String object will be on the left)
-		 	This function receives two parameters, they're saved on an argument list 
+		 	This function receives two parameters, they're saved on an Expression 
+		*/
+		Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
+		return new PredefinedFunctionExpression(type, null, arguments);
+	}
+	
+	public static Expression createListFunction(Expression string_left, Expression expr) {
+		/*e.g: L.append(x) saves L on left and x on right */
+		return new PredefinedFunctionExpression(expr.getType(), string_left, expr);
+	}
+	
+	public static Expression createListFunctionElement(String type, Expression right) {
+		/* Save list function parameters on the right (List object will be on the left) */
+		return new PredefinedFunctionExpression(type, null, right);
+	}
+	
+	public static Expression createListFunctionElement(String type, Expression right_param_one, Expression right_param_two) {
+		/* 
+		 	Save list function parameters on the right (List object will be on the left)
+		 	This function receives two parameters, they're saved on an Expression 
 		*/
 		Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
 		return new PredefinedFunctionExpression(type, null, arguments);
