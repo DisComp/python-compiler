@@ -65,15 +65,20 @@ terminal String LINE_TERMINATOR;
 /* NON TERMINALS */
 non terminal Expression expr;
 non terminal Expression instrucciones;
-non terminal Expression instrs;
 non terminal Expression instr;
 non terminal Expression function_block;
 non terminal Expression stmt;
-non terminal Expression var_declaration_expr;
+non terminal Expression assignment_expr;
+non terminal Expression left_side_expr;
 non terminal Expression indent_block;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
 non terminal Expression while_block;
+
+non terminal Expression predefined_functions_expr;
+non terminal Expression predefined_dictionary_functions;
+non terminal Expression predefined_string_functions;
+non terminal Expression predefined_list_functions;
 
 non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
@@ -88,9 +93,9 @@ non terminal Expression tuple_expr;
 non terminal Expression element_tuple;
 non terminal Expression atom_element_tuple;
 non terminal Expression literal_expr;
-non terminal Expression individual_parameters;
-non terminal Expression parameters;
 
+non terminal Expression parameters;
+non terminal Expression individual_parameters;
 
 precedence left OR;
 precedence left AND;
@@ -108,21 +113,22 @@ precedence left ASSIGN;
 precedence left TAB;
 precedence left IF;
 precedence left LINE_TERMINATOR; 
+precedence left STRING;
 
 start with instrucciones;
 
 /* Instructions section */
-instrucciones::= 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
+instrucciones::=  instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
 
-				| 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}instrucciones: iss {: i.setLeft(iss);RESULT = i;:}
+				| instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}instrucciones: iss {: i.setLeft(iss);RESULT = i;:}
 																	
-				|	TAB  {:ScopesController.getInstance().consumirTab();:} instrucciones: iss {: RESULT = iss; :}  
+				| TAB  {:ScopesController.getInstance().consumirTab();:} instrucciones: iss {: RESULT = iss; :}  
 				| stmt: s 	{: RESULT = s ; :}
-				|function_block: f {: RESULT = f ; :};
+				| function_block: f {: RESULT = f ; :};
 			
 			
 			
-/*instrs ::=    instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
+/*instrs ::=  instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
 			| instr: i {: RESULT = i; :};
 			
 
@@ -130,9 +136,8 @@ instrucciones::= 	instr: i LINE_TERMINATOR {:ScopesController.getInstance().finD
 indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(iis);RESULT = i; :}
 	  			|  TAB instr: i LINE_TERMINATOR {: RESULT = i; :};*/
 				 
-instr ::= expr: exp {: RESULT = exp; :}
-		
-		| var_declaration_expr: v {: RESULT = v; :};
+instr ::= expr: exp {: RESULT = exp; :}		
+		| assignment_expr: v {: RESULT = v; :};
 
 stmt ::=  if_block: s {: RESULT = s; :}
 		| while_block: s {: RESULT = s; :};		 
@@ -163,9 +168,43 @@ if_block ::= IF expr COLON LINE_TERMINATOR {:ScopesController.getInstance().open
 while_block ::= WHILE expr COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE,"while",iis); :};
 
 
-var_declaration_expr ::= ID:id ASSIGN literal_expr:le {: RESULT = LiteralExpression.createAssignment(id, le); :};
+assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
+
+left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :};
+				/*| other things that can be assigned e.g lists, dicts*/  
+
+								/* We need to extract the variable value from the java code */
+predefined_functions_expr ::= ID: id POINT predefined_dictionary_functions: pdf {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction( LiteralExpression.createIdentifier(id), pdf); :}
+							| ID: id POINT predefined_string_functions: psf {: RESULT =  PredefinedFunctionExpression.createStringFunction(LiteralExpression.createIdentifier(id), psf); :}
+							| ID: id POINT predefined_list_functions: plf {: RESULT =  PredefinedFunctionExpression.createListFunction(LiteralExpression.createIdentifier(id), plf); :};
+
+predefined_dictionary_functions ::=   HAS_KEY_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.HAS_KEY_FUNC,  LiteralExpression.createString(s)); :}
+									| ITEMS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.ITEMS_FUNC, null); :}
+									| KEYS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.KEYS_FUNC, null); :}
+									| POP_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.POP_FUNC,  LiteralExpression.createString(s)); :}
+									| VALUES_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.VALUES_FUNC, null); :};
 
 
+predefined_string_functions ::= COUNT_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.COUNT_FUNC,  LiteralExpression.createString(s)); :}
+							|   FIND_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.FIND_FUNC, LiteralExpression.createString(s)); :}
+							|   FIND_FUNC LPAREN STRING: s COMMA INTEGER: i RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.FIND_FUNC, LiteralExpression.createString(s), LiteralExpression.createInteger(i)); :}
+							|   JOIN_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.JOIN_FUNC,  LiteralExpression.createString(s)); :}
+							|   SPLIT_FUNC LPAREN STRING: s RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.SPLIT_FUNC,  LiteralExpression.createString(s)); :}
+							|   REPLACE_FUNC LPAREN STRING: o COMMA STRING: n RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.REPLACE_FUNC,  LiteralExpression.createString(o), LiteralExpression.createString(n)); :}
+							|   LENGTH_FUNC LPAREN  RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.LENGTH_FUNC, null); :};
+
+
+predefined_list_functions ::= APPEND_FUNC LPAREN literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.APPEND_FUNC, le); :}
+							| COUNT_FUNC LPAREN literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.COUNT_FUNC, le); :}
+							| EXTEND_FUNC LPAREN list_expr: l RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.EXTEND_FUNC, l); :}
+							| INDEX_FUNC LPAREN literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le); :}
+							| INDEX_FUNC LPAREN literal_expr:le COMMA INTEGER: i RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le, LiteralExpression.createInteger(i)); :}
+							| INSERT_FUNC LPAREN INTEGER: i COMMA literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, LiteralExpression.createInteger(i), le ); :}
+							| POP_FUNC LPAREN INTEGER: i RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.POP_FUNC, LiteralExpression.createInteger(i)); :}
+							| SIZE_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.SIZE_FUNC, null); :};
+
+
+/* The precedence starts with boolean_expr */
 boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}
 				| boolean_expr: l AND boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.AND, "and", l, r); :}
 				| NOT boolean_expr: l {: RESULT = BooleanExpression.create(BooleanExpression.NOT, "not", l); :}
@@ -238,7 +277,6 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :}
 				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :};				
 
-expr  ::= 
-		  boolean_expr: b {: RESULT = b; :};
-	
+expr  ::= boolean_expr: b {: RESULT = b; :}
+		| predefined_functions_expr: pfe {: RESULT = pfe; :};  
 	

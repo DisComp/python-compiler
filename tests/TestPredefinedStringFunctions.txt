@@ -1,0 +1,7 @@
+a.count("sub")
+b.find("txt")
+c.find("txt", 2)
+d.join("sec")
+e.split("sep")
+f.replace("old", "new")
+g.length()

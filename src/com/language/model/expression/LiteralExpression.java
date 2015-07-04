@@ -77,11 +77,16 @@ public class LiteralExpression extends Expression {
 		return new Expression(STRING, stringValue, null, null);
 	}
 	
-	public static Expression createAssignment(String identifier, Object value) {
+	public static Expression createAssignment(Object assigned_expr, Object value) {
 		//Map<String, Object> assignValue = new HashMap<String, Object>();
 		//assignValue.put(identifier, value);
-		LiteralExpression le = new LiteralExpression(ASSIGN, identifier, null, null);
-		le.setVariableValue(value);
+		LiteralExpression le = null;
+		Expression expr = (Expression)assigned_expr;
+		if(expr.getType() == LiteralExpression.ID){
+			String identifier = (String)expr.getValue();
+			le = new LiteralExpression(ASSIGN, identifier, null, null);
+			le.setVariableValue(value);
+		}
 		return le;
 	}
 	

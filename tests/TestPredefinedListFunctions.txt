@@ -1,0 +1,8 @@
+a.append(4)
+b.count(True)
+c.extend(["txt", 2, False])
+d.index("txt")
+e.index("val", 4)
+f.insert(2, "new")
+g.pop(3)
+h.size()
