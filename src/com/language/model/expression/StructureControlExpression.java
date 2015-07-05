@@ -2,8 +2,10 @@ package com.language.model.expression;
 
 public class StructureControlExpression extends Expression {
 	
-	public static final String IF = "If";
+	public static final String IF = "if";
 	public static final String WHILE = "while";
+	
+	private Expression expr = null;
 	
 	public StructureControlExpression() {
 		super();
@@ -17,11 +19,16 @@ public class StructureControlExpression extends Expression {
 		super(type, left, right);
 	}
 	
-	public static Expression create(String type, Object value, Expression left, Expression right) {
-		return new StructureControlExpression(type, value, left, right);
+	// Adding a BooleanExpression to know which code should we return (for the getValue method) //
+	public static Expression create(String type, Object value,Expression e, Expression left, Expression right) {
+		StructureControlExpression sce = new StructureControlExpression(type, value, left, right);
+		sce.expr = e;
+		return sce;
 	}
 	
-	public static Expression create(String type, Object value, Expression left) {
-		return new StructureControlExpression(type, value, left, null);
+	public static Expression create(String type, Object value, Expression e, Expression left) {
+		StructureControlExpression sce = new StructureControlExpression(type, value, left, null);
+		sce.expr = e;
+		return sce;
 	}
 }

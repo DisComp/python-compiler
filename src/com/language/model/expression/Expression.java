@@ -42,7 +42,7 @@ public class Expression {
 		this.type = type;
 	}
 	
-	public Object getValue() {
+	public Object getValue() throws Exception {
 		return value;
 	}
 	
