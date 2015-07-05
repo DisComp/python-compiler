@@ -19,6 +19,8 @@ public class LiteralExpression extends Expression {
 	public static final String DICTIONARY = "Dictionary";
 	public static final String TUPLE = "Tuple";
 	public static final String ASSIGN = "Assign";
+	public static final String STRUCTURE_ACCESS = "StructureAccess";
+	public static final String STRUCTURE_ACCESS_ELEMENT = "StructureAccessElement";
 	
 	private Object variableValue;
 
@@ -35,11 +37,11 @@ public class LiteralExpression extends Expression {
 	}
 	
 	
-	public LiteralExpression(String type, LiteralExpression left, LiteralExpression right) {
+	public LiteralExpression(String type, Expression left, Expression right) {
 		super(type, left, right);
 	}
 	
-	public LiteralExpression(String type, Object value, LiteralExpression left, LiteralExpression right) {
+	public LiteralExpression(String type, Object value, Expression left, Expression right) {
 		super(type,value,left,right);
 	}
 	
@@ -63,18 +65,18 @@ public class LiteralExpression extends Expression {
 	
 	public static Expression createFloat(Object value) {
 		Float floatValue = new Float((String)value);
-		return new Expression(FLOAT, floatValue, null, null);
+		return new LiteralExpression(FLOAT, floatValue, null, null);
 	}
 	
 	public static Expression createLongInt(Object value) {
 		String longStrValue = ((String)value).substring(0, ((String)value).indexOf('L'));
 		Long longValue = new Long((String)longStrValue);
-		return new Expression(LONG_INT, longValue, null, null);
+		return new LiteralExpression(LONG_INT, longValue, null, null);
 	}
 	
 	public static Expression createString(Object value) {
 		String stringValue = new String((String)value);
-		return new Expression(STRING, stringValue, null, null);
+		return new LiteralExpression(STRING, stringValue, null, null);
 	}
 	
 	public static Expression createAssignment(Object assigned_expr, Object value) throws Exception {
@@ -85,6 +87,11 @@ public class LiteralExpression extends Expression {
 		if(expr.getType() == LiteralExpression.ID){
 			String identifier = (String)expr.getValue();
 			le = new LiteralExpression(ASSIGN, identifier, null, null);
+			le.setVariableValue(value);
+		} else if (expr.getType() == LiteralExpression.STRUCTURE_ACCESS){
+			Expression identifier = (Expression)expr.getValue();
+			Expression structureAccess = (Expression)expr.getLeft(); 
+			le = new LiteralExpression(ASSIGN, identifier, structureAccess, null);
 			le.setVariableValue(value);
 		}
 		return le;
@@ -115,11 +122,11 @@ public class LiteralExpression extends Expression {
 			element = listElement.getValue();
 			listValue.add(element);						
 		}
-		return new Expression(LIST, listValue, null, null);
+		return new LiteralExpression(LIST, listValue, null, null);
 	}
 	
 	public static Expression createListElement(Expression left, Expression right){
-		return new Expression(LIST, left, right); //type, left, right
+		return new LiteralExpression(LIST, left, right); //type, left, right
 	}
 	
 	public static Expression createDictionary(Object value) throws Exception {		
@@ -158,17 +165,17 @@ public class LiteralExpression extends Expression {
 			
 			dictionaryValue.putAll(mapElement);					
 		}
-		return new Expression(DICTIONARY, dictionaryValue, null, null);
+		return new LiteralExpression(DICTIONARY, dictionaryValue, null, null);
 	}
 	
 	public static Expression createDictionaryElement(Expression left, Expression right){
-		return new Expression(DICTIONARY, left, right); //type, left, right
+		return new LiteralExpression(DICTIONARY, left, right); //type, left, right
 	}
 	
 	public static Expression createAtomDictionaryElement(String key, String value){
 		Map<String, String> dictionaryKeyValue= new HashMap<String, String>();
 		dictionaryKeyValue.put(key, value);
-		return new Expression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
+		return new LiteralExpression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
 	
 	public static Expression createTuple(Object value) throws Exception {		
@@ -204,11 +211,38 @@ public class LiteralExpression extends Expression {
 			Object element = ((Expression)listElement.getLeft()).getValue();
 			listValue.add(element);
 		}
-		return new Expression(TUPLE, listValue, null, null);
+		return new LiteralExpression(TUPLE, listValue, null, null);
 	}
 	
 	public static Expression createTupleElement(Expression left, Expression right){
-		return new Expression(TUPLE, left, right); //type, left, right
+		return new LiteralExpression(TUPLE, left, right); //type, left, right
+	}
+	
+	public static Expression createStructureAccess(Expression id, Expression init, Expression end, Expression jump) {
+		//save the parameters as a hash map and insert as left to the structure access
+		Map<String, Object> accessElement = new HashMap<String, Object>();
+		accessElement.put("init", init);
+		accessElement.put("end", end);
+		accessElement.put("jump", jump);
+		LiteralExpression accessElementAtom = new LiteralExpression(STRUCTURE_ACCESS_ELEMENT, accessElement, null, null);
+		return new LiteralExpression(STRUCTURE_ACCESS, id, accessElementAtom, null);
+	}
+	
+	public static Expression createStructureAccess(Expression id, Expression init, Expression end) {
+		//save the parameters as a hash map and insert as left to the structure access
+		Map<String, Object> accessElement = new HashMap<String, Object>();
+		accessElement.put("init", init);
+		accessElement.put("end", end);
+		LiteralExpression accessElementAtom = new LiteralExpression(STRUCTURE_ACCESS_ELEMENT, accessElement, null, null);
+		return new Expression(STRUCTURE_ACCESS, id, accessElementAtom, null);
+	}
+	
+	public static Expression createStructureAccess(Expression id, Expression position) {
+		//save the parameters as a hash map and insert as left to the structure access
+		Map<String, Object> accessElement = new HashMap<String, Object>();
+		accessElement.put("position", position);
+		LiteralExpression accessElementAtom = new LiteralExpression(STRUCTURE_ACCESS_ELEMENT, accessElement, null, null);
+		return new Expression(STRUCTURE_ACCESS, id, accessElementAtom, null);
 	}
 	
 }

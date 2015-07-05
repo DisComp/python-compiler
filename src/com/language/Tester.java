@@ -11,7 +11,7 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException {
 				
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestPredefinedTypeConversionFunctions.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("tests/TestDeclaration.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
