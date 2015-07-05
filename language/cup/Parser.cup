@@ -63,6 +63,7 @@ terminal String ID;
 terminal String LINE_TERMINATOR;
 
 /* NON TERMINALS */
+non terminal Expression program;
 non terminal Expression expr;
 non terminal Expression instrucciones;
 non terminal Expression instr;
@@ -119,12 +120,32 @@ precedence left IF;
 precedence left LINE_TERMINATOR; 
 precedence left STRING;
 
-start with instrucciones;
+start with program;
+
+program ::= instrucciones: iss 
+			{:
+				InstructionsController ic = InstructionsController.getInstance();
+				ic.runProgram();
+				RESULT = iss;
+			:};
 
 /* Instructions section */
-instrucciones::=  instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
+instrucciones::=  instr: i LINE_TERMINATOR 
+					{:
+						ScopesController.getInstance().finDeInstruccion();
+						InstructionsController ic = InstructionsController.getInstance();
+						ic.addInstruction(i);
+						RESULT = i; 
+					:}
 
-				| instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}instrucciones: iss {: i.setLeft(iss);RESULT = i;:}
+				| instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:} instrucciones: iss 
+					{: 
+						InstructionsController ic = InstructionsController.getInstance();
+						ic.addInstruction(i);
+						
+						i.setLeft(iss);						
+						RESULT = i;
+					:}
 																	
 				| TAB  {:ScopesController.getInstance().consumirTab();:} instrucciones: iss {: RESULT = iss; :}  
 				| stmt: s 	{: RESULT = s ; :}
