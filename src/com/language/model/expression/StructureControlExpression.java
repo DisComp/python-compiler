@@ -4,6 +4,7 @@ public class StructureControlExpression extends Expression {
 	
 	public static final String IF = "if";
 	public static final String WHILE = "while";
+	public static final String FOR_IN = "for_in";
 	
 	private Expression expr = null;
 	

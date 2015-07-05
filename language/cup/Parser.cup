@@ -77,6 +77,9 @@ non terminal Expression indent_instrs;
 non terminal Expression if_block;
 non terminal Expression simple_if;
 non terminal Expression while_block;
+non terminal Expression for_in_block;
+non terminal Expression for_in_block_header;
+non terminal Expression for_in_block_body;
 
 non terminal Expression predefined_functions_expr;
 non terminal Expression predefined_dictionary_functions;
@@ -143,10 +146,12 @@ indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(i
 				 
 instr ::= expr: exp {: RESULT = exp; :}		
 		| assignment_expr: v {: RESULT = v; :}
-		| BREAK {: RESULT = null; :};
+		| BREAK {: RESULT = null; :}
+		| CONTINUE {: RESULT = null; :};
 
 stmt ::=  if_block: s {: RESULT = s; :}
-		| while_block: s {: RESULT = s; :};		 
+		| while_block: s {: RESULT = s; :}
+		| for_in_block: s {: RESULT = s; :};		 
 
 parameters ::= //sin parámetros
 			|individual_parameters;//con al menos un parámetro
@@ -175,6 +180,14 @@ simple_if ::= IF expr: e COLON LINE_TERMINATOR {:ScopesController.getInstance().
 /* While block */
 while_block ::= WHILE expr: e COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
 
+/*** For in block ***/
+for_in_block ::= for_in_block_header: fibh {:ScopesController.getInstance().openScope(StructureControlExpression.FOR_IN); :} for_in_block_body: fibb {: fibh.setRight(fibb); RESULT = fibh; :};
+
+for_in_block_header ::= FOR ID:elem IN list_expr:l {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN, "for_in",LiteralExpression.createIdentifier(elem), l); :}
+					  | FOR ID:elem IN ID:list_var {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN, "for_in",LiteralExpression.createIdentifier(elem), LiteralExpression.createIdentifier(list_var)); :};
+
+for_in_block_body 	::= COLON LINE_TERMINATOR instrucciones: iis {: RESULT = iis; :};
+/*** END for in ***/
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
 
