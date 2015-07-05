@@ -30,5 +30,4 @@ public class Tester {
 		System.out.println("Expresion obtenida: ");
 		System.out.println(expobj.toString());		
 	}
-	
 }

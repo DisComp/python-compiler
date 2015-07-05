@@ -36,4 +36,81 @@ public class BooleanExpression extends Expression {
 	public static Expression create(String type, Object value, Expression left) {
 		return new BooleanExpression(type, value, left, null);
 	}
+	
+	@Override
+	public Object getValue() throws Exception {
+		Object returnObject = null;
+		Object left 		= this.getLeft();
+		Object right 		= this.getRight();
+		
+		if(left != null || right != null)
+		{
+			returnObject = BooleanExpression.operation(this.getType(),left,right);
+		}
+		else
+		{
+			returnObject = super.getValue();
+		}
+		
+		return returnObject;
+	}
+	
+	public static Object operation(String type,Object l,Object r) throws Exception{
+		boolean obj;
+		
+		switch(type)
+		{
+			case BooleanExpression.EQUALS:
+			{
+				obj = (double)l == (double)r;
+				break;
+			}
+			case BooleanExpression.DISTINCT:
+			{
+				obj = (double)l != (double)r;
+				break;
+			}
+			case BooleanExpression.LESS:
+			{
+				obj = (double)l < (double)r;
+				break;
+			}
+			case BooleanExpression.GREATER:
+			{
+				obj = (double)l > (double)r;
+				break;
+			}
+			case BooleanExpression.LESS_EQUAL:
+			{
+				obj = (double)l <= (double)r;
+				break;
+			}
+			case BooleanExpression.GREATER_EQUAL:
+			{
+				obj = (double)l >= (double)r;
+				break;
+			}
+			case BooleanExpression.NOT:
+			{
+				obj = !((boolean)l);
+				break;
+			}
+			case BooleanExpression.AND:
+			{
+				obj = (boolean)l && (boolean)r;
+				break;
+			}
+			case BooleanExpression.OR:
+			{
+				obj = (boolean)l || (boolean)r;
+				break;
+			}
+			default:
+			{
+				throw new Exception("Unrecognized boolean operator");
+			}
+		}
+		
+		return obj;
+	}
 }

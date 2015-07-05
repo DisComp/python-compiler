@@ -34,4 +34,65 @@ public class BitwiseExpression extends Expression {
 	public static Expression create(String type, Object value, Expression left) {
 		return new BitwiseExpression(type, value, left, null);
 	}
+	
+	@Override
+	public Object getValue() throws Exception {
+		Object returnObject = null;
+		Object left 		= this.getLeft();
+		Object right 		= this.getRight();
+		
+		if(left != null || right != null)
+		{
+			returnObject = BitwiseExpression.operation(this.getType(),left,right);
+		}
+		else
+		{
+			returnObject = super.getValue();
+		}
+		
+		return returnObject;
+	}
+	
+	public static Object operation(String type,Object l, Object r) throws Exception {
+		int obj;
+		switch(type)
+		{
+			case BitwiseExpression.OR_BIT:
+			{
+				obj = (int)l | (int)r;
+				break;
+			}
+			case BitwiseExpression.AND_BIT:
+			{
+				obj = (int)l & (int)r;
+				break;
+			}
+			case BitwiseExpression.XOR_BIT:
+			{
+				obj = (int)l ^ (int)r;
+				break;
+			}
+			case BitwiseExpression.LSHIFT:
+			{
+				obj = (int)l << (int)r;
+				break;
+			}
+			case BitwiseExpression.RSHIFT:
+			{
+				obj = (int)l >> (int)r;
+				break;
+			}
+			case BitwiseExpression.NOT_BIT:
+			{
+				obj = ~((int)l);
+				break;
+			}
+			default:
+			{
+				throw new Exception("Unrecognized bit operator");
+			}
+		}
+		
+		return obj;
+	}
 }

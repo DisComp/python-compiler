@@ -77,7 +77,7 @@ public class LiteralExpression extends Expression {
 		return new Expression(STRING, stringValue, null, null);
 	}
 	
-	public static Expression createAssignment(Object assigned_expr, Object value) {
+	public static Expression createAssignment(Object assigned_expr, Object value) throws Exception {
 		//Map<String, Object> assignValue = new HashMap<String, Object>();
 		//assignValue.put(identifier, value);
 		LiteralExpression le = null;
@@ -90,7 +90,7 @@ public class LiteralExpression extends Expression {
 		return le;
 	}
 	
-	public static Expression createList(Object value) {		
+	public static Expression createList(Object value) throws Exception {		
 		/*
 		 	This method builds a list as a tree, where the next item
 		 	of the list is on the right side, producing a right-balanced
@@ -122,7 +122,7 @@ public class LiteralExpression extends Expression {
 		return new Expression(LIST, left, right); //type, left, right
 	}
 	
-	public static Expression createDictionary(Object value) {		
+	public static Expression createDictionary(Object value) throws Exception {		
 		/*
 		 	This method builds a dictionary as a tree, where the next key value pair
 		 	of the dictionary is on the right side, producing a right-balanced
@@ -171,7 +171,7 @@ public class LiteralExpression extends Expression {
 		return new Expression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
 	
-	public static Expression createTuple(Object value) {		
+	public static Expression createTuple(Object value) throws Exception {		
 		/*
 		 	This method builds a tuple as a tree, where the next item
 		 	of the list is on the right side, producing a right-balanced
