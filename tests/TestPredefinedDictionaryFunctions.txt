@@ -1,5 +1,5 @@
-a.has_key("Algo")
+a.has_key(k)
 b.items()
 c.keys()
-d.pop("K")
+d.pop(k)
 e.values()
