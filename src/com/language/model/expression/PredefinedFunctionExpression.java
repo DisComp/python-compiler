@@ -115,6 +115,16 @@ public class PredefinedFunctionExpression extends Expression{
 		return new PredefinedFunctionExpression(type, null, expr, null);
 	}
 	
+	public static Expression createTypeConversionFunction(String type, Expression expr) {
+		/*e.g: int(x),  save on left the element  */
+		return new PredefinedFunctionExpression(type, null, expr, null);
+	}
+	
+	public static Expression createEvaluateTypeFunction(Expression expr) {
+		/*e.g: pop function, used for dictionaries and lists, left for object and right for the parameter */
+		return new PredefinedFunctionExpression(TYPE_FUNC, null, expr, null);
+	}
+	
 	public static Expression createPopFunction(Expression left, Expression right) {
 		/*e.g: pop function, used for dictionaries and lists, left for object and right for the parameter */
 		return new PredefinedFunctionExpression(POP_FUNC, null, left, right);

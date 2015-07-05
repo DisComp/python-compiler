@@ -80,6 +80,7 @@ non terminal Expression predefined_dictionary_functions;
 non terminal Expression predefined_string_functions;
 non terminal Expression predefined_list_functions;
 non terminal Expression predefined_io_functions;
+non terminal Expression predefined_type_conversion_functions;
 
 non terminal Expression boolean_expr;
 non terminal Expression bitwise_expr;
@@ -179,6 +180,8 @@ predefined_functions_expr ::= ID: id POINT predefined_dictionary_functions: pdf 
 							| ID: id POINT predefined_string_functions: psf {: RESULT =  PredefinedFunctionExpression.createStringFunction(LiteralExpression.createIdentifier(id), psf); :}
 							| ID: id POINT predefined_list_functions: plf {: RESULT =  PredefinedFunctionExpression.createListFunction(LiteralExpression.createIdentifier(id), plf); :}
 							| predefined_io_functions: piof {: RESULT =  piof; :}
+							| predefined_type_conversion_functions: piof {: RESULT =  piof; :}
+							| TYPE_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createEvaluateTypeFunction(le); :}
 							
 								// functions used for multiple objects
 							| ID: id POINT POP_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createPopFunction(LiteralExpression.createIdentifier(id), le); :}
@@ -208,7 +211,15 @@ predefined_list_functions ::= APPEND_FUNC LPAREN literal_expr:le RPAREN {: RESUL
 predefined_io_functions ::= RAW_INPUT_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createIOFunction(PredefinedFunctionExpression.RAW_INPUT_FUNC, le); :}
 						|   PRINT_FUNC literal_expr:le {: RESULT = PredefinedFunctionExpression.createIOFunction(PredefinedFunctionExpression.PRINT_FUNC, le); :};
 
-
+						
+predefined_type_conversion_functions ::=  INT_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createTypeConversionFunction(PredefinedFunctionExpression.INT_FUNC, le); :}
+										| FLOAT_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createTypeConversionFunction(PredefinedFunctionExpression.FLOAT_FUNC, le); :}
+										| STR_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createTypeConversionFunction(PredefinedFunctionExpression.STR_FUNC, le); :}
+										| TUPLE_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createTypeConversionFunction(PredefinedFunctionExpression.TUPLE_FUNC, le); :}
+										| LIST_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createTypeConversionFunction(PredefinedFunctionExpression.LIST_FUNC, le); :}
+										| DICT_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createTypeConversionFunction(PredefinedFunctionExpression.DICT_FUNC, le); :};
+										
+						
 /* The precedence starts with boolean_expr */
 boolean_expr ::=  boolean_expr: l OR  boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.OR, "or", l, r); :}
 				| boolean_expr: l AND boolean_expr: r {: RESULT = BooleanExpression.create(BooleanExpression.AND, "and", l, r); :}
