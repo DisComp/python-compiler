@@ -10,7 +10,7 @@ public class ScopesController {
 	private int tabsContados;
 	private int tabsEsperados;
 	private Stack<Scope> scopes;
-	private Map<String,Funcion> funciones;
+	private Map<String,Funcion> funciones; // que tal si lo ponemos como atributo de scope igual que las variables?
 	
 	private boolean logs = false;
 	
@@ -70,6 +70,11 @@ public class ScopesController {
 	}
 	
 	public void addFunctionParameter(String par){
+		
+	}
+	
+	public void/*Expression*/ getVariable(){
+		//look for the variable in the scopes stack
 		
 	}
 }

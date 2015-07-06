@@ -33,6 +33,14 @@ public class Expression {
 		this.left = left;
 		this.right = right;
 	}
+	
+	/*
+	 * This method is redefined for each Expression subclass 
+	 * which handle its conditions to give the value from an expression
+	*/
+	public Object getValue() throws Exception {
+		return value;
+	}
 
 	public String getType() {
 		return type;
@@ -40,11 +48,7 @@ public class Expression {
 	
 	public void setType(String type) {
 		this.type = type;
-	}
-	
-	public Object getValue() throws Exception {
-		return value;
-	}
+	}	
 	
 	public void setValue(Object value) {
 		this.value = value;

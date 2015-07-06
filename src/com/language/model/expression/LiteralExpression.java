@@ -21,6 +21,7 @@ public class LiteralExpression extends Expression {
 	public static final String ASSIGN = "Assign";
 	public static final String STRUCTURE_ACCESS = "StructureAccess";
 	public static final String STRUCTURE_ACCESS_ELEMENT = "StructureAccessElement";
+	public static final String ASSIGN_STRUCTURE_ACCESS = "AssignStructureAccess";
 	
 	private Object variableValue;
 
@@ -79,20 +80,20 @@ public class LiteralExpression extends Expression {
 		return new LiteralExpression(STRING, stringValue, null, null);
 	}
 	
-	public static Expression createAssignment(Object assigned_expr, Object value) throws Exception {
+	public static Expression createAssignment(Object assigned_expr, Expression value) throws Exception {
 		//Map<String, Object> assignValue = new HashMap<String, Object>();
 		//assignValue.put(identifier, value);
 		LiteralExpression le = null;
 		Expression expr = (Expression)assigned_expr;
 		if(expr.getType() == LiteralExpression.ID){
 			String identifier = (String)expr.getValue();
-			le = new LiteralExpression(ASSIGN, identifier, null, null);
-			le.setVariableValue(value);
+			le = new LiteralExpression(ASSIGN, identifier, value, null);
+			//le.setVariableValue(value);
 		} else if (expr.getType() == LiteralExpression.STRUCTURE_ACCESS){
 			Expression identifier = (Expression)expr.getValue();
 			Expression structureAccess = (Expression)expr.getLeft(); 
-			le = new LiteralExpression(ASSIGN, identifier, structureAccess, null);
-			le.setVariableValue(value);
+			le = new LiteralExpression(ASSIGN_STRUCTURE_ACCESS, identifier, value, structureAccess);
+			//le.setVariableValue(value);
 		}
 		return le;
 	}
@@ -135,14 +136,14 @@ public class LiteralExpression extends Expression {
 		 	of the dictionary is on the right side, producing a right-balanced
 		 	tree containing all dictionary element objects
 		*/
-		Map<String, String> dictionaryValue = new HashMap<String, String>();
+		Map<Object, Object> dictionaryValue = new HashMap<Object, Object>();
 		Expression dictionaryElement = (Expression)value;
 		
 		
 		if(dictionaryElement.getRight() != null){
 			// One element on the list
 			Object element = ((Expression)dictionaryElement.getLeft()).getValue();
-			Map<String, String> mapElement = (Map<String, String>)element;
+			Map<Object, Object> mapElement = (Map<Object, Object>)element;
 			
 			dictionaryValue.putAll(mapElement); 
 			dictionaryElement = (Expression)dictionaryElement.getRight();
@@ -150,7 +151,7 @@ public class LiteralExpression extends Expression {
 			// Parse tree and add leaf values
 			while(dictionaryElement.getRight() != null){
 				element = ((Expression)dictionaryElement.getLeft()).getValue();
-				mapElement = (Map<String, String>)element;
+				mapElement = (Map<Object, Object>)element;
 				
 				dictionaryValue.putAll(mapElement);
 				dictionaryElement = (Expression)dictionaryElement.getRight();
@@ -161,7 +162,7 @@ public class LiteralExpression extends Expression {
 			} else {
 				element = ((Expression)dictionaryElement.getLeft()).getValue();
 			}
-			mapElement = (Map<String, String>)element;
+			mapElement = (Map<Object, Object>)element;
 			
 			dictionaryValue.putAll(mapElement);					
 		}
@@ -172,8 +173,8 @@ public class LiteralExpression extends Expression {
 		return new LiteralExpression(DICTIONARY, left, right); //type, left, right
 	}
 	
-	public static Expression createAtomDictionaryElement(String key, String value){
-		Map<String, String> dictionaryKeyValue= new HashMap<String, String>();
+	public static Expression createAtomDictionaryElement(Expression key, Expression value){
+		Map<Object, Object> dictionaryKeyValue= new HashMap<Object, Object>();
 		dictionaryKeyValue.put(key, value);
 		return new LiteralExpression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
@@ -243,6 +244,34 @@ public class LiteralExpression extends Expression {
 		accessElement.put("position", position);
 		LiteralExpression accessElementAtom = new LiteralExpression(STRUCTURE_ACCESS_ELEMENT, accessElement, null, null);
 		return new Expression(STRUCTURE_ACCESS, id, accessElementAtom, null);
+	}
+	
+	@Override
+	public Object getValue() throws Exception {
+		switch(this.getType()){
+			case INTEGER:
+			case FLOAT:
+			case LONG_INT:
+			case BOOLEAN:
+			case STRING:
+			case LIST:
+			case DICTIONARY:
+			case TUPLE:
+				return super.getValue();
+			case NONE:
+				return null;
+			case ID:
+				return super.getValue(); // get the value from the ScopesController
+			case ASSIGN:
+				String identifier = (String)super.getValue();
+				// add variable to scope 
+			case ASSIGN_STRUCTURE_ACCESS:
+				//replace list value at index
+				
+			default:
+				return super.getValue();
+				//throw new Exception("Unrecognized Literal type");
+		}
 	}
 	
 }

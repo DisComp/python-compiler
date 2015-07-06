@@ -119,6 +119,8 @@ precedence left TAB;
 precedence left IF;
 precedence left LINE_TERMINATOR; 
 precedence left STRING;
+precedence left ID;
+
 
 start with program;
 
@@ -290,8 +292,8 @@ element_dictionary ::= atom_element_dictionary:atd element_dictionary:ed {: RESU
 					|  TAB
 					|  LINE_TERMINATOR;
 
-atom_element_dictionary ::= STRING:key COLON STRING:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
-						|   STRING:key COLON STRING:val {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
+atom_element_dictionary ::= literal_expr:key COLON literal_expr:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
+						|   literal_expr:key COLON literal_expr:val {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
 
 
 tuple_expr ::= LPAREN element_tuple:et RPAREN {: RESULT = et; :}

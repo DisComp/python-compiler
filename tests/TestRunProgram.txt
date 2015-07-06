@@ -1,0 +1,11 @@
+3
+my_var = True
+None
+"Hola soy un string"
+[2, True, []]
+{ 
+	"key1": True,	
+	"key2": False,	
+	"key3": 4 
+}
+(2, "this is a tuple", a)

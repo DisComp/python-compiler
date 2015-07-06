@@ -34,7 +34,7 @@ public class InstructionsController {
                 try {
 					Object result = ((Expression) this.instructionsProgram.get(i)).getValue();
 					System.out.println("Linea procesada: " + i);
-					System.out.println(result.toString());
+					System.out.println(result);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
