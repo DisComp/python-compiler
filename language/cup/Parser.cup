@@ -17,7 +17,7 @@ terminal String PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
 terminal String AND_BIT, OR_BIT, XOR_BIT, NOT_BIT, LSHIFT, RSHIFT;
 
 /* Strings */
-terminal String STRING, ESCAPE, TAB,DEDENT, IDENT, SYNERROR;
+terminal String STRING, ESCAPE,DEDENT, IDENT, SYNERROR;
 
 /* Boolean */
 terminal String TRUE, FALSE;
@@ -60,14 +60,12 @@ terminal String TYPE_FUNC;
 terminal String ID;
 
 /* Line Terminator*/
-terminal String LINE_TERMINATOR;
+//terminal String LINE_TERMINATOR;
 
 /* NON TERMINALS */
 non terminal Expression expr;
-non terminal Expression instrucciones;
 non terminal Expression instr;
 non terminal Expression function_block;
-non terminal Expression stmt;
 non terminal Expression assignment_expr;
 non terminal Expression left_side_expr;
 non terminal Expression indent_block;
@@ -91,6 +89,7 @@ non terminal Expression element_list;
 non terminal Expression dictionary_expr;
 non terminal Expression element_dictionary;
 non terminal Expression atom_element_dictionary;
+non terminal Expression last_atom_element_dictionary;
 non terminal Expression tuple_expr;
 non terminal Expression element_tuple;
 non terminal Expression atom_element_tuple;
@@ -103,7 +102,7 @@ non terminal Expression stm;
 non terminal Expression compl_stm;
 non terminal Expression indent_ins;
 non terminal Expression suit;
-non terminal Expression program;
+
 
 precedence left OR;
 precedence left AND;
@@ -118,17 +117,14 @@ precedence left TIMES, DIV, DIV_INT, MOD;
 precedence left NOT_BIT;
 precedence left EXP;
 precedence left ASSIGN;
-precedence left TAB;
+//precedence left TAB;
 precedence left IF;
-precedence left LINE_TERMINATOR; 
+//precedence left LINE_TERMINATOR; 
 precedence left STRING;
 
 
 start with stm;
 
-program::=stm:s {:RESULT = s; :}
-		|stm:s program:p {:s.setRight(p); RESULT = s; :};
-		
 stm ::= compl_stm:c stm:s{: c.setRight(s);RESULT = c; :}
 	|instr:i stm:s {: i.setRight(s);RESULT = i; :}
 	|compl_stm:c{:RESULT = c; :}
@@ -142,30 +138,11 @@ indent_ins ::= IDENT stm:s {: RESULT = s; :}
 			| IDENT stm:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
 	
 
-/* Instructions section */
-instrucciones::=  instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
-
-				| instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}instrucciones: iss {: i.setLeft(iss);RESULT = i;:}
-																	
-				| TAB  {:ScopesController.getInstance().consumirTab();:} instrucciones: iss {: RESULT = iss; :}  
-				| stmt: s 	{: RESULT = s ; :}
-				| function_block: f {: RESULT = f ; :};
-			
-			
-			
-/*instrs ::=  instr: i LINE_TERMINATOR instrs: is {: RESULT = i ; :}   
-			| instr: i {: RESULT = i; :};
-			
-
-
-indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(iis);RESULT = i; :}
-	  			|  TAB instr: i LINE_TERMINATOR {: RESULT = i; :};*/
 				 
 instr ::= expr: exp {: RESULT = exp; :}		
 		| assignment_expr: v {: RESULT = v; :};
 
-stmt ::=  if_block: s {: RESULT = s; :}
-		| while_block: s {: RESULT = s; :};		 
+
 
 parameters ::= //sin parámetros
 			|individual_parameters;//con al menos un parámetro
@@ -178,9 +155,7 @@ individual_parameters ::=ID: id {: ScopesController.getInstance().addFunctionPar
 	
 function_block ::=	DEF ID: funct_name {:ScopesController.getInstance().openScope(funct_name); :}
 					LPAREN parameters RPAREN 
-					COLON LINE_TERMINATOR 
-					instrucciones:iis
-					{: RESULT = FunctionControl.create(funct_name,iis); :};
+					COLON suit:s {: RESULT = FunctionControl.create(funct_name,s); :};
 				
 
 //individual_parameter::= ID:id {: RESULT = id; : };
@@ -189,7 +164,7 @@ function_block ::=	DEF ID: funct_name {:ScopesController.getInstance().openScope
 if_block ::= IF {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
 
 /* While block */
-while_block ::= WHILE expr: e COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
+while_block ::= WHILE expr: e COLON {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
 
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
@@ -280,16 +255,14 @@ element_list ::=  literal_expr:le COMMA element_list:el {: RESULT = LiteralExpre
 				| literal_expr:le {: RESULT = le; :};
 
 dictionary_expr ::= LBRACE element_dictionary:ed RBRACE {: RESULT = ed; :}
+				|	LBRACE IDENT element_dictionary:ed DEDENT RBRACE {: RESULT = ed; :}
 				|   LBRACE RBRACE {: RESULT = LiteralExpression.createDictionaryElement(null, null); :};
     		
 element_dictionary ::= atom_element_dictionary:atd element_dictionary:ed {: RESULT = LiteralExpression.createDictionaryElement(atd, ed); :}
-					|  atom_element_dictionary:atd {: RESULT = atd; :}
-					|  TAB element_dictionary:ed {: RESULT = ed; :}
-					|  LINE_TERMINATOR element_dictionary:ed {: RESULT = ed; :}
-					|  TAB
-					|  LINE_TERMINATOR;
+					|  last_atom_element_dictionary:laed {: RESULT = laed; :};
 
-atom_element_dictionary ::= STRING:key COLON STRING:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
+atom_element_dictionary ::= STRING:key COLON STRING:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
+last_atom_element_dictionary ::= STRING:key COLON STRING:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
 						|   STRING:key COLON STRING:val {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
 
 
