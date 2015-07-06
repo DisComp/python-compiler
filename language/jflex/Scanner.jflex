@@ -95,7 +95,16 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		        counter++;
 		    } 
 		}
-		if(counter<ScopesController.getInstance().getExpectedTabs()){
+		if(counter>ScopesController.getInstance().getExpectedTabs()){
+			ScopesController.getInstance().addExpectedTab();
+			return symbol(sym.IDENT, "IDENT" );
+		}
+		else if(counter<ScopesController.getInstance().getExpectedTabs()){
+			int toSend=ScopesController.getInstance().getExpectedTabs()-counter-1;//-1 porque acá ya se manda uno
+			ScopesController.getInstance().setDedent(toSend);
+			return symbol(sym.DEDENT, "DEDENT" );
+		}
+		/*if(counter<ScopesController.getInstance().getExpectedTabs()){
 			int toSend=ScopesController.getInstance().getExpectedTabs()-counter-1;//+1;//+1 porque acá ya se manda uno
 			ScopesController.getInstance().setDedent(toSend);
 			return symbol(sym.DEDENT, "DEDENT" );
@@ -103,34 +112,16 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		else if(counter>ScopesController.getInstance().getExpectedTabs()){
 			return symbol(sym.SYNERROR, "ERRor" );
 		}
-		else{// sigo en el mismo scope
+		else if(counter>0){// sigo en el mismo scope, al menos una identacion
 			return symbol(sym.IDENT, "IDENT" );
-		}
+		}*/
+		/*else{//Caso linea simple sin identar
+			return symbol(sym.LINE_TERMINATOR,yytext()); }
+		}*/
 
 	}
 	
-	/*"\n"				{ 
-		
-		String lexema = yytext();
-		int counter = 0;
-		for( int i=0; i<lexema.length(); i++ ) {
-		    if( lexema.charAt(i) == '\t' ) {
-		        counter++;
-		    } 
-		}
-		if(counter<ScopesController.getInstance().getExpectedTabs()){
-			int toSend=ScopesController.getInstance().getExpectedTabs()-counter-1;//+1;//+1 porque acá ya se manda uno
-			ScopesController.getInstance().setDedent(toSend);
-			return symbol(sym.DEDENT, "DEDENT" );
-		}
-		else if(counter>ScopesController.getInstance().getExpectedTabs()){
-			return symbol(sym.SYNERROR, "errr" );
-		}
-		else{// sigo en el mismo scope
-			return symbol(sym.IDENT, "IDENT" );
-		}
-
-	}*/
+	
 	
 	/* Boolean */
 	

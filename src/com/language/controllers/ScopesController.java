@@ -33,7 +33,7 @@ public class ScopesController {
     }
 	
 	public void openScope(String scope/*se puede cambir el tipo*/){
-		expectedTabs++;// = tabsContados+1; //el open scope puede estar cerrando otros scopes
+		//expectedTabs++;// = tabsContados+1; //el open scope puede estar cerrando otros scopes
 		//tabsContados = 0;
 		scopes.push(new Scope(scope));
 		if(logs)
@@ -88,8 +88,12 @@ public class ScopesController {
 	}
 	public void setDedent(int num){
 		dedentToSend=num;
+		expectedTabs--;//cuando se hace el set ya se manda un dedent entonces ahora espero un tab menos
 	}
 	public void openScope(){
+		expectedTabs++;
+	}
+	public void addExpectedTab(){
 		expectedTabs++;
 	}
 }

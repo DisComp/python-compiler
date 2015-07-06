@@ -20,9 +20,9 @@ public class Tester {
         while (line != null) {         
 			 sb.append(line);
 			 line = br.readLine();
-			 if(line != null) {
+			 //if(line != null) {
 			 	sb.append("\n");
-			 }
+			 //}
         }
 		String exptext = sb.toString();
 		br.close();

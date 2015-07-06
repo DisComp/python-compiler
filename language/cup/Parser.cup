@@ -102,6 +102,8 @@ non terminal Expression individual_parameters;
 non terminal Expression stm;
 non terminal Expression compl_stm;
 non terminal Expression indent_ins;
+non terminal Expression suit;
+non terminal Expression program;
 
 precedence left OR;
 precedence left AND;
@@ -124,14 +126,20 @@ precedence left STRING;
 
 start with stm;
 
-stm ::= compl_stm:c DEDENT instr:i {:c.setLeft(i); RESULT = c; :}
+program::=stm:s {:RESULT = s; :}
+		|stm:s program:p {:s.setRight(p); RESULT = s; :};
+		
+stm ::= compl_stm:c stm:s{: c.setRight(s);RESULT = c; :}
+	|instr:i stm:s {: i.setRight(s);RESULT = i; :}
+	|compl_stm:c{:RESULT = c; :}
 	|instr:i {: RESULT = i; :};
 	
+suit::=IDENT stm:s DEDENT{: RESULT = s; :};
 
 compl_stm ::= if_block: iff {: RESULT = iff; :};	 
 
 indent_ins ::= IDENT stm:s {: RESULT = s; :}
-			| IDENT stm:s indent_ins:iis {: s.setLeft(iis); RESULT = s; :};	
+			| IDENT stm:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
 	
 
 /* Instructions section */
@@ -153,8 +161,7 @@ instrucciones::=  instr: i LINE_TERMINATOR {:ScopesController.getInstance().finD
 indent_instrs ::=  TAB instr: i LINE_TERMINATOR indent_instrs:iis {: i.setLeft(iis);RESULT = i; :}
 	  			|  TAB instr: i LINE_TERMINATOR {: RESULT = i; :};*/
 				 
-instr ::= 
-		|expr: exp {: RESULT = exp; :}		
+instr ::= expr: exp {: RESULT = exp; :}		
 		| assignment_expr: v {: RESULT = v; :};
 
 stmt ::=  if_block: s {: RESULT = s; :}
@@ -179,7 +186,7 @@ function_block ::=	DEF ID: funct_name {:ScopesController.getInstance().openScope
 //individual_parameter::= ID:id {: RESULT = id; : };
 
 /* If block */
-if_block ::= IF {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} expr: e COLON indent_ins: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
+if_block ::= IF {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
 
 /* While block */
 while_block ::= WHILE expr: e COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
