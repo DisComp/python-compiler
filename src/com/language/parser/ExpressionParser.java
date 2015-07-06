@@ -13,7 +13,9 @@ public class ExpressionParser {
 
 		byte[] expbytes = expText.getBytes(); 
 		ByteArrayInputStream bais = new ByteArrayInputStream(expbytes);
-		Scanner s =new Scanner(bais);
+		//Scanner s =new Scanner(bais);
+		Scanner s =new Scannerchild(bais);
+		
 		Parser parser = new Parser(s);
 		try {
 			Symbol topsym = parser.parse();

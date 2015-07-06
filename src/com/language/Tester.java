@@ -11,16 +11,18 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException {
 				
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestDeclaration.txt"));
+
+		BufferedReader br = new BufferedReader(new FileReader("tests/testVacio.txt"));
+
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
         while (line != null) {         
 			 sb.append(line);
 			 line = br.readLine();
-			 //if(line != null) {
+			 if(line != null) {
 			 	sb.append("\n");
-			// }
+			 }
         }
 		String exptext = sb.toString();
 		br.close();

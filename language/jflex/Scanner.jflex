@@ -4,7 +4,7 @@ import java.util.*;
 import java_cup.runtime.*;
 import com.language.exceptions.*;
 import com.language.model.expression.*;
-
+import com.language.controllers.*;
 %%
 
 %cup
@@ -25,7 +25,7 @@ import com.language.model.expression.*;
 	private Symbol symbol(int type) {
 		return new Symbol(type, yyline, yycolumn);
 	}
-	private Symbol symbol(int type, Object value) {
+	public Symbol symbol(int type, Object value) {
 		return new Symbol(type, yyline, yycolumn, value);
 	}
 %}
@@ -35,7 +35,7 @@ import com.language.model.expression.*;
 %eofval{
     return symbol(sym.EOF);
 %eofval}
-
+IntroTabs = \n(\t)*
 LineTerminator = \r|\n|\r\n
 WhiteSpace     = [ \f]
 
@@ -51,7 +51,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 <YYINITIAL> {
 
 	/* Line Terminator */
-	{LineTerminator} 	{ return symbol(sym.LINE_TERMINATOR,yytext()); }
+	/*{LineTerminator} 	{ return symbol(sym.LINE_TERMINATOR,yytext()); }*/
 
 	/* Numbers */
 	
@@ -86,8 +86,51 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	"\\" 						{ return symbol(sym.ESCAPE, "\\"); }
 																/*Three Double quotes*/
 																/*Three Single quotes*/
-	"\t"				{ return symbol(sym.TAB, "\t" ); }
+	{IntroTabs}				{ 
+		
+		String lexema = yytext();
+		int counter = 0;
+		for( int i=0; i<lexema.length(); i++ ) {
+		    if( lexema.charAt(i) == '\t' ) {
+		        counter++;
+		    } 
+		}
+		if(counter<ScopesController.getInstance().getExpectedTabs()){
+			int toSend=ScopesController.getInstance().getExpectedTabs()-counter-1;//+1;//+1 porque acá ya se manda uno
+			ScopesController.getInstance().setDedent(toSend);
+			return symbol(sym.DEDENT, "DEDENT" );
+		}
+		else if(counter>ScopesController.getInstance().getExpectedTabs()){
+			return symbol(sym.SYNERROR, "ERRor" );
+		}
+		else{// sigo en el mismo scope
+			return symbol(sym.IDENT, "IDENT" );
+		}
+
+	}
 	
+	/*"\n"				{ 
+		
+		String lexema = yytext();
+		int counter = 0;
+		for( int i=0; i<lexema.length(); i++ ) {
+		    if( lexema.charAt(i) == '\t' ) {
+		        counter++;
+		    } 
+		}
+		if(counter<ScopesController.getInstance().getExpectedTabs()){
+			int toSend=ScopesController.getInstance().getExpectedTabs()-counter-1;//+1;//+1 porque acá ya se manda uno
+			ScopesController.getInstance().setDedent(toSend);
+			return symbol(sym.DEDENT, "DEDENT" );
+		}
+		else if(counter>ScopesController.getInstance().getExpectedTabs()){
+			return symbol(sym.SYNERROR, "errr" );
+		}
+		else{// sigo en el mismo scope
+			return symbol(sym.IDENT, "IDENT" );
+		}
+
+	}*/
 	
 	/* Boolean */
 	
