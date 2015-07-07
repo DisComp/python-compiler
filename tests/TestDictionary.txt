@@ -1,6 +1,12 @@
 d = {
 	"Love Actually" : "Richard Curtis",
 	"Kill Bill": "Tarantino",
-	"Amélie": 5
+	"Amélie": "Jean-Pierre Jeunet"
 }
-"hola"
+d = {
+	"Love Actually" : "Richard Curtis",
+	"Kill Bill": "Tarantino",
+	"Amélie": "Jean-Pierre Jeunet",
+}
+d = {"Love Actually" : "Richard Curtis","Kill Bill": "Tarantino","Amélie": "Jean-Pierre Jeunet"}
+d = {"Love Actually" : "Richard Curtis","Kill Bill": "Tarantino","Amélie": "Jean-Pierre Jeunet",}
