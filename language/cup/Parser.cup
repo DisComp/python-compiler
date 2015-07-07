@@ -17,7 +17,7 @@ terminal String PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
 terminal String AND_BIT, OR_BIT, XOR_BIT, NOT_BIT, LSHIFT, RSHIFT;
 
 /* Strings */
-terminal String STRING, ESCAPE, TAB;
+terminal String STRING, ESCAPE, TAB,DEDENT, IDENT, SYNERROR;
 
 /* Boolean */
 terminal String TRUE, FALSE;
@@ -63,7 +63,6 @@ terminal String ID;
 terminal String LINE_TERMINATOR;
 
 /* NON TERMINALS */
-non terminal Expression program;
 non terminal Expression expr;
 non terminal Expression instrucciones;
 non terminal Expression instr;
@@ -102,6 +101,12 @@ non terminal Expression literal_expr;
 non terminal Expression parameters;
 non terminal Expression individual_parameters;
 
+non terminal Expression stm;
+non terminal Expression compl_stm;
+non terminal Expression indent_ins;
+non terminal Expression suit;
+non terminal Expression program;
+
 precedence left OR;
 precedence left AND;
 precedence left NOT;
@@ -122,32 +127,28 @@ precedence left STRING;
 precedence left ID;
 
 
-start with program;
+start with stm;
 
-program ::= instrucciones: iss 
-			{:
-				InstructionsController ic = InstructionsController.getInstance();
-				ic.runProgram();
-				RESULT = iss;
-			:};
+program::=stm:s {:RESULT = s; :}
+		|stm:s program:p {:s.setRight(p); RESULT = s; :};
+		
+stm ::= compl_stm:c stm:s{: c.setRight(s);RESULT = c; :}
+	|instr:i stm:s {: i.setRight(s);RESULT = i; :}
+	|compl_stm:c{:RESULT = c; :}
+	|instr:i {: RESULT = i; :};
+	
+suit::=IDENT stm:s DEDENT{: RESULT = s; :};
+
+compl_stm ::= if_block: iff {: RESULT = iff; :};	 
+
+indent_ins ::= IDENT stm:s {: RESULT = s; :}
+			| IDENT stm:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
+	
 
 /* Instructions section */
-instrucciones::=  instr: i LINE_TERMINATOR 
-					{:
-						ScopesController.getInstance().finDeInstruccion();
-						InstructionsController ic = InstructionsController.getInstance();
-						ic.addInstruction(i);
-						RESULT = i; 
-					:}
+instrucciones::=  instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion(); RESULT = i; :}
 
-				| instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:} instrucciones: iss 
-					{: 
-						InstructionsController ic = InstructionsController.getInstance();
-						ic.addInstruction(i);
-						
-						i.setLeft(iss);						
-						RESULT = i;
-					:}
+				| instr: i LINE_TERMINATOR {:ScopesController.getInstance().finDeInstruccion();:}instrucciones: iss {: i.setLeft(iss);RESULT = i;:}
 																	
 				| TAB  {:ScopesController.getInstance().consumirTab();:} instrucciones: iss {: RESULT = iss; :}  
 				| stmt: s 	{: RESULT = s ; :}
@@ -188,7 +189,7 @@ function_block ::=	DEF ID: funct_name {:ScopesController.getInstance().openScope
 //individual_parameter::= ID:id {: RESULT = id; : };
 
 /* If block */
-if_block ::= IF expr: e COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
+if_block ::= IF {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
 
 /* While block */
 while_block ::= WHILE expr: e COLON LINE_TERMINATOR {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} instrucciones: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
@@ -196,9 +197,8 @@ while_block ::= WHILE expr: e COLON LINE_TERMINATOR {:ScopesController.getInstan
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
 
-left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :}
-				|  atom_structured_types_access: asta {: RESULT = asta; :};  // other things that can be assigned e.g lists, dicts
-				
+left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :};
+				/*| other things that can be assigned e.g lists, dicts*/  
 
 								/* We need to extract the variable value from the java code */
 predefined_functions_expr ::= ID: id POINT predefined_dictionary_functions: pdf {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction( LiteralExpression.createIdentifier(id), pdf); :}
@@ -293,7 +293,7 @@ element_dictionary ::= atom_element_dictionary:atd element_dictionary:ed {: RESU
 					|  LINE_TERMINATOR;
 
 atom_element_dictionary ::= literal_expr:key COLON literal_expr:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
-						|   literal_expr:key COLON literal_expr:val {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
+					|   literal_expr:key COLON literal_expr:val {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
 
 
 tuple_expr ::= LPAREN element_tuple:et RPAREN {: RESULT = et; :}
@@ -322,6 +322,7 @@ atom_structured_types_access ::=  ID: id LBRACKET literal_expr: init COLON liter
 								| ID: id LBRACKET COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, null); :}
              					| ID: id LBRACKET literal_expr: pos RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), pos); :};
 
+             
 literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}
 				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
 				| FALSE:    f  {: RESULT = LiteralExpression.createBoolean(f); :}
@@ -333,9 +334,9 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| parenthesized_expr: p {: RESULT = p; :}
 				| list_expr: l {: RESULT = LiteralExpression.createList(l); :}
 				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :}
-				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :}
-				| structured_types_access: sta {: RESULT = sta; :};
+				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :};				
 
 expr  ::= boolean_expr: b {: RESULT = b; :}
 		| predefined_functions_expr: pfe {: RESULT = pfe; :};  
 	
+

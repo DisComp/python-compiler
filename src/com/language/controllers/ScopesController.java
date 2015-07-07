@@ -3,20 +3,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import com.language.exceptions.ParsingException;
+
 public class ScopesController {
 	
 	private static ScopesController instance = null;	
-	private int tabsContados;
-	private int tabsEsperados;
+	//private int tabsContados;
+	private int dedentToSend;
+	private int expectedTabs;
 	private Stack<Scope> scopes;
 	private Map<String,Funcion> funciones; // que tal si lo ponemos como atributo de scope igual que las variables?
 	
-	private boolean logs = false;
+	private boolean logs = true;
 	
 	private ScopesController() {
-		tabsContados = 0;
-		tabsEsperados = 0;
+		//tabsContados = 0;
+		dedentToSend = 0;
+		expectedTabs = 0;
 		scopes = new Stack<Scope>();
 		funciones = new HashMap<String,Funcion>();
 		scopes.push(new Scope("main"));
@@ -30,11 +32,11 @@ public class ScopesController {
     }
 	
 	public void openScope(String scope/*se puede cambir el tipo*/){
-		tabsEsperados = tabsContados+1; //el open scope puede estar cerrando otros scopes
-		tabsContados = 0;
+		//expectedTabs++;// = tabsContados+1; //el open scope puede estar cerrando otros scopes
+		//tabsContados = 0;
 		scopes.push(new Scope(scope));
 		if(logs)
-			System.out.println("Scope: "+scope+" - Expected tabs: " +  tabsEsperados);
+			System.out.println("Scope: "+scope+" - Expected tabs: " +  expectedTabs);
 	}
 	
 	//public void closeScope(String scope){
@@ -42,7 +44,7 @@ public class ScopesController {
 	//}
 	
 	public void finDeInstruccion(){
-		if(logs)
+		/*if(logs)
 			System.out.println("lei instr");
 		
 		if (tabsContados>tabsEsperados){
@@ -57,11 +59,11 @@ public class ScopesController {
 				
 		}
 		
-		tabsContados = 0;
+		tabsContados = 0;*/
 	}
 	
 	public void consumirTab(){
-		tabsContados++;
+		//tabsContados++;
 		if(logs)
 			System.out.println("cosnumo tab");
 		//if (tabsContados>tabsEsperados)//se que se pasó de tabs, pero tiro el error al leer la sentencia
@@ -75,6 +77,26 @@ public class ScopesController {
 	
 	public void/*Expression*/ getVariable(){
 		//look for the variable in the scopes stack
-		
+	}
+
+	public int getExpectedTabs(){
+		return expectedTabs;
+	}
+	public int getDedentToSend(){
+		return dedentToSend;
+	}
+	public void sendDedent(){
+		dedentToSend--;
+		expectedTabs--;
+	}
+	public void setDedent(int num){
+		dedentToSend=num;
+		expectedTabs--;//cuando se hace el set ya se manda un dedent entonces ahora espero un tab menos
+	}
+	public void openScope(){
+		expectedTabs++;
+	}
+	public void addExpectedTab(){
+		expectedTabs++;
 	}
 }

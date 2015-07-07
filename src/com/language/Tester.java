@@ -10,8 +10,8 @@ import com.language.parser.ExpressionParser;
 public class Tester {
 
 	public static void main(String[] args) throws IOException {
-				
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestRunProgram.txt"));
+			
+		BufferedReader br = new BufferedReader(new FileReader("tests/testVacio.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
@@ -20,7 +20,7 @@ public class Tester {
 			 line = br.readLine();
 			 //if(line != null) {
 			 	sb.append("\n");
-			// }
+			 //}
         }
 		String exptext = sb.toString();
 		br.close();
