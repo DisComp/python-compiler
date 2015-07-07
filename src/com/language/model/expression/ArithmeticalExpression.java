@@ -34,8 +34,8 @@ public class ArithmeticalExpression extends Expression {
 	@Override
 	public Object getValue() throws Exception {
 		Object returnObject = null;
-		Object left 		= this.getLeft();
-		Object right 		= this.getRight();
+		Expression left 		= this.getLeft();
+		Expression right 		= this.getRight();
 		
 		if(left != null || right != null)
 		{
@@ -49,43 +49,103 @@ public class ArithmeticalExpression extends Expression {
 		return returnObject;
 	}
 	
-	public static Object operation(String type, Object l, Object r) throws Exception {
-		Object obj;
+	public static Object operation(String type, Expression l, Expression r) throws Exception {
+		Object 	obj = null;
+		Number	leftValue = (Number)l.getValue(),
+				rightValue = (Number)r.getValue();
+		
+		String 	leftType = leftValue.getClass().getName(),
+				rightType = rightValue.getClass().getName();
 		
 		switch(type) {
 			case ArithmeticalExpression.PLUS:
 			{
-				obj = (double)l + (double)r;
+				
+				System.out.println("The left type: "+leftType);
+				
+				if(leftType == "Double" || rightType == "Double") {
+					obj = (double)leftValue + (double)rightValue; 
+				}
+				else if(leftType == "Long" || rightType == "Long") {
+					obj = (long)leftValue.intValue() + (long)rightValue.intValue();
+				}
+				else {
+					obj = (int)leftValue.intValue() + (int)rightValue.intValue();
+				}
 				break;
 			}
 			case ArithmeticalExpression.MINUS:
 			{
-				obj = (double)l - (double)r;
+				if(leftType == "Double" || rightType == "Double") {
+					obj = (double)leftValue - (double)rightValue; 
+				}
+				else if(leftType == "Long" || rightType == "Long") {
+					obj = (long)leftValue.intValue() - (long)rightValue.intValue();
+				}
+				else {
+					obj = (int)leftValue.intValue() - (int)rightValue.intValue();
+				}
 				break;
 			}
 			case ArithmeticalExpression.TIMES:
 			{
-				obj = (double)l * (double)r;
+				if(leftType == "Double" || rightType == "Double") {
+					obj = (double)leftValue * (double)rightValue; 
+				}
+				else if(leftType == "Long" || rightType == "Long") {
+					obj = (long)leftValue.intValue() * (long)rightValue.intValue();
+				}
+				else {
+					obj = (int)leftValue.intValue() * (int)rightValue.intValue();
+				}
 				break;
 			}
 			case ArithmeticalExpression.DIV:
 			{
-				obj = (double)l / (double)r;
+				// Checking if the result is a double, or not. If so then returning the value of the fakeResult//
+				double fakeResult = (double)leftValue / (double)rightValue;
+				
+				if (leftType == "Double" || rightType == "Double" ||( (fakeResult == Math.floor(fakeResult)) && !Double.isInfinite(fakeResult)) ) {
+					obj = (double)leftValue / (double)rightValue; 
+				}
+				else if(leftType == "Long" || rightType == "Long") {
+					obj = (long)leftValue.intValue() / (long)rightValue.intValue();
+				}
+				else {
+					obj = (int)leftValue.intValue() / (int)rightValue.intValue();
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.DIV_INT:
 			{
-				obj = (int)l / (int)r;
+				if(leftType == "Long" || rightType == "Long")
+					obj = (long)leftValue.intValue() / (long)rightValue.intValue();
+				else
+					obj= (int)leftValue.intValue() / (int)rightValue.intValue();
+				
 				break;
 			}
 			case ArithmeticalExpression.EXP:
 			{
-				obj = Math.pow((double)l, (double)r);
+				// Checking if the result is a double, or not. If so then returning the value of the fakeResult//
+				double fakeResult = (double)leftValue / (double)rightValue;
+				
+				if (leftType == "Double" || rightType == "Double" ||( (fakeResult == Math.floor(fakeResult)) && !Double.isInfinite(fakeResult)) ) {
+					obj = (double)leftValue / (double)rightValue; 
+				}
+				else if(leftType == "Long" || rightType == "Long") {
+					obj = (long)leftValue.intValue() / (long)rightValue.intValue();
+				}
+				else {
+					obj = (int)leftValue.intValue() / (int)rightValue.intValue();
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.MOD:
 			{
-				obj = (double)l % (int)r;
+				obj = (double)leftValue % (int)rightValue.intValue();
 				break;
 			}
 			default:
@@ -96,4 +156,5 @@ public class ArithmeticalExpression extends Expression {
 		
 		return obj;
 	}
+	
 }
