@@ -68,6 +68,8 @@ non terminal Expression instr;
 non terminal Expression function_block;
 non terminal Expression assignment_expr;
 non terminal Expression left_side_expr;
+non terminal Expression structured_types_access;
+non terminal Expression atom_structured_types_access;
 non terminal Expression indent_block;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
@@ -102,6 +104,7 @@ non terminal Expression stm;
 non terminal Expression compl_stm;
 non terminal Expression indent_ins;
 non terminal Expression suit;
+non terminal Expression program;
 
 
 precedence left OR;
@@ -121,12 +124,12 @@ precedence left ASSIGN;
 precedence left IF;
 //precedence left LINE_TERMINATOR; 
 precedence left STRING;
-
+precedence left ID;
 
 start with stm;
 
-stm ::= compl_stm:c stm:s{: c.setRight(s);RESULT = c; :}
-	|instr:i stm:s {: i.setRight(s);RESULT = i; :}
+stm ::= compl_stm:c stm:s{: RESULT = new Expression(Expression.STM,c,s); :}
+	|instr:i stm:s {: RESULT = new Expression(Expression.STM,i,s);:}
 	|compl_stm:c{:RESULT = c; :}
 	|instr:i {: RESULT = i; :};
 	
@@ -169,8 +172,8 @@ while_block ::= WHILE expr: e COLON {:ScopesController.getInstance().openScope(S
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
 
-left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :};
-				/*| other things that can be assigned e.g lists, dicts*/  
+left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :}
+				|  atom_structured_types_access: asta {: RESULT = asta; :};  // other things that can be assigned e.g lists, dicts
 
 								/* We need to extract the variable value from the java code */
 predefined_functions_expr ::= ID: id POINT predefined_dictionary_functions: pdf {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction( LiteralExpression.createIdentifier(id), pdf); :}
@@ -275,6 +278,24 @@ element_tuple ::= literal_expr:le atom_element_tuple:aet {: RESULT = LiteralExpr
 atom_element_tuple ::= COMMA literal_expr: le atom_element_tuple: aet {: RESULT = LiteralExpression.createTupleElement(le, aet); :}
 					|  COMMA literal_expr: le {: RESULT = le; :}
 					|  COMMA;
+					
+// Access to lists, dictionaries and tuples elements. e.g: ( a[0], a[0:1:2], a[::2]	)
+structured_types_access ::=  ID: id LBRACKET literal_expr: init COLON literal_expr: end COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, end, jump); :}
+						|    ID: id LBRACKET COLON literal_expr: end COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, end, jump); :}
+						|    ID: id LBRACKET literal_expr: init COLON COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, null, jump); :}
+						|    ID: id LBRACKET literal_expr: init COLON literal_expr: end COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, end, null); :}
+						|    ID: id LBRACKET COLON COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, null, jump); :}
+						|    ID: id LBRACKET COLON literal_expr: end COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, end, null); :}
+						|    ID: id LBRACKET literal_expr: init COLON COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, null, null); :}
+						|    ID: id LBRACKET COLON COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, null, null); :}
+						|    atom_structured_types_access: asta {: RESULT = asta; :};
+			
+atom_structured_types_access ::=  ID: id LBRACKET literal_expr: init COLON literal_expr: end RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, end); :}
+								| ID: id LBRACKET COLON literal_expr: end RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, end); :}
+								| ID: id LBRACKET literal_expr: init COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, null); :}
+								| ID: id LBRACKET COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, null); :}
+             					| ID: id LBRACKET literal_expr: pos RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), pos); :};
+
              
 literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}
 				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
@@ -287,8 +308,10 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| parenthesized_expr: p {: RESULT = p; :}
 				| list_expr: l {: RESULT = LiteralExpression.createList(l); :}
 				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :}
-				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :};				
+				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :}
+				| structured_types_access: sta {: RESULT = sta; :};
 
 expr  ::= boolean_expr: b {: RESULT = b; :}
 		| predefined_functions_expr: pfe {: RESULT = pfe; :};  
+	
 
