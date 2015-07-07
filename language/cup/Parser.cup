@@ -102,6 +102,7 @@ non terminal Expression stm;
 non terminal Expression compl_stm;
 non terminal Expression indent_ins;
 non terminal Expression suit;
+non terminal Expression program;
 
 
 precedence left OR;
@@ -125,8 +126,8 @@ precedence left STRING;
 
 start with stm;
 
-stm ::= compl_stm:c stm:s{: c.setRight(s);RESULT = c; :}
-	|instr:i stm:s {: i.setRight(s);RESULT = i; :}
+stm ::= compl_stm:c stm:s{: RESULT = new Expression(Expression.STM,c,s); :}
+	|instr:i stm:s {: RESULT = new Expression(Expression.STM,i,s);:}
 	|compl_stm:c{:RESULT = c; :}
 	|instr:i {: RESULT = i; :};
 	

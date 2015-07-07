@@ -2,7 +2,7 @@ package com.language.model.expression;
 
 
 public class Expression {	
-	
+	public static final String STM = "stm";
 	private String type;
 	private Object value; 
 	private Expression left, right;
@@ -15,11 +15,11 @@ public class Expression {
 		this.value = value;
 	}
 	
-	public Expression(Object value, Expression left, Expression right) {
+	/*public Expression(Object value, Expression left, Expression right) {
 		this.value = value;
 		this.left = left;
 		this.right = right;
-	}
+	}*/
 	
 	public Expression(String type,  Expression left, Expression right) {
 		this.type = type;	
