@@ -247,7 +247,7 @@ public class LiteralExpression extends Expression {
 	}
 	
 	@Override
-	public Object getValue() throws Exception {
+	public Object execute() throws Exception {
 		switch(this.getType()){
 			case INTEGER:
 			case FLOAT:

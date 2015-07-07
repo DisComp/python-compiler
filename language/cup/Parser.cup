@@ -100,8 +100,8 @@ non terminal Expression literal_expr;
 non terminal Expression parameters;
 non terminal Expression individual_parameters;
 
-non terminal Expression stm;
-non terminal Expression compl_stm;
+non terminal Expression stmt;
+non terminal Expression compl_stmt;
 non terminal Expression indent_ins;
 non terminal Expression suit;
 non terminal Expression program;
@@ -126,19 +126,25 @@ precedence left IF;
 precedence left STRING;
 precedence left ID;
 
-start with stm;
+start with program;
 
-stm ::= compl_stm:c stm:s{: RESULT = new Expression(Expression.STM,c,s); :}
-	|instr:i stm:s {: RESULT = new Expression(Expression.STM,i,s);:}
-	|compl_stm:c{:RESULT = c; :}
-	|instr:i {: RESULT = i; :};
+program ::= stmt: s 
+			{: 
+				((StatementExpression)s).execute();
+				RESULT = s;
+			:};
+
+stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
+		| instr:i stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
+		| compl_stmt:c {:RESULT = c; :}
+		| instr:i {: RESULT = i; :};
 	
-suit::=IDENT stm:s DEDENT{: RESULT = s; :};
+suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 
-compl_stm ::= if_block: iff {: RESULT = iff; :};	 
+compl_stmt ::= if_block: iff {: RESULT = iff; :};	 
 
-indent_ins ::= IDENT stm:s {: RESULT = s; :}
-			| IDENT stm:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
+indent_ins ::= IDENT stmt:s {: RESULT = s; :}
+			|  IDENT stmt:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
 	
 
 				 

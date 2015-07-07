@@ -3,7 +3,6 @@ package com.language.model.expression;
 
 public class Expression {	
 	
-	public static final String STM = "stm";
 	private String type;
 	private Object value; 
 	private Expression left, right;
@@ -14,13 +13,7 @@ public class Expression {
 	
 	public Expression(Object value) {
 		this.value = value;
-	}
-	/*
-	public Expression(Object value, Expression left, Expression right) {
-		this.value = value;
-		this.left = left;
-		this.right = right;
-	}*/
+	}	
 	
 	public Expression(String type,  Expression left, Expression right) {
 		this.type = type;	
@@ -39,6 +32,10 @@ public class Expression {
 	 * This method is redefined for each Expression subclass 
 	 * which handle its conditions to give the value from an expression
 	*/
+	public Object execute() throws Exception {
+		return value;
+	}
+	
 	public Object getValue() throws Exception {
 		return value;
 	}
@@ -55,7 +52,7 @@ public class Expression {
 		this.value = value;
 	}
 	
-	public Object getLeft() {
+	public Expression getLeft() {
 		return left;
 	}
 	
@@ -63,7 +60,7 @@ public class Expression {
 		this.left = left;
 	}
 	
-	public Object getRight() {
+	public Expression getRight() {
 		return right;
 	}
 	
