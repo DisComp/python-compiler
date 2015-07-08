@@ -50,13 +50,13 @@ public class Tests {
     
         Tests.beginSection("Arithmetical Tests");
         
-        Tests.displayResult(ae1.getValue(),"2.0");
-        Tests.displayResult(ae2.getValue(),"5");
-        Tests.displayResult(ae3.getValue(),"8.0");
-        Tests.displayResult(ae4.getValue(),"-7999980");
-        Tests.displayResult(ae5.getValue(),"2");
-        Tests.displayResult(ae6.getValue(),"6.6");
-        Tests.displayResult(ae7.getValue(),"9.2");
+        Tests.displayResult(ae1.execute(),"2.0");
+        Tests.displayResult(ae2.execute(),"5");
+        Tests.displayResult(ae3.execute(),"8.0");
+        Tests.displayResult(ae4.execute(),"-7999980");
+        Tests.displayResult(ae5.execute(),"2");
+        Tests.displayResult(ae6.execute(),"6.6");
+        Tests.displayResult(ae7.execute(),"9.2");
         
         Tests.endSection();
 	}
@@ -71,12 +71,12 @@ public class Tests {
 		
 		Tests.beginSection("Bitwise Tests");
         
-        Tests.displayResult(Integer.toHexString((int)be1.getValue()),"1");
-        Tests.displayResult(Integer.toHexString((int)be2.getValue()),"fffffffe (1 bit a la izquierda)");
-        Tests.displayResult(Integer.toHexString((int)be3.getValue()),"0");
-        Tests.displayResult(Integer.toHexString((int)be4.getValue()),"ffffffff");
-        Tests.displayResult(Integer.toHexString((int)be5.getValue()),"8 (1 bit a la derecha)");
-        Tests.displayResult(Integer.toHexString((int)be6.getValue()),"fffffffe");
+        Tests.displayResult(Integer.toHexString((int)be1.execute()),"1");
+        Tests.displayResult(Integer.toHexString((int)be2.execute()),"fffffffe (1 bit a la izquierda)");
+        Tests.displayResult(Integer.toHexString((int)be3.execute()),"0");
+        Tests.displayResult(Integer.toHexString((int)be4.execute()),"ffffffff");
+        Tests.displayResult(Integer.toHexString((int)be5.execute()),"8 (1 bit a la derecha)");
+        Tests.displayResult(Integer.toHexString((int)be6.execute()),"fffffffe");
         
         Tests.endSection();
 	}
@@ -97,15 +97,15 @@ public class Tests {
 		
 		Tests.beginSection("Boolean Tests");
         
-        Tests.displayResult(be1.getValue(),"false");
-        Tests.displayResult(be2.getValue(),"true");
-        Tests.displayResult(be3.getValue(),"false");
-        Tests.displayResult(be4.getValue(),"true");
-        Tests.displayResult(be5.getValue(),"true");
-        Tests.displayResult(be6.getValue(),"false");
-        Tests.displayResult(be7.getValue(),"true");
-        Tests.displayResult(be8.getValue(),"true");
-        Tests.displayResult(be9.getValue(),"true");
+        Tests.displayResult(be1.execute(),"false");
+        Tests.displayResult(be2.execute(),"true");
+        Tests.displayResult(be3.execute(),"false");
+        Tests.displayResult(be4.execute(),"true");
+        Tests.displayResult(be5.execute(),"true");
+        Tests.displayResult(be6.execute(),"false");
+        Tests.displayResult(be7.execute(),"true");
+        Tests.displayResult(be8.execute(),"true");
+        Tests.displayResult(be9.execute(),"true");
         
         Tests.endSection();
 	}

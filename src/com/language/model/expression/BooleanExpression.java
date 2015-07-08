@@ -38,7 +38,7 @@ public class BooleanExpression extends Expression {
 	}
 	
 	@Override
-	public Object getValue() throws Exception {
+	public Object execute() throws Exception {
 		Object returnObject = null;
 		Expression left 		= this.getLeft();
 		Expression right 		= this.getRight();
@@ -64,12 +64,12 @@ public class BooleanExpression extends Expression {
 				rightType = "";
 		
 		if (leftValue != null) {
-			leftValue = l.getValue();
+			leftValue = l.execute();
 			leftType = leftValue.getClass().getSimpleName();
 		}
 		
 		if (rightValue != null) {
-			rightValue = r.getValue();
+			rightValue = r.execute();
 			rightType = rightValue.getClass().getSimpleName();
 		}
 		
