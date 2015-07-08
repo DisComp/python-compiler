@@ -56,42 +56,50 @@ public class BooleanExpression extends Expression {
 	}
 	
 	public static Object operation(String type,Expression l,Expression r) throws Exception{
-		Object 	obj = null;
-		Object  leftObject  = l.getValue(),
-				rightObject = r.getValue();
+		Object 	obj = null,
+				leftValue = l,
+				rightValue = r;
 		
-		String 	leftType = leftObject.getClass().getName(),
-				rightType = rightObject.getClass().getName();
+		String 	leftType = "",
+				rightType = "";
 		
-		if(leftType == "boolean" || rightType == "boolean")	{
-			boolean leftValue  = (boolean)leftObject,
-					rightValue = (boolean)rightObject;
+		if (leftValue != null) {
+			leftValue = l.getValue();
+			leftType = leftValue.getClass().getSimpleName();
+		}
+		
+		if (rightValue != null) {
+			rightValue = r.getValue();
+			rightType = rightValue.getClass().getSimpleName();
+		}
+		
+		if((leftValue == null || leftType.equals("Boolean")) && ( rightValue == null || rightType.equals("Boolean"))) 	{
 			
 			switch(type)
 			{
 				case BooleanExpression.NOT:
 				{				
-					obj = !leftValue;
+					obj = !(boolean)leftValue;
 					break;
 				}
 				case BooleanExpression.AND:
 				{
-					obj = leftValue && rightValue;
+					obj = (boolean)leftValue && (boolean)rightValue;
 					break;
 				}
 				case BooleanExpression.OR:
 				{
-					obj = leftValue || rightValue;
+					obj = (boolean)leftValue || (boolean)rightValue;
 					break;
 				}
 				case BooleanExpression.EQUALS:
 				{
-					obj = leftValue == rightValue;
+					obj = (boolean)leftValue == (boolean)rightValue;
 					break;
 				}
 				case BooleanExpression.DISTINCT:
 				{
-					obj = leftValue != rightValue;
+					obj = (boolean)leftValue != (boolean)rightValue;
 					break;
 				}
 				default:
@@ -101,8 +109,6 @@ public class BooleanExpression extends Expression {
 			}
 		}
 		else {
-			Number  leftValue  = (Number)leftObject,
-					rightValue = (Number)rightObject;
 			
 			switch(type)
 			{
@@ -110,69 +116,219 @@ public class BooleanExpression extends Expression {
 				
 				case BooleanExpression.EQUALS:
 				{
-					obj = leftValue == rightValue;
+					if(leftType.equals("Integer") && rightType.equals("Integer")) {
+						obj = (int)leftValue == (int)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Long")) {
+						obj = (long)leftValue == (long)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Integer")) {
+						obj = (long)leftValue == (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Long")) {
+						obj = (int)leftValue == (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Double")) {
+						obj = (double)leftValue == (double)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Double")) {
+						obj = (long)leftValue == (double)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Long")) {
+						obj = (double)leftValue == (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Integer")) {
+						obj = (double)leftValue == (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Double")) {
+						obj = (int)leftValue == (double)rightValue;
+					}
+					else {
+						obj = leftValue == rightValue;
+					}
+					
 					break;
 				}
 				case BooleanExpression.DISTINCT:
 				{
-					obj = leftValue != rightValue;
+					if(leftType.equals("Integer") && rightType.equals("Integer")) {
+						obj = (int)leftValue != (int)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Long")) {
+						obj = (long)leftValue != (long)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Integer")) {
+						obj = (long)leftValue != (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Long")) {
+						obj = (int)leftValue != (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Double")) {
+						obj = (double)leftValue != (double)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Double")) {
+						obj = (long)leftValue != (double)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Long")) {
+						obj = (double)leftValue != (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Integer")) {
+						obj = (double)leftValue != (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Double")) {
+						obj = (int)leftValue != (double)rightValue;
+					}
+					else {
+						obj = leftValue != rightValue;
+					}
+					
 					break;
 				}
 				case BooleanExpression.LESS:
 				{
-					if(leftType == "Double" || rightType == "Double") {
-						obj = (double)leftValue < (double)rightValue; 
+					if(leftType.equals("Integer") && rightType.equals("Integer")) {
+						obj = (int)leftValue < (int)rightValue;
 					}
-					else if(leftType == "Long" || rightType == "Long") {
-						obj = (long)leftValue.intValue() < (long)rightValue.intValue();
+					else if(leftType.equals("Long") && rightType.equals("Long")) {
+						obj = (long)leftValue < (long)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Integer")) {
+						obj = (long)leftValue < (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Long")) {
+						obj = (int)leftValue < (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Double")) {
+						obj = (double)leftValue < (double)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Double")) {
+						obj = (long)leftValue < (double)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Long")) {
+						obj = (double)leftValue < (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Integer")) {
+						obj = (double)leftValue < (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Double")) {
+						obj = (int)leftValue < (double)rightValue;
 					}
 					else {
-						obj = (int)leftValue.intValue() < (int)rightValue.intValue();
+						throw new Exception("El Tipo de los operandos son incorrectos el operador '<' ");
 					}
+					
 					break;
 				}
 				case BooleanExpression.GREATER:
 				{
-					if(leftType == "Double" || rightType == "Double") {
-						obj = (double)leftValue > (double)rightValue; 
+					if(leftType.equals("Integer") && rightType.equals("Integer")) {
+						obj = (int)leftValue > (int)rightValue;
 					}
-					else if(leftType == "Long" || rightType == "Long") {
-						obj = (long)leftValue.intValue() > (long)rightValue.intValue();
+					else if(leftType.equals("Long") && rightType.equals("Long")) {
+						obj = (long)leftValue > (long)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Integer")) {
+						obj = (long)leftValue > (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Long")) {
+						obj = (int)leftValue > (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Double")) {
+						obj = (double)leftValue > (double)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Double")) {
+						obj = (long)leftValue > (double)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Long")) {
+						obj = (double)leftValue > (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Integer")) {
+						obj = (double)leftValue > (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Double")) {
+						obj = (int)leftValue > (double)rightValue;
 					}
 					else {
-						obj = (int)leftValue.intValue() > (int)rightValue.intValue();
+						throw new Exception("El Tipo de los operandos son incorrectos el operador '>' ");
 					}
+					
 					break;
 				}
 				case BooleanExpression.LESS_EQUAL:
 				{
-					if(leftType == "Double" || rightType == "Double") {
-						obj = (double)leftValue <= (double)rightValue; 
+					if(leftType.equals("Integer") && rightType.equals("Integer")) {
+						obj = (int)leftValue <= (int)rightValue;
 					}
-					else if(leftType == "Long" || rightType == "Long") {
-						obj = (long)leftValue.intValue() <= (long)rightValue.intValue();
+					else if(leftType.equals("Long") && rightType.equals("Long")) {
+						obj = (long)leftValue <= (long)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Integer")) {
+						obj = (long)leftValue <= (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Long")) {
+						obj = (int)leftValue <= (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Double")) {
+						obj = (double)leftValue <= (double)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Double")) {
+						obj = (long)leftValue <= (double)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Long")) {
+						obj = (double)leftValue <= (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Integer")) {
+						obj = (double)leftValue <= (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Double")) {
+						obj = (int)leftValue <= (double)rightValue;
 					}
 					else {
-						obj = (int)leftValue.intValue() <= (int)rightValue.intValue();
+						throw new Exception("El Tipo de los operandos son incorrectos el operador '<=' ");
 					}
+					
 					break;
+
 				}
 				case BooleanExpression.GREATER_EQUAL:
 				{
-					if(leftType == "Double" || rightType == "Double") {
-						obj = (double)leftValue >= (double)rightValue; 
+					if(leftType.equals("Integer") && rightType.equals("Integer")) {
+						obj = (int)leftValue >= (int)rightValue;
 					}
-					else if(leftType == "Long" || rightType == "Long") {
-						obj = (long)leftValue.intValue() >= (long)rightValue.intValue();
+					else if(leftType.equals("Long") && rightType.equals("Long")) {
+						obj = (long)leftValue >= (long)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Integer")) {
+						obj = (long)leftValue >= (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Long")) {
+						obj = (int)leftValue >= (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Double")) {
+						obj = (double)leftValue >= (double)rightValue;
+					}
+					else if(leftType.equals("Long") && rightType.equals("Double")) {
+						obj = (long)leftValue >= (double)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Long")) {
+						obj = (double)leftValue >= (long)rightValue;
+					}
+					else if(leftType.equals("Double") && rightType.equals("Integer")) {
+						obj = (double)leftValue >= (int)rightValue;
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Double")) {
+						obj = (int)leftValue >= (double)rightValue;
 					}
 					else {
-						obj = (int)leftValue.intValue() >= (int)rightValue.intValue();
+						throw new Exception("El Tipo de los operandos son incorrectos el operador '>=' ");
 					}
+					
 					break;
+
 				}
 				default:
 				{
-					throw new Exception("Unrecognized boolean operator");
+					throw new Exception("Operador no reconocido");
 				}
 			}
 		}
