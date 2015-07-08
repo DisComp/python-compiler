@@ -38,8 +38,8 @@ public class BitwiseExpression extends Expression {
 	@Override
 	public Object getValue() throws Exception {
 		Object returnObject = null;
-		Object left 		= this.getLeft();
-		Object right 		= this.getRight();
+		Expression left 	= this.getLeft();
+		Expression right 	= this.getRight();
 		
 		if(left != null || right != null)
 		{
@@ -53,38 +53,41 @@ public class BitwiseExpression extends Expression {
 		return returnObject;
 	}
 	
-	public static Object operation(String type,Object l, Object r) throws Exception {
-		int obj;
+	public static Object operation(String type,Expression l, Expression r) throws Exception {
+		Object 	obj = null;
+		int leftValue  = (int)l.getValue(),
+			rightValue = (int)r.getValue();
+		
 		switch(type)
 		{
 			case BitwiseExpression.OR_BIT:
 			{
-				obj = (int)l | (int)r;
+				obj = leftValue | rightValue;
 				break;
 			}
 			case BitwiseExpression.AND_BIT:
 			{
-				obj = (int)l & (int)r;
+				obj = leftValue & rightValue;
 				break;
 			}
 			case BitwiseExpression.XOR_BIT:
 			{
-				obj = (int)l ^ (int)r;
+				obj = leftValue ^ rightValue;
 				break;
 			}
 			case BitwiseExpression.LSHIFT:
 			{
-				obj = (int)l << (int)r;
+				obj = leftValue << rightValue;
 				break;
 			}
 			case BitwiseExpression.RSHIFT:
 			{
-				obj = (int)l >> (int)r;
+				obj = leftValue >> rightValue;
 				break;
 			}
 			case BitwiseExpression.NOT_BIT:
 			{
-				obj = ~((int)l);
+				obj = ~(leftValue);
 				break;
 			}
 			default:
