@@ -1,2 +1,5 @@
-def miFunc(a,b):
+def f1(a,b):
+	True
+	return 3+3
+def f2():
 	True

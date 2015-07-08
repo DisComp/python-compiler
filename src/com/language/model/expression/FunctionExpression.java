@@ -10,13 +10,14 @@ public class FunctionExpression extends Expression {
 	
 	private List<String> parameters;
 	private String name;
-	
+	private Expression returnExp;
 	public String getName(){
 		return name;
 	}
 	public FunctionExpression(String id,Expression _body,List<String> params){
 		parameters=params;//ya se sabe que no vienen repetidos
-		this.setLeft(_body);
+		this.setLeft(_body.getLeft());//en el body viene el cuerpo y el return(izq y der respectivamente)
+		returnExp = _body.getRight();
 		name = id;
 	}
 	
@@ -25,21 +26,27 @@ public class FunctionExpression extends Expression {
 		return new FunctionExpression(id,_body,params);
 	}
 	
+	public Object RunFunction() throws Exception{
+		ScopesController.getInstance().openScope(name);
+		Object result = this.getLeft().execute();
+		if(returnExp==null)
+			result= null;
+		else 
+			result = returnExp.execute();
+		ScopesController.getInstance().closeScope();
+		return result;
+		
+	}
 	@Override
 	public Object execute(){
 		ScopesController.getInstance().addFunction(this);
 		return null;
 	}
 	public String toString(){
-		String res = "funcion parseada:/n";
-		res+=name+"\n";
-		res+=parameters.toString();
+		String res = name+"\n";
+		res+="parameters: "+parameters.toString()+"\n";
+		res+="returnExpresion: "+returnExp;
 		return res;
-		/*StringBuffer sb = new StringBuffer();	
-		sb.append("def ");
-		sb.append(this.func_name);
-		sb.append("():\n\t");
-		return sb.append(super.toString()).toString();*/
 	}
 	
 
