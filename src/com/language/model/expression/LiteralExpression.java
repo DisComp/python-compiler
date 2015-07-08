@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.language.controllers.ScopesController;
 import com.language.exceptions.ParsingException;
 
 
@@ -23,23 +24,12 @@ public class LiteralExpression extends Expression {
 	public static final String ASSIGN = "Assign";
 	public static final String STRUCTURE_ACCESS = "StructureAccess";
 	public static final String STRUCTURE_ACCESS_ELEMENT = "StructureAccessElement";
-	public static final String ASSIGN_STRUCTURE_ACCESS = "AssignStructureAccess";
-	
-	private Object variableValue;
-
-	public Object getVariableValue() {
-		return variableValue;
-	}
-
-	public void setVariableValue(Object variableValue) {
-		this.variableValue = variableValue;
-	}
+	public static final String ASSIGN_STRUCTURE_ACCESS = "AssignStructureAccess";	
 	
 	public LiteralExpression() {
 		super();
 	}
-	
-	
+		
 	public LiteralExpression(String type, Expression left, Expression right) {
 		super(type, left, right);
 	}
@@ -82,20 +72,15 @@ public class LiteralExpression extends Expression {
 		return new LiteralExpression(STRING, stringValue, null, null);
 	}
 	
-	public static Expression createAssignment(Object assigned_expr, Expression value) throws Exception {
-		//Map<String, Object> assignValue = new HashMap<String, Object>();
-		//assignValue.put(identifier, value);
-		LiteralExpression le = null;
-		Expression expr = (Expression)assigned_expr;
+	public static Expression createAssignment(Expression expr, Expression value) throws Exception {
+		LiteralExpression le = null;		
 		if(expr.getType() == LiteralExpression.ID){
 			String identifier = (String)expr.getValue();
 			le = new LiteralExpression(ASSIGN, identifier, value, null);
-			//le.setVariableValue(value);
 		} else if (expr.getType() == LiteralExpression.STRUCTURE_ACCESS){
 			Expression identifier = (Expression)expr.getValue();
 			Expression structureAccess = (Expression)expr.getLeft(); 
 			le = new LiteralExpression(ASSIGN_STRUCTURE_ACCESS, identifier, value, structureAccess);
-			//le.setVariableValue(value);
 		}
 		return le;
 	}
@@ -254,6 +239,9 @@ public class LiteralExpression extends Expression {
 	
 	@Override
 	public Object execute() throws Exception {
+		
+		ScopesController sc = ScopesController.getInstance();
+		
 		switch(this.getType()){
 			case INTEGER:
 			case FLOAT:
@@ -266,11 +254,16 @@ public class LiteralExpression extends Expression {
 				return super.getValue();
 			case NONE:
 				return null;
-			case ID:
-				return super.getValue(); // get the value from the ScopesController
+			case ID:				
+				Expression var = sc.getVariable((String)this.getLeft().getValue());	
+				return var;
+				
 			case ASSIGN:
-				String identifier = (String)super.getValue();
-				// add variable to scope 
+				String name = (String)this.getValue();
+				Expression value = this.getLeft();
+				sc.addVariable(name, value);
+				return null;
+				
 			case ASSIGN_STRUCTURE_ACCESS:
 				//replace list value at index
 				

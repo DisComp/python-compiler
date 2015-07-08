@@ -3,6 +3,8 @@ package com.language.model.expression;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.language.controllers.ScopesController;
+
 
 public class PredefinedFunctionExpression extends Expression {
 	
@@ -152,23 +154,30 @@ public class PredefinedFunctionExpression extends Expression {
 					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
 				}
 				
+				Expression element = this.getLeft();
+				Expression argumentExpr = this.getRight();
+				
 				if(this.getLeft().getType() == LiteralExpression.ID) {
 					
-				} else if(this.getLeft().getType() == LiteralExpression.DICTIONARY) {
+					ScopesController sc = ScopesController.getInstance();
+					Expression varValue = sc.getVariable((String)this.getLeft().getValue());
+					element = varValue;
+				}
 					
-					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)this.getLeft().getValue();
-					Expression argumentExpr = this.getRight();
+				if(element.getType() == LiteralExpression.DICTIONARY) {
+					
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)element.getValue();					
 					Object argumentValue = argumentExpr.getLeft().getValue();
-					if(argumentExpr.getType() == LiteralExpression.ID) {
+					
+					if(argumentExpr.getLeft().getType() == LiteralExpression.ID) {
 						
-					} else {
-						Map<Object, Object> aux = new HashMap<Object, Object>();
-						aux.put(argumentValue, 2);
-						aux.put(true, false);
-						
-						Boolean result = dictionary.containsKey(argumentValue);
-						return result; 
+						ScopesController sc = ScopesController.getInstance();
+						Expression varValue = sc.getVariable((String)argumentExpr.getLeft().getValue());
+						argumentValue = varValue.execute();
 					}
+						
+					Boolean result = dictionary.containsKey(argumentValue);
+					return result; 
 					
 				} else {					
 					throw new Exception("Esta funcion no esta definida para el tipo " + this.getLeft().getType());
