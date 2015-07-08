@@ -16,7 +16,7 @@ public class FunctionExpression extends Expression {
 	}
 	public FunctionExpression(String id,Expression _body,List<String> params){
 		parameters=params;//ya se sabe que no vienen repetidos
-		this.setLeft(_body.getLeft());//en el body viene el cuerpo y el return
+		this.setLeft(_body.getLeft());//en el body viene el cuerpo y el return(izq y der respectivamente)
 		returnExp = _body.getRight();
 		name = id;
 	}
@@ -28,8 +28,14 @@ public class FunctionExpression extends Expression {
 	
 	public Object RunFunction() throws Exception{
 		ScopesController.getInstance().openScope(name);
+		Object result = this.getLeft().execute();
+		if(returnExp==null)
+			result= null;
+		else 
+			result = returnExp.execute();
+		ScopesController.getInstance().closeScope();
+		return result;
 		
-		return this.getLeft().execute();
 	}
 	@Override
 	public Object execute(){
