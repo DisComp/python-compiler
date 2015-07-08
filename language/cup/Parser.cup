@@ -104,6 +104,7 @@ non terminal Expression stmt;
 non terminal Expression compl_stmt;
 non terminal Expression indent_ins;
 non terminal Expression suit;
+non terminal Expression suit_func;
 non terminal Expression program;
 
 
@@ -165,10 +166,18 @@ individual_parameters ::=ID: id {: 	List<String> l = new ArrayList<String>();
 																		else 	
 																			iparams.add(id);
 																		RESULT = iparams;:} ;		
+suit_func::= IDENT stmt:s RETURN expr:e DEDENT{:	Expression exp = new Expression();
+													exp.setLeft(s);
+													exp.setRight(e);
+													RESULT = exp; :}
+			|IDENT stmt:s DEDENT{:	Expression exp = new Expression();
+									exp.setLeft(s);
+									exp.setRight(null);
+									RESULT = exp; :};
 	
 function_block ::=	DEF ID: funct_name
 					LPAREN parameters:params RPAREN 
-					COLON suit:s {: RESULT = FunctionExpression.create(funct_name,s,params); :};
+					COLON suit_func:s {: RESULT = FunctionExpression.create(funct_name,s,params); :};
 				
 
 //individual_parameter::= ID:id {: RESULT = id; : };
