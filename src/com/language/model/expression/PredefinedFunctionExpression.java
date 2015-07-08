@@ -167,7 +167,6 @@ public class PredefinedFunctionExpression extends Expression {
 						aux.put(true, false);
 						
 						Boolean result = dictionary.containsKey(argumentValue);
-						System.out.println("HAS KEY RESULT: " + result );
 						return result; 
 					}
 					

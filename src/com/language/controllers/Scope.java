@@ -4,15 +4,17 @@ import java.util.Map;
 
 import com.language.exceptions.ParsingException;
 import com.language.model.expression.Expression;
+import com.language.model.expression.FunctionExpression;
 
 public class Scope {
 	private Map<String, Expression> variables; // name - variable
 	private String name;
-	
+	private Map<String,FunctionExpression> functions;
 	
 	public Scope(String _name){
 		this.name = _name;
 		this.variables = new HashMap<String,Expression>();
+		functions = new HashMap<String,FunctionExpression>();
 	}
 	
 	public boolean containsVariable(String var){
@@ -26,5 +28,15 @@ public class Scope {
 	
 	public void addVariable(String name, Expression value){
 		variables.put(name,value);//java remplaza el valor antiguo en caso de que exista la var
+	}
+	public void addFunction(FunctionExpression f){
+		functions.put(f.getName(), f);
+	}
+	@Override
+	public String toString(){
+		String res=name+"\n";
+		res="variables: "+variables.toString()+"\n";
+		res+="functions: "+functions.toString();
+		return res;
 	}
 }
