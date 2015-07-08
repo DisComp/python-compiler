@@ -15,18 +15,16 @@ public class Scope {
 		this.variables = new HashMap<String,Expression>();
 	}
 	
-	public boolean containsVariable(String var){
+	/*public boolean containsVariable(String var){
 		return variables.containsKey(var);
-	}
+	}*/
 	
-	public Object getVariable(String var){
+	public Expression getVariable(String var){
+		//si no existe retorna null
 		return variables.get(var);
 	}
 	
 	public void addVariable(String name, Expression value){
-		if(containsVariable(name))
-			throw new ParsingException("La variable "+name+" ya está definida dentro del scope");
-		else
-			variables.put(name,value);
+		variables.put(name,value);//java remplaza el valor antiguo en caso de que exista la var
 	}
 }
