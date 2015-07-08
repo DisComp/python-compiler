@@ -32,7 +32,7 @@ public class ArithmeticalExpression extends Expression {
 	}
 	
 	@Override
-	public Object getValue() throws Exception {
+	public Object execute() throws Exception {
 		Object returnObject = null;
 		Expression left 		= this.getLeft();
 		Expression right 		= this.getRight();
