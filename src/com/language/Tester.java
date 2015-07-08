@@ -15,7 +15,7 @@ public class Tester {
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
-        // Creating do all tests! //
+        // Creating all tests! //
         //Tests.doTests();
         
         while (line != null) {         
