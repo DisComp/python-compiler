@@ -51,9 +51,9 @@ public class ArithmeticalExpression extends Expression {
 	
 	public static Object operation(String type, Expression l, Expression r) throws Exception {
 		
-		Number	obj = 0,
-				leftValue = (Number)l.getValue(),
-				rightValue = (Number)r.getValue();
+		Number	obj = 0;
+		Object	leftValue = l.getValue(),
+				rightValue = r.getValue();
 		
 		String 	leftType = leftValue.getClass().getSimpleName(),
 				rightType = rightValue.getClass().getSimpleName();
