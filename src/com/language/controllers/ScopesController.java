@@ -1,4 +1,5 @@
 package com.language.controllers;
+import com.language.model.expression.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -14,16 +15,21 @@ public class ScopesController {
 	private int expectedTabs;
 	
 	private Stack<Scope> scopes;
-	private Map<String,Funcion> funciones; /* va acá porque las funciónes se agregan en el parseo y no en la ejecucion, no?*/
 	
+	private void log(){
+		System.out.println("SCOPES BEGIN---------------------");
+		System.out.println(scopes.toString());		
+		System.out.println("SCOPES END---------------------");
+	}
 	
 	private ScopesController() {
 		//tabsContados = 0;
 		dedentToSend = 0;
 		expectedTabs = 0;
 		scopes = new Stack<Scope>();
-		funciones = new HashMap<String,Funcion>();
 		scopes.push(new Scope("main"));
+
+		log();
     }
 	
 	public static ScopesController getInstance() {
@@ -37,18 +43,22 @@ public class ScopesController {
 	//Used by if,while, fun,.. Before Execute()
 	public void openScope(String scope){
 		scopes.push(new Scope(scope));
+		log();
 	}
 	//Used by if,while, fun,.. After Execute()
 	public void closeScope() {
 		scopes.pop();
+		log();
 	}
 	
 	
 	public void addVariable(String name, Expression val){
 		scopes.peek().addVariable(name, val);
+		log();
 	}
 	
 	public Expression getVariable(String var_name){
+		log();
 		for(int i= 0; i< scopes.size();i++){
 			if(scopes.elementAt(i).containsVariable(var_name)){
 				Expression var = scopes.elementAt(i).getVariable(var_name);
@@ -64,8 +74,9 @@ public class ScopesController {
 	
 	
 	
-	public void addFunctionParameter(String par){
-		
+	public void addFunction(FunctionExpression fun){
+		scopes.peek().addFunction(fun);
+		log();
 	}
 
 	/***IDENT/DEDENT Control***/
