@@ -100,6 +100,8 @@ non terminal Expression literal_expr;
 non terminal Expression function_call;
 non terminal List<String> parameters;
 non terminal List<String> individual_parameters;
+non terminal List<Expression> call_parameters;
+non terminal List<Expression> call_individual_parameters;
 
 non terminal Expression stmt;
 non terminal Expression compl_stmt;
@@ -155,11 +157,23 @@ instr ::= expr: exp {: RESULT = exp; :}
 		| assignment_expr: v {: RESULT = v; :}
 		| function_call:fc {: RESULT = fc; :};
 
-function_call::= ID:id LPAREN parameters:p RPAREN {: FunctionCallExpression.create(id,p) :};
 
-parameters ::= {: RESULT = new ArrayList(); :}//sin parámetros
-			|individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro
-			
+/*Function definition*/		
+function_call::= ID:id LPAREN call_parameters:cp RPAREN {: FunctionCallExpression.create(id,cp); :};
+call_parameters ::= {: RESULT = new ArrayList<Expression>(); :}//sin parámetros
+			|call_individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro	
+
+call_individual_parameters ::=ID: id {: 	List<Expression> l = new ArrayList<Expression>();
+									l.add(new Expression());
+									RESULT = l; :}
+						| ID: id COMMA call_individual_parameters:iparams {:	iparams.add(new Expression());RESULT = iparams;:} ;	
+																		
+function_block ::=	DEF ID: funct_name
+					LPAREN parameters:params RPAREN 
+					COLON suit_func:s {: RESULT = FunctionExpression.create(funct_name,s,params); :};
+parameters ::= {: RESULT = new ArrayList<String>(); :}//sin parámetros
+			|individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro	
+
 individual_parameters ::=ID: id {: 	List<String> l = new ArrayList<String>();
 									l.add(id);
 									RESULT = l; :}
@@ -167,7 +181,8 @@ individual_parameters ::=ID: id {: 	List<String> l = new ArrayList<String>();
 																				throw new ParsingException("El parametro "+id+" ya fue definido");
 																		else 	
 																			iparams.add(id);
-																		RESULT = iparams;:} ;		
+																		RESULT = iparams;:} ;	
+																			
 suit_func::= IDENT stmt:s RETURN expr:e DEDENT{:	Expression exp = new Expression();
 													exp.setLeft(s);
 													exp.setRight(e);
@@ -177,12 +192,9 @@ suit_func::= IDENT stmt:s RETURN expr:e DEDENT{:	Expression exp = new Expression
 									exp.setRight(null);
 									RESULT = exp; :};
 	
-function_block ::=	DEF ID: funct_name
-					LPAREN parameters:params RPAREN 
-					COLON suit_func:s {: RESULT = FunctionExpression.create(funct_name,s,params); :};
+
 				
 
-//individual_parameter::= ID:id {: RESULT = id; : };
 
 /* If block */
 if_block ::= IF expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
