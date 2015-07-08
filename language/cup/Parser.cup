@@ -130,7 +130,7 @@ start with program;
 
 program ::= stmt: s 
 			{: 
-				((StatementExpression)s).execute();
+				s.execute();
 				RESULT = s;
 			:};
 
@@ -182,7 +182,7 @@ left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :}
 				|  atom_structured_types_access: asta {: RESULT = asta; :};  // other things that can be assigned e.g lists, dicts
 
 								/* We need to extract the variable value from the java code */
-predefined_functions_expr ::= ID: id POINT predefined_dictionary_functions: pdf {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction( LiteralExpression.createIdentifier(id), pdf); :}
+predefined_functions_expr ::= literal_expr: le POINT predefined_dictionary_functions: pdf {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction( le, pdf); :}
 							| ID: id POINT predefined_string_functions: psf {: RESULT =  PredefinedFunctionExpression.createStringFunction(LiteralExpression.createIdentifier(id), psf); :}
 							| ID: id POINT predefined_list_functions: plf {: RESULT =  PredefinedFunctionExpression.createListFunction(LiteralExpression.createIdentifier(id), plf); :}
 							| predefined_io_functions: piof {: RESULT =  piof; :}
@@ -193,10 +193,10 @@ predefined_functions_expr ::= ID: id POINT predefined_dictionary_functions: pdf 
 							| ID: id POINT POP_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createPopFunction(LiteralExpression.createIdentifier(id), le); :}
 							| ID: id POINT COUNT_FUNC LPAREN literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createCountFunction(LiteralExpression.createIdentifier(id), le); :};
 
-predefined_dictionary_functions ::=   HAS_KEY_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.HAS_KEY_FUNC, le); :}
-									| ITEMS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.ITEMS_FUNC, null); :}
-									| KEYS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.KEYS_FUNC, null); :}									
-									| VALUES_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.VALUES_FUNC, null); :};
+predefined_dictionary_functions ::=   HAS_KEY_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.HAS_KEY_FUNC, le); :}
+									| ITEMS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.ITEMS_FUNC, null); :}
+									| KEYS_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.KEYS_FUNC, null); :}									
+									| VALUES_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createDictionaryFunctionElement(PredefinedFunctionExpression.VALUES_FUNC, null); :};
 
 
 predefined_string_functions ::= FIND_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createStringFunctionElement(PredefinedFunctionExpression.FIND_FUNC, le); :}

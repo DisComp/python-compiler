@@ -1,7 +1,10 @@
 package com.language.model.expression;
 
+import java.util.HashMap;
+import java.util.Map;
 
-public class PredefinedFunctionExpression extends Expression{
+
+public class PredefinedFunctionExpression extends Expression {
 	
 	/* Dictionaries */
 	public static final String HAS_KEY_FUNC = "HasKeyFunc";
@@ -67,9 +70,9 @@ public class PredefinedFunctionExpression extends Expression{
 		return new PredefinedFunctionExpression(expr.getType(), dict_left, expr);
 	}
 	
-	public static Expression createDictionaryFunctionElement(String type, Expression right) {
-		/* Save dictionary function parameters on the right (dictionary object will be on the left) */
-		return new PredefinedFunctionExpression(type, null, right);
+	public static Expression createDictionaryFunctionElement(String type, Expression left) {
+		/* Save dictionary function parameters  */
+		return new PredefinedFunctionExpression(type, left, null);
 	}
 	
 	public static Expression createStringFunction(Expression string_left, Expression expr) {
@@ -133,6 +136,49 @@ public class PredefinedFunctionExpression extends Expression{
 	public static Expression createCountFunction(Expression left, Expression right) {
 		/*e.g: pop function, used for dictionaries and lists, left for object and right for the parameter */
 		return new PredefinedFunctionExpression(COUNT_FUNC, null, left, right);
+	}
+	
+	@Override
+	public Object execute() throws Exception {
+		
+		switch(this.getType()){
+		
+			case HAS_KEY_FUNC:
+				
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para null");
+				}
+				if(this.getRight() == null){
+					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
+				}
+				
+				if(this.getLeft().getType() == LiteralExpression.ID) {
+					
+				} else if(this.getLeft().getType() == LiteralExpression.DICTIONARY) {
+					
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)this.getLeft().getValue();
+					Expression argumentExpr = this.getRight();
+					Object argumentValue = argumentExpr.getLeft().getValue();
+					if(argumentExpr.getType() == LiteralExpression.ID) {
+						
+					} else {
+						Map<Object, Object> aux = new HashMap<Object, Object>();
+						aux.put(argumentValue, 2);
+						aux.put(true, false);
+						
+						Boolean result = dictionary.containsKey(argumentValue);
+						System.out.println("HAS KEY RESULT: " + result );
+						return result; 
+					}
+					
+				} else {					
+					throw new Exception("Esta funcion no esta definida para el tipo " + this.getLeft().getType());
+				}
+				
+			default:
+				//return super.getValue();
+				throw new Exception("Tipo literal no reconocido");
+		}
 	}
 	
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.language.exceptions.ParsingException;
+
 
 public class LiteralExpression extends Expression {
 	
@@ -130,14 +132,14 @@ public class LiteralExpression extends Expression {
 		return new LiteralExpression(LIST, left, right); //type, left, right
 	}
 	
-	public static Expression createDictionary(Object value) throws Exception {		
+	public static Expression createDictionary(Expression value) throws Exception {		
 		/*
 		 	This method builds a dictionary as a tree, where the next key value pair
 		 	of the dictionary is on the right side, producing a right-balanced
 		 	tree containing all dictionary element objects
 		*/
 		Map<Object, Object> dictionaryValue = new HashMap<Object, Object>();
-		Expression dictionaryElement = (Expression)value;
+		Expression dictionaryElement = value;
 		
 		
 		if(dictionaryElement.getRight() != null){
@@ -175,7 +177,11 @@ public class LiteralExpression extends Expression {
 	
 	public static Expression createAtomDictionaryElement(Expression key, Expression value){
 		Map<Object, Object> dictionaryKeyValue= new HashMap<Object, Object>();
-		dictionaryKeyValue.put(key, value);
+		try {
+			dictionaryKeyValue.put(key.getValue(), value.getValue());
+		} catch (Exception e) {
+			throw new ParsingException("Error definiendo diccionario, tipo de clave o valor no permitidos");
+		}
 		return new LiteralExpression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
 	
@@ -269,8 +275,8 @@ public class LiteralExpression extends Expression {
 				//replace list value at index
 				
 			default:
-				return super.getValue();
-				//throw new Exception("Unrecognized Literal type");
+				//return super.getValue();
+				throw new Exception("Tipo literal no reconocido");
 		}
 	}
 	
