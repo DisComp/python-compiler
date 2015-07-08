@@ -97,6 +97,7 @@ non terminal Expression element_tuple;
 non terminal Expression atom_element_tuple;
 non terminal Expression literal_expr;
 
+non terminal Expression function_call;
 non terminal List<String> parameters;
 non terminal List<String> individual_parameters;
 
@@ -151,9 +152,10 @@ indent_ins ::= IDENT stmt:s {: RESULT = s; :}
 
 				 
 instr ::= expr: exp {: RESULT = exp; :}		
-		| assignment_expr: v {: RESULT = v; :};
+		| assignment_expr: v {: RESULT = v; :}
+		| function_call:fc {: RESULT = fc; :};
 
-
+function_call::= ID:id LPAREN parameters:p RPAREN {: FunctionCallExpression.create(id,p) :};
 
 parameters ::= {: RESULT = new ArrayList(); :}//sin parámetros
 			|individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro
