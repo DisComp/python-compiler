@@ -15,9 +15,9 @@ public class Scope {
 		this.variables = new HashMap<String,Expression>();
 	}
 	
-	/*public boolean containsVariable(String var){
+	public boolean containsVariable(String var){
 		return variables.containsKey(var);
-	}*/
+	}
 	
 	public Expression getVariable(String var){
 		//si no existe retorna null

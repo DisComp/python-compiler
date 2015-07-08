@@ -50,11 +50,16 @@ public class ScopesController {
 	
 	public Expression getVariable(String var_name){
 		for(int i= 0; i< scopes.size();i++){
-			Expression var = scopes.elementAt(i).getVariable(var_name);
-			if(var!=null)
-				return var;
+			if(scopes.elementAt(i).containsVariable(var_name)){
+				Expression var = scopes.elementAt(i).getVariable(var_name);
+				if(var!=null)
+					return var;
+				else
+					throw new ParsingException("Variable "+var_name+" sin instanciar");
+			}
+			
 		}
-		throw new ParsingException("Variable "+var_name+"no definida");
+		throw new ParsingException("Variable "+var_name+" no definida");
 	}
 	
 	
