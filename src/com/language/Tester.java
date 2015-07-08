@@ -16,7 +16,7 @@ public class Tester {
         String line = br.readLine();
         
         // Creating all tests! //
-        //Tests.doTests();
+        Tests.doTests();
         
         while (line != null) {         
 			 sb.append(line);
