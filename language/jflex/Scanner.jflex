@@ -38,7 +38,7 @@ import com.language.controllers.*;
 IntroTabs = \n(\t)*
 LineTerminator = \r|\n|\r\n
 WhiteSpace     = [ \f]
-
+Triple_quotes = \"\"\"([^\"\r\n\t]*)\"\"\"
 Identifier = [:jletter:][:jletterdigit:]* 
 
 LongLiteral    =  (0 | [1-9][0-9]*)L
@@ -80,7 +80,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	
 	/* Strings */
 	
-	\"\"\"([^\"\r\t]*)\"\"\"	{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
+	{Triple_quotes}				{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
 	\"([^\"\r\n\t]*)\"			{ return symbol(sym.STRING, yytext()); } /*Double quotes*/
 	'([^\"\r\n\t]*)'			{ return symbol(sym.STRING, yytext()); } /*Single quotes*/
 	"\\" 						{ return symbol(sym.ESCAPE, "\\"); }
@@ -95,7 +95,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		        counter++;
 		    } 
 		}
-		if(counter>ScopesController.getInstance().getExpectedTabs()){
+		if(counter==ScopesController.getInstance().getExpectedTabs()+1/*counter>ScopesController.getInstance().getExpectedTabs()*/){
 			ScopesController.getInstance().addExpectedTab();
 			return symbol(sym.IDENT, "IDENT" );
 		}
@@ -215,6 +215,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	{WhiteSpace}        { /* ignore */ }
 	
 }
+
 
 /* Comment single line */
 

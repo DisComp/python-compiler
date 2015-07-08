@@ -1,1 +1,2 @@
-"hola como estás tú? todo bien?"
+"hola como estás tú?\ntodo bien?"
+'hola como estás tú?\ntodo bien?'

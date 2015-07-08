@@ -11,7 +11,7 @@ public class Scannerchild extends Scanner {
 	
 	@Override
 	public java_cup.runtime.Symbol next_token() throws java.io.IOException {
-		System.out.println("pido token");
+		//System.out.println("pido token");
 		java_cup.runtime.Symbol result;
 		if(ScopesController.getInstance().getDedentToSend()>0){
 			//result = super.next_token();
@@ -24,8 +24,8 @@ public class Scannerchild extends Scanner {
 			result= super.next_token();
 		}
 		
-		if(result!=null&&result.value!=null)
-			System.out.println("devuelvo: "+result.value.toString());
+		//if(result!=null&&result.value!=null)
+		//	System.out.println("devuelvo: "+result.value.toString());
 		return result;
 	}
 	

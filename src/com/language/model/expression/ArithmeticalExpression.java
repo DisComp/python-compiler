@@ -32,10 +32,10 @@ public class ArithmeticalExpression extends Expression {
 	}
 	
 	@Override
-	public Object getValue() throws Exception {
+	public Object execute() throws Exception {
 		Object returnObject = null;
-		Object left 		= this.getLeft();
-		Object right 		= this.getRight();
+		Expression left 		= this.getLeft();
+		Expression right 		= this.getRight();
 		
 		if(left != null || right != null)
 		{
@@ -49,51 +49,244 @@ public class ArithmeticalExpression extends Expression {
 		return returnObject;
 	}
 	
-	public static Object operation(String type, Object l, Object r) throws Exception {
-		Object obj;
+	public static Object operation(String type, Expression l, Expression r) throws Exception {
+		
+		Number	obj = 0,
+				leftValue = (Number)l.getValue(),
+				rightValue = (Number)r.getValue();
+		
+		String 	leftType = leftValue.getClass().getSimpleName(),
+				rightType = rightValue.getClass().getSimpleName();
 		
 		switch(type) {
 			case ArithmeticalExpression.PLUS:
 			{
-				obj = (double)l + (double)r;
+				if(leftType.equals("Integer") && rightType.equals("Integer")) {
+					obj = (int)leftValue + (int)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Long")) {
+					obj = (long)leftValue + (long)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Integer")) {
+					obj = (long)leftValue + (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Long")) {
+					obj = (int)leftValue + (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Double")) {
+					obj = (double)leftValue + (double)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Double")) {
+					obj = (long)leftValue + (double)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Long")) {
+					obj = (double)leftValue + (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Integer")) {
+					obj = (double)leftValue + (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Double")) {
+					obj = (int)leftValue + (double)rightValue;
+				}
+				else {
+					throw new Exception("Tipo de dato primitivo no reconocido");
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.MINUS:
 			{
-				obj = (double)l - (double)r;
+				if(leftType.equals("Integer") && rightType.equals("Integer")) {
+					obj = (int)leftValue - (int)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Long")) {
+					obj = (long)leftValue - (long)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Integer")) {
+					obj = (long)leftValue - (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Long")) {
+					obj = (int)leftValue - (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Double")) {
+					obj = (double)leftValue - (double)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Double")) {
+					obj = (long)leftValue - (double)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Long")) {
+					obj = (double)leftValue - (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Integer")) {
+					obj = (double)leftValue - (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Double")) {
+					obj = (int)leftValue - (double)rightValue;
+				}
+				else {
+					throw new Exception("Tipo de dato primitivo no reconocido");
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.TIMES:
 			{
-				obj = (double)l * (double)r;
+				if(leftType.equals("Integer") && rightType.equals("Integer")) {
+					obj = (int)leftValue * (int)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Long")) {
+					obj = (long)leftValue * (long)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Integer")) {
+					obj = (long)leftValue * (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Long")) {
+					obj = (int)leftValue * (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Double")) {
+					obj = (double)leftValue * (double)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Double")) {
+					obj = (long)leftValue * (double)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Long")) {
+					obj = (double)leftValue * (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Integer")) {
+					obj = (double)leftValue * (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Double")) {
+					obj = (int)leftValue * (double)rightValue;
+				}
+				else {
+					throw new Exception("Tipo de dato primitivo no reconocido");
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.DIV:
 			{
-				obj = (double)l / (double)r;
+				if(leftType.equals("Integer") && rightType.equals("Integer")) {
+					obj = (int)leftValue / (int)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Long")) {
+					obj = (long)leftValue / (long)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Integer")) {
+					obj = (long)leftValue / (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Long")) {
+					obj = (int)leftValue / (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Double")) {
+					obj = (double)leftValue / (double)rightValue;
+				}
+				else if(leftType.equals("Long") && rightType.equals("Double")) {
+					obj = (long)leftValue / (double)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Long")) {
+					obj = (double)leftValue / (long)rightValue;
+				}
+				else if(leftType.equals("Double") && rightType.equals("Integer")) {
+					obj = (double)leftValue / (int)rightValue;
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Double")) {
+					obj = (int)leftValue / (double)rightValue;
+				}
+				else {
+					throw new Exception("Tipo de dato primitivo no reconocido");
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.DIV_INT:
 			{
-				obj = (int)l / (int)r;
+				if(leftType.equals("Integer") && rightType.equals("Integer")) {
+					obj = (int)((int)leftValue / (int)rightValue);
+				}
+				else if(leftType.equals("Long") && rightType.equals("Long")) {
+					obj = (int)((long)leftValue / (long)rightValue);
+				}
+				else if(leftType.equals("Long") && rightType.equals("Integer")) {
+					obj = (int)((long)leftValue / (int)rightValue);
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Long")) {
+					obj = (int)((int)leftValue / (long)rightValue);
+				}
+				else if(leftType.equals("Double") && rightType.equals("Double")) {
+					obj = (int)((double)leftValue / (double)rightValue);
+				}
+				else if(leftType.equals("Long") && rightType.equals("Double")) {
+					obj = (int)((long)leftValue / (double)rightValue);
+				}
+				else if(leftType.equals("Double") && rightType.equals("Long")) {
+					obj = (int)((double)leftValue / (long)rightValue);
+				}
+				else if(leftType.equals("Double") && rightType.equals("Integer")) {
+					obj = (int)((double)leftValue / (int)rightValue);
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Double")) {
+					obj = (int)((int)leftValue / (double)rightValue);
+				}
+				else {
+					throw new Exception("Tipo de dato primitivo no reconocido");
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.EXP:
 			{
-				obj = Math.pow((double)l, (double)r);
+				// Checking if the result is a double, or not. If so then returning the value of the fakeResult//
+				if(leftType.equals("Integer") && rightType.equals("Integer")) {
+					obj = Math.pow((int)leftValue,(int)rightValue);
+				}
+				else if(leftType.equals("Long") && rightType.equals("Long")) {
+					obj = Math.pow((long)leftValue,(long)rightValue);
+				}
+				else if(leftType.equals("Long") && rightType.equals("Integer")) {
+					obj = Math.pow((long)leftValue,(int)rightValue);
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Long")) {
+					obj = Math.pow((int)leftValue, (long)rightValue);
+				}
+				else if(leftType.equals("Double") && rightType.equals("Double")) {
+					obj = Math.pow((double)leftValue, (double)rightValue);
+				}
+				else if(leftType.equals("Long") && rightType.equals("Double")) {
+					obj = Math.pow((long)leftValue, (double)rightValue);
+				}
+				else if(leftType.equals("Double") && rightType.equals("Long")) {
+					obj = Math.pow((double)leftValue, (long)rightValue);
+				}
+				else if(leftType.equals("Double") && rightType.equals("Integer")) {
+					obj = Math.pow((double)leftValue, (int)rightValue);
+				}
+				else if(leftType.equals("Integer") && rightType.equals("Double")) {
+					obj = Math.pow((int)leftValue, (double)rightValue);
+				}
+				else {
+					throw new Exception("Tipo de dato primitivo no reconocido");
+				}
+				
 				break;
 			}
 			case ArithmeticalExpression.MOD:
 			{
-				obj = (double)l % (int)r;
+				if(leftType.equals("Integer") && rightType.equals("Integer") ) {
+					obj = (int)leftValue % (int)rightValue;
+				}
+				else {
+					throw new Exception("Alguno de los operandos del modulo no es entero");
+				}
 				break;
 			}
 			default:
 			{
-				throw new Exception("Unrecognized arithmetical operation");
+				throw new Exception("Operacion aritmetica no reconozida");
 			}
 		}
 		
-		return obj;
+		return (Object)obj;
 	}
+	
 }

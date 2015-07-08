@@ -25,26 +25,24 @@ public class StatementExpression extends Expression {
 	public Object execute() throws Exception {
 		
         try {
-        
+        	
 		    if(this.getLeft() != null) {
 		    	Object result = this.getLeft().execute();
 				System.out.println("Statement procesado");
 				System.out.println(result);
-		        return result;
 		    }
 		    
 		    if(this.getRight() != null) {
 		    	Object result = this.getRight().execute();
 				System.out.println("Statement procesado");
 				System.out.println(result);
-		        return result;
 		    }
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	    
-	    return this.getValue();
+	    return "FIN";
     		
     }
 }

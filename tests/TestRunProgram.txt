@@ -1,1 +1,4 @@
-{"Hola": 2, True: False}.has_key("Holas")
+{"Hola": 2, True: False}.has_key("Hola")
+{"Hola": 2, True: False}.has_key("Chau")
+{"Hola": 2, True: False}.has_key(True)
+{"Hola": 2, True: False}.has_key(False)

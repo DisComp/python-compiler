@@ -97,8 +97,8 @@ non terminal Expression element_tuple;
 non terminal Expression atom_element_tuple;
 non terminal Expression literal_expr;
 
-non terminal Expression parameters;
-non terminal Expression individual_parameters;
+non terminal List<String> parameters;
+non terminal List<String> individual_parameters;
 
 non terminal Expression stmt;
 non terminal Expression compl_stmt;
@@ -136,12 +136,13 @@ program ::= stmt: s
 
 stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
 		| instr:i stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
-		| compl_stmt:c {:RESULT = c; :}
-		| instr:i {: RESULT = i; :};
+		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
+		| instr:i {: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :};
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 
-compl_stmt ::= if_block: iff {: RESULT = iff; :};	 
+compl_stmt ::= if_block: iff {: RESULT = iff; :}
+				|function_block:fb {: RESULT = fb; :};	 
 
 indent_ins ::= IDENT stmt:s {: RESULT = s; :}
 			|  IDENT stmt:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
@@ -153,27 +154,30 @@ instr ::= expr: exp {: RESULT = exp; :}
 
 
 
-parameters ::= //sin parámetros
-			|individual_parameters;//con al menos un parámetro
+parameters ::= {: RESULT = new ArrayList(); :}//sin parámetros
+			|individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro
 			
-individual_parameters ::=ID: id {: ScopesController.getInstance().addFunctionParameter(id); /*RESULT = LiteralExpression.createIdentifier(id); */:}
-						| ID: id COMMA {: ScopesController.getInstance().addFunctionParameter(id); :} individual_parameters/*: p 
-			{: 	Expression valorRetorno =  LiteralExpression.createIdentifier(id);
-				valorRetorno.setRight(p);
-				RESULT = valorRetorno :}*/ ;		
+individual_parameters ::=ID: id {: 	List<String> l = new ArrayList<String>();
+									l.add(id);
+									RESULT = l; :}
+						| ID: id COMMA individual_parameters:iparams {:	if(iparams.contains(id))
+																				throw new ParsingException("El parametro "+id+" ya fue definido");
+																		else 	
+																			iparams.add(id);
+																		RESULT = iparams;:} ;		
 	
-function_block ::=	DEF ID: funct_name {:ScopesController.getInstance().openScope(funct_name); :}
-					LPAREN parameters RPAREN 
-					COLON suit:s {: RESULT = FunctionControl.create(funct_name,s); :};
+function_block ::=	DEF ID: funct_name
+					LPAREN parameters:params RPAREN 
+					COLON suit:s {: RESULT = FunctionExpression.create(funct_name,s,params); :};
 				
 
 //individual_parameter::= ID:id {: RESULT = id; : };
 
 /* If block */
-if_block ::= IF {:ScopesController.getInstance().openScope(StructureControlExpression.IF); :} expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
+if_block ::= IF expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
 
 /* While block */
-while_block ::= WHILE expr: e COLON {:ScopesController.getInstance().openScope(StructureControlExpression.WHILE); :} suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
+while_block ::= WHILE expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
 
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
