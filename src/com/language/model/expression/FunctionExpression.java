@@ -26,8 +26,9 @@ public class FunctionExpression extends Expression {
 		return new FunctionExpression(id,_body,params);
 	}
 	
-	public Object RunFunction() throws Exception{
+	public Object RunFunction(/*valor de los parámetros*/) throws Exception{
 		ScopesController.getInstance().openScope(name);
+		//TODO: Cargar parámetros
 		Object result = this.getLeft().execute();
 		if(returnExp==null)
 			result= null;
@@ -36,6 +37,9 @@ public class FunctionExpression extends Expression {
 		ScopesController.getInstance().closeScope();
 		return result;
 		
+	}
+	public int cantParam() {
+		return parameters.size();
 	}
 	@Override
 	public Object execute(){

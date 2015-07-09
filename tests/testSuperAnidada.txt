@@ -17,6 +17,7 @@ if True:
 	if True:
 		True
 		False
+		False
 		if True:
 			True
 			True
@@ -24,3 +25,4 @@ if True:
 True
 True
 True
+f()

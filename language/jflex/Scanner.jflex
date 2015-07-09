@@ -35,11 +35,11 @@ import com.language.controllers.*;
 %eofval{
     return symbol(sym.EOF);
 %eofval}
-IntroTabs = \n(\t)*
+IntroTabs = \n(\t)*[ ]*
 LineTerminator = \r|\n|\r\n
-WhiteSpace     = [ \f]
+WhiteSpace     = [ \f\t]
 Triple_quotes = \"\"\"([^\"\r\n\t]*)\"\"\"
-Identifier = [:jletter:][:jletterdigit:]* 
+Identifier = [_a-zA-Z][_a-zA-Z0-9]{0,30}/*[:jletter:][:jletterdigit:]* */
 
 LongLiteral    =  (0 | [1-9][0-9]*)L
 FloatLiteral   =  (0 | [1-9][0-9]*)\.[0-9]+
@@ -90,37 +90,32 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		
 		String lexema = yytext();
 		int counter = 0;
+		int spaceCounter=0;
 		for( int i=0; i<lexema.length(); i++ ) {
 		    if( lexema.charAt(i) == '\t' ) {
 		        counter++;
 		    } 
+		    else if( lexema.charAt(i) == ' ' ) {
+		    	spaceCounter++;
+		    }
 		}
+		if(spaceCounter>0)
+			throw new ParsingException("Errro de tabulacion en linea " + yyline + ", columna " + yycolumn);
 		if(counter==ScopesController.getInstance().getExpectedTabs()+1/*counter>ScopesController.getInstance().getExpectedTabs()*/){
 			ScopesController.getInstance().addExpectedTab();
 			return symbol(sym.IDENT, "IDENT" );
 		}
 		else if(counter<ScopesController.getInstance().getExpectedTabs()){
-			int toSend=ScopesController.getInstance().getExpectedTabs()-counter-1;//-1 porque acá ya se manda uno
+			int toSend=ScopesController.getInstance().getExpectedTabs()-counter;//-1 porque acá ya se manda uno
 			ScopesController.getInstance().setDedent(toSend);
-			return symbol(sym.DEDENT, "DEDENT" );
+			//return symbol(sym.DEDENT, "DEDENT" );
+			return symbol(sym.LINETERMINATOR, "ENTER" );
 		}
-		/*if(counter<ScopesController.getInstance().getExpectedTabs()){
-			int toSend=ScopesController.getInstance().getExpectedTabs()-counter-1;//+1;//+1 porque acá ya se manda uno
-			ScopesController.getInstance().setDedent(toSend);
-			return symbol(sym.DEDENT, "DEDENT" );
+		else if(counter==ScopesController.getInstance().getExpectedTabs()){
+			return symbol(sym.LINETERMINATOR, "ENTER" );
 		}
-		else if(counter>ScopesController.getInstance().getExpectedTabs()){
-			return symbol(sym.SYNERROR, "ERRor" );
-		}
-		else if(counter>0){// sigo en el mismo scope, al menos una identacion
-			return symbol(sym.IDENT, "IDENT" );
-		}*/
-		/*else{//Caso linea simple sin identar
-			return symbol(sym.LINE_TERMINATOR,yytext()); }
-		}*/
 
 	}
-	
 	
 	
 	/* Boolean */

@@ -15,9 +15,9 @@ public class Tester {
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
-        // Creating the Arithmetical test //
-        Tests.doArithmeticalTest();
-        //Tests.doPredefinedFunctionsTest();
+
+        // Creating all tests! //
+        Tests.doTests();
         
         while (line != null) {         
 			 sb.append(line);
