@@ -2,7 +2,8 @@ def f():
 	True
 def g():
 	return 1
-def h():
+def g(a):
+	a+1
 	True
 	return 2
-g()+1
+print (g()+1)
