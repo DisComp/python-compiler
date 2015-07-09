@@ -1,7 +1,13 @@
 package com.language.tests;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.language.model.expression.ArithmeticalExpression;
 import com.language.model.expression.Expression;
+import com.language.model.expression.LiteralExpression;
+import com.language.model.expression.PredefinedFunctionExpression;
 
 public class Tests {
 	
@@ -33,15 +39,29 @@ public class Tests {
         ArithmeticalExpression ae7 = new ArithmeticalExpression(ArithmeticalExpression.TIMES,0,new Expression(2.3),new Expression(4));
     
         Tests.beginSection("Arithmetical Tests");
-        Tests.displayResult(ae1.getValue(),"2");
-        Tests.displayResult(ae2.getValue(),"5");
-        Tests.displayResult(ae3.getValue(),"8");
-        Tests.displayResult(ae4.getValue(),"-7999980");
-        Tests.displayResult(ae5.getValue(),"2");
-        Tests.displayResult(ae6.getValue(),"6.6");
-        Tests.displayResult(ae7.getValue(),"9.2");
+        Tests.displayResult(ae1.execute(),"2");
+        Tests.displayResult(ae2.execute(),"5");
+        Tests.displayResult(ae3.execute(),"8");
+        Tests.displayResult(ae4.execute(),"-7999980");
+        Tests.displayResult(ae5.execute(),"2");
+        Tests.displayResult(ae6.execute(),"6.6");
+        Tests.displayResult(ae7.execute(),"9.2");
         
         System.out.println("------------------------- END Arithmetical TEST --------------------------------------------");
+        System.out.println();
+	}
+	
+	public static void doPredefinedFunctionsTest() throws Exception {
+
+		Map<Object, Object> l1 = new HashMap<Object, Object>();
+		l1.put("Hola", 2);
+		l1.put(true, false);
+        PredefinedFunctionExpression pf1 = new PredefinedFunctionExpression(PredefinedFunctionExpression.HAS_KEY_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), new LiteralExpression(LiteralExpression.STRING, "Hola", null, null));
+    
+        Tests.beginSection("Predefined Function Tests");
+        Tests.displayResult(pf1.execute(),"true");
+        
+        System.out.println("------------------------- END Predefined Functions TEST --------------------------------------------");
         System.out.println();
 	}
 }

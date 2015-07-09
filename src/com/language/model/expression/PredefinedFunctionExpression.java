@@ -182,6 +182,8 @@ public class PredefinedFunctionExpression extends Expression {
 				} else {					
 					throw new Exception("Esta funcion no esta definida para el tipo " + this.getLeft().getType());
 				}
+			
+			//case KEYS_FUNC:
 				
 			default:
 				//return super.getValue();

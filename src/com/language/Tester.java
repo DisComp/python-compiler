@@ -11,12 +11,13 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 		
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestFunction.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("tests/TestRunProgram.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
         // Creating the Arithmetical test //
-        //Tests.doArithmeticalTest();
+        Tests.doArithmeticalTest();
+        //Tests.doPredefinedFunctionsTest();
         
         while (line != null) {         
 			 sb.append(line);
@@ -30,7 +31,7 @@ public class Tester {
 		System.out.println(exptext);
 		Expression expobj = ExpressionParser.parse(exptext);
 			
-		System.out.println("Expresion obtenida: ");
-		System.out.println(expobj.toString());
+		//System.out.println("Expresion obtenida: ");
+		//System.out.println(expobj.toString());
 	}
 }

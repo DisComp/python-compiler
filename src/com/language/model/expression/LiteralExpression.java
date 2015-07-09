@@ -85,14 +85,14 @@ public class LiteralExpression extends Expression {
 		return le;
 	}
 	
-	public static Expression createList(Object value) throws Exception {		
+	public static Expression createList(Expression listElement) throws Exception {		
 		/*
 		 	This method builds a list as a tree, where the next item
 		 	of the list is on the right side, producing a right-balanced
 		 	tree containing all list element objects
 		*/
 		List<Object> listValue = new ArrayList<Object>();
-		Expression listElement = (Expression)value;
+		//Expression listElement = (Expression)value;
 		
 		if(listElement.getRight() != null){
 			// One element on the list
