@@ -54,15 +54,15 @@ public class ScopesController {
 	}
 	
 	
-	public void addVariable(String name, Expression val){
+	public void addVariable(String name, Object val){
 		scopes.peek().addVariable(name, val);
 		log();
 	}
 	
-	public Expression getVariable(String var_name){
+	public Object getVariable(String var_name){
 		for(int i= 0; i< scopes.size();i++){
 			if(scopes.elementAt(i).containsVariable(var_name)){//si la enconre
-				Expression var = scopes.elementAt(i).getVariable(var_name);
+				Object var = scopes.elementAt(i).getVariable(var_name);
 				if(var!=null)//tiene valor asignado
 					return var;
 				else//no tiene valor asignado
