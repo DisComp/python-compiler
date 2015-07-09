@@ -69,7 +69,8 @@ public class PredefinedFunctionExpression extends Expression {
 	
 	public static Expression createDictionaryFunction(Expression dict_left, Expression expr) {
 		/*e.g: D.has_key(x) saves D on left and x on right */
-		return new PredefinedFunctionExpression(expr.getType(), dict_left, expr);
+		Expression argument = expr.getLeft();
+		return new PredefinedFunctionExpression(expr.getType(), dict_left, argument);
 	}
 	
 	public static Expression createDictionaryFunctionElement(String type, Expression left) {
@@ -79,7 +80,8 @@ public class PredefinedFunctionExpression extends Expression {
 	
 	public static Expression createStringFunction(Expression string_left, Expression expr) {
 		/*e.g: S.count(x) saves D on left and x on right */
-		return new PredefinedFunctionExpression(expr.getType(), string_left, expr);
+		Expression argument = expr.getRight();
+		return new PredefinedFunctionExpression(expr.getType(), string_left, argument);
 	}
 	
 	public static Expression createStringFunctionElement(String type, Expression right) {
@@ -154,24 +156,56 @@ public class PredefinedFunctionExpression extends Expression {
 					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
 				}
 				
-				Object elementValue = this.getLeft().execute();
-				Object argumentValue = this.getRight().execute();
+				Object dictValue = this.getLeft().execute();
+				Object argDictValue = this.getRight().execute();
 				
-				String varValueClass = elementValue.getClass().getSimpleName();
-				if(!varValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + varValueClass);
+				String dictValueClass = dictValue.getClass().getSimpleName();
+				if(!dictValueClass.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
 				}
 				try {
-					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)elementValue;
-					Boolean result = dictionary.containsKey(argumentValue);
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
+					Boolean result = dictionary.containsKey(argDictValue);
 					return result;
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + elementValue);
+					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
 				}
-				
 			
 			//case KEYS_FUNC:
+				
+			case FIND_FUNC: // falta controlar con dos argumentos
+				
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para este tipo");
+				}
+				if(this.getRight() == null){
+					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
+				}
+				
+				String strValue = (String)this.getLeft().execute();
+				Object argStrValue = this.getRight().execute();
+				
+				String strValueClass = strValue.getClass().getSimpleName();
+				String argValueClass = strValue.getClass().getSimpleName();
+				if(!strValueClass.equals("String")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + strValueClass);
+				}
+				if(!argValueClass.equals("String")){
+					throw new Exception("Se esperaba argumento de tipo string pero se recibio " + strValueClass);
+				}
+				try {
+					String str = String.valueOf(strValue);
+					String argStr = String.valueOf(argStrValue).toString();
+					String x ="Buen Dia Benito";
+					Integer algo ="Buen Dia Benito".indexOf("Benito");
+					Integer result = str.indexOf(argStr);
+					return result;
+					
+				} catch(Exception e){
+					throw new Exception("Error al aplicar la funcion find sobre " + strValue);
+				}
+				
 			case PRINT_FUNC:
 				if(this.getLeft() != null) {
 					System.out.println(this.getLeft().execute());

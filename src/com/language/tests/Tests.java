@@ -121,7 +121,7 @@ public class Tests {
 		Map<Object, Object> l1 = new HashMap<Object, Object>();
 		l1.put("Hola", 2);
 		l1.put(true, false);
-        PredefinedFunctionExpression pf1 = new PredefinedFunctionExpression(PredefinedFunctionExpression.HAS_KEY_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), new LiteralExpression(LiteralExpression.STRING, "Hola", null, null));
+        PredefinedFunctionExpression pf1 = new PredefinedFunctionExpression(PredefinedFunctionExpression.HAS_KEY_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), new Expression(LiteralExpression.STRING, "Hola", null, null));
     
         Tests.beginSection("Predefined Function Tests");
         Tests.displayResult(pf1.execute(),"true");
