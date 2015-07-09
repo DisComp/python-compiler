@@ -36,7 +36,7 @@ public class BitwiseExpression extends Expression {
 	}
 	
 	@Override
-	public Object getValue() throws Exception {
+	public Object execute() throws Exception {
 		Object returnObject = null;
 		Expression left 	= this.getLeft();
 		Expression right 	= this.getRight();
@@ -54,46 +54,64 @@ public class BitwiseExpression extends Expression {
 	}
 	
 	public static Object operation(String type,Expression l, Expression r) throws Exception {
-		Object 	obj = null;
-		int leftValue  = (int)l.getValue(),
-			rightValue = (int)r.getValue();
+		Object 	obj = null,
+				leftValue = l,
+				rightValue = r;
 		
-		switch(type)
-		{
-			case BitwiseExpression.OR_BIT:
+		String 	leftType = "",
+				rightType = "";
+		
+		if (leftValue != null) {
+			leftValue = l.execute();
+			leftType = leftValue.getClass().getSimpleName();
+		}
+		
+		if (rightValue != null) {
+			rightValue = r.execute();
+			rightType = rightValue.getClass().getSimpleName();
+		}
+		
+		if ((leftValue == null || leftType.equals("Integer")) && (rightValue == null || rightType.equals("Integer"))) {
+			switch (type)
 			{
-				obj = leftValue | rightValue;
-				break;
+				case BitwiseExpression.OR_BIT:
+				{
+					obj = (int)leftValue | (int)rightValue;
+					break;
+				}
+				case BitwiseExpression.AND_BIT:
+				{
+					obj = (int)leftValue & (int)rightValue;
+					break;
+				}
+				case BitwiseExpression.XOR_BIT:
+				{
+					obj = (int)leftValue ^ (int)rightValue;
+					break;
+				}
+				case BitwiseExpression.LSHIFT:
+				{
+					obj = (int)leftValue << (int)rightValue;
+					break;
+				}
+				case BitwiseExpression.RSHIFT:
+				{
+					obj = (int)leftValue >> (int)rightValue;
+					break;
+				}
+				case BitwiseExpression.NOT_BIT:
+				{
+					obj = ~((int)leftValue);
+					break;
+				}
+				default:
+				{
+					throw new Exception("Operador bit no reconocido");
+				}
 			}
-			case BitwiseExpression.AND_BIT:
-			{
-				obj = leftValue & rightValue;
-				break;
-			}
-			case BitwiseExpression.XOR_BIT:
-			{
-				obj = leftValue ^ rightValue;
-				break;
-			}
-			case BitwiseExpression.LSHIFT:
-			{
-				obj = leftValue << rightValue;
-				break;
-			}
-			case BitwiseExpression.RSHIFT:
-			{
-				obj = leftValue >> rightValue;
-				break;
-			}
-			case BitwiseExpression.NOT_BIT:
-			{
-				obj = ~(leftValue);
-				break;
-			}
-			default:
-			{
-				throw new Exception("Unrecognized bit operator");
-			}
+		}
+		else {
+			throw new Exception("Los operandos no tienen el tipo correcto");
 		}
 		
 		return obj;
