@@ -1,6 +1,10 @@
 def f():
+	def fPrima():
+		print "llegue"
+	fPrima()
 	True
 def g():
+	f()
 	return 1
 def g(a):
 	a+1
