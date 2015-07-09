@@ -14,18 +14,20 @@ public class Scannerchild extends Scanner {
 		//System.out.println("pido token");
 		java_cup.runtime.Symbol result;
 		if(ScopesController.getInstance().getDedentToSend()>0){
-			//result = super.next_token();
+			ScopesController.getInstance().sendDedent();
 			result = symbol(sym.DEDENT, "DEDENTs");
 			//if(result.sym == sym.DEDENT)
-				ScopesController.getInstance().sendDedent();
+			
 		}
 		else
 		{
 			result= super.next_token();
 		}
 		
-		//if(result!=null&&result.value!=null)
-		//	System.out.println("devuelvo: "+result.value.toString());
+		/*if(result!=null&&result.value!=null)
+			System.out.println("devuelvo: "+result.value.toString());
+		else
+			System.out.println("EOF");*/
 		return result;
 	}
 	

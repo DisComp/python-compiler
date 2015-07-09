@@ -32,6 +32,10 @@ public class Scope {
 	public void addFunction(FunctionExpression f){
 		functions.put(f.getName(), f);
 	}
+	public FunctionExpression getFunction(String name){
+		//si no existe retorna null
+		return functions.get(name);
+	}
 	@Override
 	public String toString(){
 		String res=name+"\n";

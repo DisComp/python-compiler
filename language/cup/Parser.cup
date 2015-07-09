@@ -17,7 +17,7 @@ terminal String PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
 terminal String AND_BIT, OR_BIT, XOR_BIT, NOT_BIT, LSHIFT, RSHIFT;
 
 /* Strings */
-terminal String STRING, ESCAPE,DEDENT, IDENT, SYNERROR;
+terminal String STRING, ESCAPE,DEDENT, IDENT, SYNERROR,LINETERMINATOR;
 
 /* Boolean */
 terminal String TRUE, FALSE;
@@ -139,9 +139,9 @@ program ::= stmt: s
 			:};
 
 stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
-		| instr:i stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
+		| instr:i LINETERMINATOR stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
 		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
-		| instr:i {: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :};
+		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :};
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 
@@ -154,12 +154,11 @@ indent_ins ::= IDENT stmt:s {: RESULT = s; :}
 
 				 
 instr ::= expr: exp {: RESULT = exp; :}		
-		| assignment_expr: v {: RESULT = v; :}
-		| function_call:fc {: RESULT = fc; :};
+		| assignment_expr: v {: RESULT = v; :};
 
 
-/*Function definition*/		
-function_call::= ID:id LPAREN call_parameters:cp RPAREN {: FunctionCallExpression.create(id,cp); :};
+/*Function*/		
+function_call::= ID:id LPAREN call_parameters:cp RPAREN {: RESULT = FunctionCallExpression.create(id,cp); :};
 call_parameters ::= {: RESULT = new ArrayList<Expression>(); :}//sin parámetros
 			|call_individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro	
 
@@ -171,6 +170,7 @@ call_individual_parameters ::=ID: id {: 	List<Expression> l = new ArrayList<Expr
 function_block ::=	DEF ID: funct_name
 					LPAREN parameters:params RPAREN 
 					COLON suit_func:s {: RESULT = FunctionExpression.create(funct_name,s,params); :};
+					
 parameters ::= {: RESULT = new ArrayList<String>(); :}//sin parámetros
 			|individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro	
 
@@ -183,11 +183,19 @@ individual_parameters ::=ID: id {: 	List<String> l = new ArrayList<String>();
 																			iparams.add(id);
 																		RESULT = iparams;:} ;	
 																			
-suit_func::= IDENT stmt:s RETURN expr:e DEDENT{:	Expression exp = new Expression();
+suit_func::= IDENT stmt:s RETURN expr:e LINETERMINATOR DEDENT{:	//cuerpo con return
+													Expression exp = new Expression();
 													exp.setLeft(s);
 													exp.setRight(e);
 													RESULT = exp; :}
-			|IDENT stmt:s DEDENT{:	Expression exp = new Expression();
+	
+			|IDENT RETURN expr:e LINETERMINATOR DEDENT{:	//solo return
+													Expression exp = new Expression();
+													exp.setLeft(null);
+													exp.setRight(e);
+													RESULT = exp; :}
+			|IDENT stmt:s DEDENT{:	//cuerpo sin return
+									Expression exp = new Expression();
 									exp.setLeft(s);
 									exp.setRight(null);
 									RESULT = exp; :};
@@ -345,6 +353,7 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| structured_types_access: sta {: RESULT = sta; :};
 
 expr  ::= boolean_expr: b {: RESULT = b; :}
-		| predefined_functions_expr: pfe {: RESULT = pfe; :};  
+		| predefined_functions_expr: pfe {: RESULT = pfe; :}
+		| function_call:fc {: RESULT = fc; :};  
 	
 

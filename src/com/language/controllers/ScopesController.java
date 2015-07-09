@@ -15,11 +15,13 @@ public class ScopesController {
 	private int expectedTabs;
 	
 	private Stack<Scope> scopes;
-	
+	private boolean logOn=false;
 	private void log(){
-		System.out.println("SCOPES BEGIN---------------------");
-		System.out.println(scopes.toString());		
-		System.out.println("SCOPES END---------------------");
+		if(logOn){
+			System.out.println("SCOPES BEGIN---------------------");
+			System.out.println(scopes.toString());		
+			System.out.println("SCOPES END---------------------");
+		}
 	}
 	
 	private ScopesController() {
@@ -58,13 +60,12 @@ public class ScopesController {
 	}
 	
 	public Expression getVariable(String var_name){
-		log();
 		for(int i= 0; i< scopes.size();i++){
-			if(scopes.elementAt(i).containsVariable(var_name)){
+			if(scopes.elementAt(i).containsVariable(var_name)){//si la enconre
 				Expression var = scopes.elementAt(i).getVariable(var_name);
-				if(var!=null)
+				if(var!=null)//tiene valor asignado
 					return var;
-				else
+				else//no tiene valor asignado
 					throw new ParsingException("Variable "+var_name+" sin instanciar");
 			}
 			
@@ -72,6 +73,15 @@ public class ScopesController {
 		throw new ParsingException("Variable "+var_name+" no definida");
 	}
 	
+	public FunctionExpression getFunction(String name, int cant_params){
+		for(int i= 0; i< scopes.size();i++){
+			FunctionExpression fun = scopes.elementAt(i).getFunction(name);
+			if(fun!=null&&cant_params==fun.cantParam()){//si la encontre
+				return fun;
+			}
+		}
+		throw new ParsingException("Función "+name+" no disponible en el scope");
+	}
 	
 	
 	public void addFunction(FunctionExpression fun){
@@ -98,7 +108,7 @@ public class ScopesController {
 	//Used by scanner to indicate de number of dedent to send
 	public void setDedent(int num){
 		dedentToSend=num;
-		expectedTabs--;//cuando se hace el set ya se manda un dedent entonces ahora espero un tab menos
+		//expectedTabs--;//cuando se hace el set ya se manda un dedent entonces ahora espero un tab menos
 	}
 	//Used by ScannerChild to know if has to send dedent or call super
 	public int getDedentToSend(){
