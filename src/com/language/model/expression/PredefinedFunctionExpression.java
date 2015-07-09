@@ -160,8 +160,8 @@ public class PredefinedFunctionExpression extends Expression {
 				if(this.getLeft().getType() == LiteralExpression.ID) {
 					
 					ScopesController sc = ScopesController.getInstance();
-					Expression varValue = sc.getVariable((String)this.getLeft().getValue());
-					element = varValue;
+					Object varValue = sc.getVariable((String)this.getLeft().getValue());
+					//element = varValue;
 				}
 					
 				if(element.getType() == LiteralExpression.DICTIONARY) {
@@ -172,8 +172,8 @@ public class PredefinedFunctionExpression extends Expression {
 					if(argumentExpr.getLeft().getType() == LiteralExpression.ID) {
 						
 						ScopesController sc = ScopesController.getInstance();
-						Expression varValue = sc.getVariable((String)argumentExpr.getLeft().getValue());
-						argumentValue = varValue.execute();
+						Object varValue = sc.getVariable((String)argumentExpr.getLeft().getValue());
+						//argumentValue = varValue.execute();
 					}
 						
 					Boolean result = dictionary.containsKey(argumentValue);

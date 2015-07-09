@@ -254,9 +254,12 @@ public class LiteralExpression extends Expression {
 				return super.getValue();
 			case NONE:
 				return null;
-			case ID:				
-				Expression var = sc.getVariable((String)this.getLeft().getValue());	
-				return var;
+			case ID:
+				if(this.getLeft() != null){
+					Object var = sc.getVariable((String)this.getLeft().execute());
+					return var;
+				}
+				return null;
 				
 			case ASSIGN:
 				String name = (String)this.getValue();
