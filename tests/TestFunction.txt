@@ -1,4 +1,3 @@
-
 def f():
 	True
 def g():
@@ -6,5 +5,4 @@ def g():
 def h():
 	True
 	return 2
-h()
-
+g()+1

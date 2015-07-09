@@ -23,7 +23,6 @@ public class StatementExpression extends Expression {
 	
 	@Override
 	public Object execute() throws Exception {
-		
         try {
         	
 		    if(this.getLeft() != null) {
