@@ -1,4 +1,2 @@
-{"Hola": 2, True: False}.has_key("Hola")
 a = {"Chau": 5, 3: True}
-x = "Chau"
-a.has_key(1)
+print a

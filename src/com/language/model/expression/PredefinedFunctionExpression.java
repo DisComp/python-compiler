@@ -148,42 +148,35 @@ public class PredefinedFunctionExpression extends Expression {
 			case HAS_KEY_FUNC:
 				
 				if(this.getLeft() == null){
-					throw new Exception("Esta funcion no esta definida para null");
+					throw new Exception("Esta funcion no esta definida para este tipo");
 				}
 				if(this.getRight() == null){
 					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
 				}
 				
-				Expression element = this.getLeft();
-				Expression argumentExpr = this.getRight();
+				Object elementValue = this.getLeft().execute();
+				Object argumentValue = this.getRight().execute();
 				
-				if(this.getLeft().getType() == LiteralExpression.ID) {
-					
-					ScopesController sc = ScopesController.getInstance();
-					Object varValue = sc.getVariable((String)this.getLeft().getValue());
-					//element = varValue;
+				String varValueClass = elementValue.getClass().getSimpleName();
+				if(!varValueClass.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + varValueClass);
 				}
-					
-				if(element.getType() == LiteralExpression.DICTIONARY) {
-					
-					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)element.getValue();					
-					Object argumentValue = argumentExpr.getLeft().getValue();
-					
-					if(argumentExpr.getLeft().getType() == LiteralExpression.ID) {
-						
-						ScopesController sc = ScopesController.getInstance();
-						Object varValue = sc.getVariable((String)argumentExpr.getLeft().getValue());
-						//argumentValue = varValue.execute();
-					}
-						
+				try {
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)elementValue;
 					Boolean result = dictionary.containsKey(argumentValue);
-					return result; 
+					return result;
 					
-				} else {					
-					throw new Exception("Esta funcion no esta definida para el tipo " + this.getLeft().getType());
+				} catch(Exception e){
+					throw new Exception("Error al aplicar la funcion has_key sobre " + elementValue);
 				}
+				
 			
 			//case KEYS_FUNC:
+			case PRINT_FUNC:
+				if(this.getLeft() != null) {
+					System.out.println(this.getLeft().execute());
+				}
+				return null;
 				
 			default:
 				//return super.getValue();

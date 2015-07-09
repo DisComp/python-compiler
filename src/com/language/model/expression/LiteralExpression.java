@@ -255,15 +255,15 @@ public class LiteralExpression extends Expression {
 			case NONE:
 				return null;
 			case ID:
-				if(this.getLeft() != null){
-					Object var = sc.getVariable((String)this.getLeft().execute());
-					return var;
-				}
-				return null;
+				Object var = sc.getVariable((String)this.getValue());
+				return var;
 				
 			case ASSIGN:
 				String name = (String)this.getValue();
-				Expression value = this.getLeft();
+				Object value = null; 
+				if(this.getLeft() != null){
+					value = this.getLeft().execute();
+				}
 				sc.addVariable(name, value);
 				return null;
 				
