@@ -23,19 +23,14 @@ public class StatementExpression extends Expression {
 	
 	@Override
 	public Object execute() throws Exception {
-		
         try {
         	
 		    if(this.getLeft() != null) {
 		    	Object result = this.getLeft().execute();
-				System.out.println("Statement procesado:");
-				System.out.println(result);
 		    }
 		    
 		    if(this.getRight() != null) {
 		    	Object result = this.getRight().execute();
-				System.out.println("Statement procesado:");
-				System.out.println(result);
 		    }
 
 		} catch (Exception e) {
