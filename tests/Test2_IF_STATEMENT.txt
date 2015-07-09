@@ -1,6 +1,4 @@
-if True:
-	True
-	False
+if False:
+	1 + 1
 else :
-	True
-	4
+	8 + 2
