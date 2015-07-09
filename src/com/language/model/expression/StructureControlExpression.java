@@ -1,5 +1,15 @@
 package com.language.model.expression;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import java.util.Iterator;
+
+import com.language.controllers.ScopesController;
+
+
 public class StructureControlExpression extends Expression {
 	
 	public static final String IF = "if";
@@ -20,16 +30,107 @@ public class StructureControlExpression extends Expression {
 		super(type, left, right);
 	}
 	
-	// Adding a BooleanExpression to know which code should we return (for the getValue method) //
-	public static Expression create(String type, Object value,Expression e, Expression left, Expression right) {
-		StructureControlExpression sce = new StructureControlExpression(type, value, left, right);
+	public static Expression create(String type, Object o, Expression left, Expression right) {
+		StructureControlExpression sce = new StructureControlExpression(type, o, left, right);
+		return sce;
+	}
+	
+	public static Expression create(String type, Expression e, Expression left, Expression right) {
+		StructureControlExpression sce = new StructureControlExpression(type, null, left, right);
 		sce.expr = e;
 		return sce;
 	}
 	
-	public static Expression create(String type, Object value, Expression e, Expression left) {
-		StructureControlExpression sce = new StructureControlExpression(type, value, left, null);
+	public static Expression create(String type, Expression e, Expression left) {
+		StructureControlExpression sce = new StructureControlExpression(type, null, left, null);
 		sce.expr = e;
 		return sce;
+	}
+	
+	@Override
+	public Object execute() throws Exception {
+		boolean expr;
+		Object 	result 	= null;
+		
+		ScopesController sc = ScopesController.getInstance();
+		
+		switch (this.getType()) {
+		
+			case StructureControlExpression.IF:
+			{
+				// Open Scope //
+				sc.openScope(StructureControlExpression.IF);
+				
+				expr = (boolean)this.expr.execute();
+				
+				if (expr) {
+					this.getLeft().execute();
+				}
+				else if(this.getRight() != null) {
+					this.getRight().execute();
+				}
+				
+				// Close Scope //
+				sc.closeScope();
+				
+				break;
+			}
+			case StructureControlExpression.FOR_IN:
+			{
+				// Open Scope //
+				sc.openScope(StructureControlExpression.FOR_IN);
+				
+				// Getting the list and the iterator //
+				List<Object> l 			= (List<Object>)this.getLeft().execute();
+				Iterator<Object> iter 	= l.iterator();
+				
+				Object element;
+				
+				// Adding the new variable (that is in the header) to the new scope //
+				String variableName = (String)this.getValue();
+				sc.addVariable(variableName,null);
+				
+				Expression iis = this.getRight();
+				
+				// Iterating through the list //
+				while(iter.hasNext()) {
+					// Replacing the variable value //
+					element = iter.next();
+					sc.addVariable(variableName,element);
+					
+					// Executing //
+					iis.execute();
+				}
+				
+				// Close Scope //
+				sc.closeScope();
+				
+				break;
+			}
+			case StructureControlExpression.WHILE:
+			{
+				// Open Scope //
+				sc.openScope(StructureControlExpression.WHILE);
+				
+				Expression iis = this.getLeft();
+				
+				while((boolean)this.expr.execute()) {
+					
+					// Executing //
+					iis.execute();
+				}
+				
+				// Close Scope //
+				sc.closeScope();
+				
+				break;
+			}
+			default :
+			{
+				throw new Exception("Cabezal del bloque no reconocido");
+			}
+		}
+		
+		return result;
 	}
 }

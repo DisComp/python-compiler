@@ -73,6 +73,8 @@ non terminal Expression atom_structured_types_access;
 non terminal Expression indent_block;
 non terminal Expression indent_instrs;
 non terminal Expression if_block;
+non terminal Expression simple_if;
+non terminal Expression for_in_block;
 non terminal Expression while_block;
 
 non terminal Expression predefined_functions_expr;
@@ -129,6 +131,7 @@ precedence left IF;
 //precedence left LINE_TERMINATOR; 
 precedence left STRING;
 precedence left ID;
+precedence left ELSE;
 
 start with program;
 
@@ -145,8 +148,9 @@ stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementEx
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 
-compl_stmt ::= if_block: iff {: RESULT = iff; :}
-				|function_block:fb {: RESULT = fb; :};	 
+compl_stmt ::= 	if_block: iff {: RESULT = iff; :}
+				|function_block:fb {: RESULT = fb; :}
+				|for_in_block:fib {: RESULT = fib; :};	 
 
 indent_ins ::= IDENT stmt:s {: RESULT = s; :}
 			|  IDENT stmt:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
@@ -205,10 +209,16 @@ suit_func::= IDENT stmt:s RETURN expr:e LINETERMINATOR DEDENT{:	//cuerpo con ret
 
 
 /* If block */
-if_block ::= IF expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, "if", e, iis); :};
+if_block ::= simple_if:s_if {: RESULT = s_if; :}
+		  	|simple_if:s_if ELSE COLON suit: iis {: s_if.setRight(iis); RESULT = s_if; :};
+		  	
+simple_if ::= IF expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, e, iis); :}; 
+
+/* For in block */
+for_in_block ::= FOR ID:id IN list_expr: l COLON suit: s {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN,id,l,s); :}; 
 
 /* While block */
-while_block ::= WHILE expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
+//while_block ::= WHILE expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
 
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
@@ -291,12 +301,13 @@ arithmetical_expr ::=    arithmetical_expr: l PLUS    arithmetical_expr: r {: RE
 					   | literal_expr: x {: RESULT = x; :};
 					
 parenthesized_expr ::= LPAREN boolean_expr:be RPAREN {: RESULT = be; :};
-    
-list_expr ::= LBRACKET element_list:el RBRACKET {: RESULT = el; :}
-    		| LBRACKET RBRACKET {: RESULT = LiteralExpression.createListElement(null, null); :};
+
+list_expr ::= LBRACKET element_list:l RBRACKET {: RESULT = LiteralExpression.createList(l); :}
+    		| LBRACKET RBRACKET {: RESULT = LiteralExpression.createList(null); :};
     		
 element_list ::=  literal_expr:le COMMA element_list:el {: RESULT = LiteralExpression.createListElement(le, el); :}
 				| literal_expr:le {: RESULT = le; :};
+
 
 dictionary_expr ::= LBRACE element_dictionary:ed RBRACE {: RESULT = ed; :}
 				|	LBRACE IDENT element_dictionary:ed DEDENT RBRACE {: RESULT = ed; :}
@@ -347,7 +358,7 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| LONG_INT: l  {: RESULT = LiteralExpression.createLongInt(l); :}
 				| STRING:   s  {: RESULT = LiteralExpression.createString(s); :}
 				| parenthesized_expr: p {: RESULT = p; :}
-				| list_expr: l {: RESULT = LiteralExpression.createList(l); :}
+				| list_expr: l {: RESULT = l; :}
 				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :}
 				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :}
 				| structured_types_access: sta {: RESULT = sta; :};
