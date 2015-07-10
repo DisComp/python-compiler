@@ -1,7 +1,12 @@
 package com.language.model.expression;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.language.controllers.ScopesController;
 
@@ -156,23 +161,108 @@ public class PredefinedFunctionExpression extends Expression {
 					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
 				}
 				
-				Object dictValue = this.getLeft().execute();
+				Object dictValue_HKF = this.getLeft().execute();
 				Object argDictValue = this.getRight().execute();
 				
-				String dictValueClass = dictValue.getClass().getSimpleName();
-				if(!dictValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+				String dictValueClass_HKF = dictValue_HKF.getClass().getSimpleName();
+				if(!dictValueClass_HKF.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass_HKF);
 				}
 				try {
-					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue_HKF;
 					Boolean result = dictionary.containsKey(argDictValue);
 					return result;
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_HKF);
+				}
+				
+			case KEYS_FUNC:
+				
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para este tipo");
+				}
+				
+				Object dictValue_KF = this.getLeft().execute();
+				String dictValueClass_KF = dictValue_KF.getClass().getSimpleName();
+				if(!dictValueClass_KF.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass_KF);
+				}
+				try {
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue_KF;
+					return dictionary.keySet();
+					
+				} catch(Exception e){
+					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_KF);
 				}
 			
-			//case KEYS_FUNC:
+			case ITEMS_FUNC:
+				
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para este tipo");
+				}
+				
+				Object dictValue_IF = this.getLeft().execute();
+				String dictValueClass_IF = dictValue_IF.getClass().getSimpleName();
+				if(!dictValueClass_IF.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass_IF);
+				}
+				try {
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue_IF;
+					return dictionary.entrySet(); //tal vez deberiamos devolver listas con expressions de tuplas adentro
+					/*Set<Map.Entry<Object,Object>> dictionaryElements = dictionary.entrySet();
+					Iterator iter = dictionaryElements.iterator();
+					while(iter.hasNext()){
+						
+					}*/
+					
+				} catch(Exception e){
+					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_IF);
+				}
+			
+			case POP_FUNC:
+				
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para este tipo");
+				}
+				if(this.getRight() == null){
+					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
+				}
+				
+				Object dictValue_PF = this.getLeft().execute();
+				Object argDictValue_PF = this.getRight().execute();
+				
+				String dictValueClass_PF = dictValue_PF.getClass().getSimpleName();
+				if(!dictValueClass_PF.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass_PF);
+				}
+				try {
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue_PF;
+					dictionary.remove(argDictValue_PF);
+					return true;
+					
+				} catch(Exception e){
+					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_PF);
+				}
+				
+			case VALUES_FUNC:
+				
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para este tipo");
+				}
+				
+				Object dictValue_VF = this.getLeft().execute();
+				String dictValueClass_VF = dictValue_VF.getClass().getSimpleName();
+				if(!dictValueClass_VF.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass_VF);
+				}
+				try {
+					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue_VF;
+					return dictionary.values();
+					
+				} catch(Exception e){
+					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_VF);
+				}
 				
 			case FIND_FUNC:
 				

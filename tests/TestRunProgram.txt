@@ -4,3 +4,8 @@ print a.has_key(x)
 s = "Buen dia Benito"
 print s.find("Benito")
 print s.find("Benito", 3)
+print a.keys()
+print a.items()
+print a.values()
+print a.pop(3)
+print a

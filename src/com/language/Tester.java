@@ -11,13 +11,13 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 		
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestFunction.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("tests/TestRunProgram.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
 
         // Creating all tests! //
-        //Tests.doTests();
+        Tests.doTests();
         
         while (line != null) {         
 			 sb.append(line);

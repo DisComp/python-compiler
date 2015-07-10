@@ -40,6 +40,7 @@ public class Tests {
 		Tests.doArithmeticalTest();
 		Tests.doBitwiseTest();
 		Tests.doBooleanTest();
+		Tests.doPredefinedFunctionsTest();
 	}
 	
 	public static void doArithmeticalTest() throws Exception {
@@ -122,9 +123,19 @@ public class Tests {
 		l1.put("Hola", 2);
 		l1.put(true, false);
         PredefinedFunctionExpression pf1 = new PredefinedFunctionExpression(PredefinedFunctionExpression.HAS_KEY_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), new Expression(LiteralExpression.STRING, "Hola", null, null));
-    
+        PredefinedFunctionExpression pf2 = new PredefinedFunctionExpression(PredefinedFunctionExpression.KEYS_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), null);
+        PredefinedFunctionExpression pf3 = new PredefinedFunctionExpression(PredefinedFunctionExpression.ITEMS_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), null);
+        PredefinedFunctionExpression pf4 = new PredefinedFunctionExpression(PredefinedFunctionExpression.VALUES_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), null);
+        PredefinedFunctionExpression pf5 = new PredefinedFunctionExpression(PredefinedFunctionExpression.POP_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), new Expression(LiteralExpression.BOOLEAN, "True", null, null));
+        PredefinedFunctionExpression pf6 = new PredefinedFunctionExpression(PredefinedFunctionExpression.PRINT_FUNC, null, new Expression(LiteralExpression.DICTIONARY, l1, null, null), null);
+        
         Tests.beginSection("Predefined Function Tests");
         Tests.displayResult(pf1.execute(),"true");
+        Tests.displayResult(pf2.execute(),"[Hola, true]");
+        Tests.displayResult(pf3.execute(),"[Hola=2, true=false]");
+        Tests.displayResult(pf4.execute(),"[2, false]");
+        Tests.displayResult(pf5.execute(),"true");
+        Tests.displayResult(pf6.execute(),"true");
         
         System.out.println("------------------------- END Predefined Functions TEST --------------------------------------------");
         System.out.println();
