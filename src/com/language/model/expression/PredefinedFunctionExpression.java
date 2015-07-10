@@ -80,13 +80,13 @@ public class PredefinedFunctionExpression extends Expression {
 	
 	public static Expression createStringFunction(Expression string_left, Expression expr) {
 		/*e.g: S.count(x) saves D on left and x on right */
-		Expression argument = expr.getRight();
-		return new PredefinedFunctionExpression(expr.getType(), string_left, argument);
+		Expression arguments = expr.getLeft();
+		return new PredefinedFunctionExpression(expr.getType(), string_left, arguments);
 	}
 	
-	public static Expression createStringFunctionElement(String type, Expression right) {
-		/* Save string function parameters on the right (String object will be on the left) */
-		return new PredefinedFunctionExpression(type, null, right);
+	public static Expression createStringFunctionElement(String type, Expression left) {
+		/* Save string function parameters on the left  */
+		return new PredefinedFunctionExpression(type, left, null);
 	}
 	
 	public static Expression createStringFunctionElement(String type, Expression right_param_one, Expression right_param_two) {
@@ -95,7 +95,7 @@ public class PredefinedFunctionExpression extends Expression {
 		 	This function receives two parameters, they're saved on an Expression 
 		*/
 		Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
-		return new PredefinedFunctionExpression(type, null, arguments);
+		return new PredefinedFunctionExpression(type, arguments, null);
 	}
 	
 	public static Expression createListFunction(Expression list_left, Expression expr) {
@@ -174,7 +174,7 @@ public class PredefinedFunctionExpression extends Expression {
 			
 			//case KEYS_FUNC:
 				
-			case FIND_FUNC: // falta controlar con dos argumentos
+			case FIND_FUNC:
 				
 				if(this.getLeft() == null){
 					throw new Exception("Esta funcion no esta definida para este tipo");
@@ -183,24 +183,37 @@ public class PredefinedFunctionExpression extends Expression {
 					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
 				}
 				
-				String strValue = (String)this.getLeft().execute();
-				Object argStrValue = this.getRight().execute();
+				Object strValue = this.getLeft().execute();
+				Object argStrValue, argIntValue = null;
+				
+				if(this.getRight().getLeft() != null){ //find with two arguments
+					argStrValue = this.getRight().getLeft().execute();
+					argIntValue = this.getRight().getRight().execute();
+				} else {
+					argStrValue = this.getRight().execute();
+				}				
 				
 				String strValueClass = strValue.getClass().getSimpleName();
-				String argValueClass = strValue.getClass().getSimpleName();
+				String argValueClass = argStrValue.getClass().getSimpleName();
+				String argIntClass = argIntValue != null ? argIntValue.getClass().getSimpleName() : null;
+				
 				if(!strValueClass.equals("String")){
 					throw new Exception("Esta funcion no esta definida para el tipo " + strValueClass);
 				}
 				if(!argValueClass.equals("String")){
 					throw new Exception("Se esperaba argumento de tipo string pero se recibio " + strValueClass);
 				}
+				if(argIntValue != null && !argIntClass.equals("Integer")){
+					throw new Exception("Se esperaba argumento de tipo int pero se recibio " + argIntClass);
+				}
 				try {
 					String str = String.valueOf(strValue);
 					String argStr = String.valueOf(argStrValue).toString();
-					String x ="Buen Dia Benito";
-					Integer algo ="Buen Dia Benito".indexOf("Benito");
-					Integer result = str.indexOf(argStr);
-					return result;
+					if(argIntValue != null){
+						Integer argInt = (Integer)argIntValue;
+						return str.indexOf(argStr, argInt);
+					}
+					return str.indexOf(argStr);
 					
 				} catch(Exception e){
 					throw new Exception("Error al aplicar la funcion find sobre " + strValue);
