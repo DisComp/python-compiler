@@ -35,7 +35,7 @@ import com.language.controllers.*;
 %eofval{
     return symbol(sym.EOF);
 %eofval}
-IntroTabs = \n(\t)*[ ]*#*
+IntroTabs = \n(\t)*[ ]*
 LineTerminator = \r|\n|\r\n
 WhiteSpace     = [ \f\t]
 Triple_quotes = \"\"\"([^\"\r\n\t]*)\"\"\"
