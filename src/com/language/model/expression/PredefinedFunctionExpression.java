@@ -150,6 +150,9 @@ public class PredefinedFunctionExpression extends Expression {
 	@Override
 	public Object execute() throws Exception {
 		
+		Expression 	left 	= this.getLeft(),
+					right	= this.getRight();
+		
 		switch(this.getType()){
 		
 			case HAS_KEY_FUNC:
@@ -314,6 +317,28 @@ public class PredefinedFunctionExpression extends Expression {
 					System.out.println(this.getLeft().execute());
 				}
 				return null;
+				
+			case COUNT_FUNC:
+				if(left != null && right != null) {
+					int index 		= 0,
+						occurrences = 0;
+					String 	leftStr  = (String)left.execute(),
+							rightStr = (String)right.execute();
+					
+					System.out.println("RESUULLTTTTT "+leftStr+" "+rightStr);
+					System.out.println(leftStr.indexOf(rightStr));
+					System.out.println("********************");
+					index = leftStr.indexOf(rightStr,0);
+					
+					System.out.println(index);
+					while(index != -1) {
+						occurrences++;
+						index = leftStr.indexOf(rightStr,index);
+					}
+					
+					return occurrences;
+				}
+				
 				
 			default:
 				//return super.getValue();

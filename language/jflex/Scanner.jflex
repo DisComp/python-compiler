@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.language.parser;
 
 import java.util.*;
@@ -27,6 +28,17 @@ import com.language.controllers.*;
 	}
 	public Symbol symbol(int type, Object value) {
 		return new Symbol(type, yyline, yycolumn, value);
+	}
+	
+	private String getString(String str) {
+		int count = str.length();
+		
+		if(count <= 2) {
+			return "";
+		}
+		else {
+			return str.substring(1,count - 1);
+		}
 	}
 %}
 
@@ -81,8 +93,8 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	/* Strings */
 	
 	{Triple_quotes}				{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
-	\"([^\"\r\n\t]*)\"			{ return symbol(sym.STRING, yytext()); } /*Double quotes*/
-	'([^\"\r\n\t]*)'			{ return symbol(sym.STRING, yytext()); } /*Single quotes*/
+	\"([^\"\r\n\t]*)\"			{ return symbol(sym.STRING, getString(yytext())); } /*Double quotes*/
+	'([^\"\r\n\t]*)'			{ return symbol(sym.STRING, getString(yytext())); } /*Single quotes*/
 	"\\" 						{ return symbol(sym.ESCAPE, "\\"); }
 																/*Three Double quotes*/
 																/*Three Single quotes*/
@@ -231,6 +243,3 @@ IntegerLiteral =   0 | [1-9][0-9]*
 . 					{
 						throw new ParsingException("Illegal character at line " + yyline + ", column " + yycolumn + " >> " + yytext());
 					}
-
-
-
