@@ -18,8 +18,39 @@ public class FunctionCallExpression extends Expression {
 	
 	@Override
 	public Object execute() throws Exception{
+		//Find func
 		FunctionExpression fun = ScopesController.getInstance().getFunction(fname, parametersValues.size());
-		return fun.RunFunction(/*parametersValues*/);
+		
+		//Open new scope
+		ScopesController.getInstance().openScope(fname);
+		
+		//Load parameters in scope as variables
+		//internalParameters = fun.getParamNames();
+		//paramsToChange<boolean>[cantParam]=Init in false;
+		//foreach i in parametersValues.size
+			//if(pV[i].isID)//no exp TODO:AGREGAR GRAMMAR
+				//if(pv[i].getType()==dic,tuple,list,..)//es complejo entonces se va a modificar'
+					//paramsToChange[i]=true;
+			//push(iP[i],pV[i].execute)
+		
+		//Execute Body
+		Object res = fun.RunFunction();
+		
+		//Get actual parameters values'
+		//newValues array(parametersValues.size)
+		//foreach i in parametersValues.size
+			//newValues[i]=getVal(iP[i])
+		
+		//Close Scope
+		ScopesController.getInstance().closeScope();
+		
+		//Modify complex parmeteers
+		//foreach i in parametersValues.size
+			//if(paramsToChange[i])
+				//push(pV[i].getValue(),newValues[i])
+		
+		//Return execution value
+		return res;
 	}
 	
 }

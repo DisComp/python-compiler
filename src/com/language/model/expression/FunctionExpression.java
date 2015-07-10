@@ -28,17 +28,13 @@ public class FunctionExpression extends Expression {
 	}
 	
 	public Object RunFunction(/*valor de los parámetros*/) throws Exception{
-		ScopesController.getInstance().openScope(name);
 		//TODO: Cargar parámetros
 		if(body!=null){
 			body.execute();	
 		}
-		Object result = null;
 		if(returnExp!=null)
-			result = returnExp.execute();
-		ScopesController.getInstance().closeScope();
-		return result;
-		
+			return returnExp.execute();
+		return null;
 	}
 	public int cantParam() {
 		return parameters.size();
