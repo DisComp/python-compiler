@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.language.parser;
 
 import java.util.*;
