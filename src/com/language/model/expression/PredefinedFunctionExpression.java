@@ -324,13 +324,9 @@ public class PredefinedFunctionExpression extends Expression {
 						occurrences = 0;
 					String 	leftStr  = (String)left.execute(),
 							rightStr = (String)right.execute();
-					
-					System.out.println("RESUULLTTTTT "+leftStr+" "+rightStr);
-					System.out.println(leftStr.indexOf(rightStr));
-					System.out.println("********************");
+
 					index = leftStr.indexOf(rightStr,0);
 					
-					System.out.println(index);
 					while(index != -1) {
 						occurrences++;
 						index = leftStr.indexOf(rightStr,index);
@@ -339,11 +335,71 @@ public class PredefinedFunctionExpression extends Expression {
 					return occurrences;
 				}
 				
+				break;
 				
+			case JOIN_FUNC:
+				if(left != null && right != null) {
+					Object 	str = left.execute(),
+							list = right.execute();
+					String  leftClass = str.getClass().getSimpleName(),
+							rightClass = list.getClass().getSimpleName();
+
+					
+					if(!leftClass.equals("String")) {
+						throw new Exception("La variable no es del tipo esperado 'String'. Se encontro: '"+leftClass+"'");
+					}
+					else if(!rightClass.equals("ArrayList")) {
+						throw new Exception("El parametro recibido no es del tipo esperado 'List'. Se encontro: "+rightClass+"'");
+					}
+					else {
+						Iterator<Object> iter 	= ((List<Object>)list).iterator();
+						String result 			= "",
+							   separator 		= (String)str; 
+						Object element 			= null;
+						
+						if(iter.hasNext()) {
+							// Case base (no separator strings should be included) //
+							element = iter.next();
+							result 	= (String)element;
+							
+							// Iterating through the list //
+							while(iter.hasNext()) {
+								element = iter.next();
+								
+								if(!element.getClass().getSimpleName().equals("String")){
+									throw new Exception("Uno de los elementos de la lista no es un String");
+								}
+								
+								result = result + separator + new String((String)element);
+							}
+						}
+						
+						System.out.println(result);
+						return result;
+					}
+				}
+				
+				break;
+			case SPLIT_FUNC:
+				if(left != null && right != null) {
+					Object 	str = left.execute(),
+							sep = right.execute();
+					
+					if(!str.getClass().getSimpleName().equals("String")) {
+						throw new Exception("La variable no es un String");
+					}
+					else if(!sep.getClass().getSimpleName().equals("String")) {
+						
+					}
+				}
+				
+				break;
 			default:
 				//return super.getValue();
 				throw new Exception("Tipo literal no reconocido");
 		}
+		
+		throw new Exception("Alguno de los parametros de la funcion '"+this.getType()+"' no fueron encontrados");
 	}
 	
 }
