@@ -35,7 +35,7 @@ import com.language.controllers.*;
 %eofval{
     return symbol(sym.EOF);
 %eofval}
-IntroTabs = \n(\t)*[ ]*
+IntroTabs = \n(\t)*[ ]*#*
 LineTerminator = \r|\n|\r\n
 WhiteSpace     = [ \f\t]
 Triple_quotes = \"\"\"([^\"\r\n\t]*)\"\"\"
@@ -91,6 +91,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		String lexema = yytext();
 		int counter = 0;
 		int spaceCounter=0;
+		int comentCounter=0;
 		for( int i=0; i<lexema.length(); i++ ) {
 		    if( lexema.charAt(i) == '\t' ) {
 		        counter++;
@@ -98,9 +99,15 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		    else if( lexema.charAt(i) == ' ' ) {
 		    	spaceCounter++;
 		    }
+		    else if( lexema.charAt(i) == '#' ) {
+		    	comentCounter++;
+		    }
 		}
 		if(spaceCounter>0)
-			throw new ParsingException("Errro de tabulacion en linea " + yyline + ", columna " + yycolumn);
+			
+		if(spaceCounter>0)
+			yybegin(COMMENT_LINE); 
+	
 		if(counter==ScopesController.getInstance().getExpectedTabs()+1/*counter>ScopesController.getInstance().getExpectedTabs()*/){
 			ScopesController.getInstance().addExpectedTab();
 			return symbol(sym.IDENT, "IDENT" );

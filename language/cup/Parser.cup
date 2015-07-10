@@ -104,6 +104,7 @@ non terminal List<String> parameters;
 non terminal List<String> individual_parameters;
 non terminal List<Expression> call_parameters;
 non terminal List<Expression> call_individual_parameters;
+non terminal Expression call_atom_individual_parameters;
 
 non terminal Expression stmt;
 non terminal Expression compl_stmt;
@@ -168,11 +169,15 @@ function_call::= ID:id LPAREN call_parameters:cp RPAREN {: RESULT = FunctionCall
 call_parameters ::= {: RESULT = new ArrayList<Expression>(); :}//sin parámetros
 			|call_individual_parameters:ip{: RESULT = ip; :};//con al menos un parámetro	
 
-call_individual_parameters ::=ID: id {: 	List<Expression> l = new ArrayList<Expression>();
-									l.add(new Expression());
+call_individual_parameters ::=expr: e {:
+								 	List<Expression> l = new ArrayList<Expression>();
+									l.add(e);
 									RESULT = l; :}
-						| ID: id COMMA call_individual_parameters:iparams {:	iparams.add(new Expression());RESULT = iparams;:} ;	
-																		
+						| expr: e COMMA call_individual_parameters:iparams {:	iparams.add(e);RESULT = iparams;:} ;	
+
+call_atom_individual_parameters::=ID: id {: RESULT = LiteralExpression.createIdentifier(id);  :}
+								|expr: e {: RESULT = e;  :}	;
+																	
 function_block ::=	DEF ID: funct_name
 					LPAREN parameters:params RPAREN 
 					COLON suit_func:s {: RESULT = FunctionExpression.create(funct_name,s,params); :};

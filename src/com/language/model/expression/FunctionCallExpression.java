@@ -25,7 +25,10 @@ public class FunctionCallExpression extends Expression {
 		ScopesController.getInstance().openScope(fname);
 		
 		//Load parameters in scope as variables
-		//internalParameters = fun.getParamNames();
+		List<String>internalParameters = fun.getParamNames();
+		for(int i =0; i<internalParameters.size();i++){
+			ScopesController.getInstance().addVariable(internalParameters.get(i), parametersValues.get(i).execute());
+		}
 		//paramsToChange<boolean>[cantParam]=Init in false;
 		//foreach i in parametersValues.size
 			//if(pV[i].isID)//no exp TODO:AGREGAR GRAMMAR

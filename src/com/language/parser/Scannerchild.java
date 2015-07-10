@@ -28,6 +28,7 @@ public class Scannerchild extends Scanner {
 			System.out.println("devuelvo: "+result.value.toString());
 		else
 			System.out.println("EOF");*/
+			
 		return result;
 	}
 	

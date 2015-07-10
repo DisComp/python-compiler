@@ -51,5 +51,8 @@ public class FunctionExpression extends Expression {
 		return res;
 	}
 	
+	public List<String> getParamNames(){
+		return parameters;
+	}
 
 }

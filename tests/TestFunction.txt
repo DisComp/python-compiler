@@ -6,8 +6,15 @@ def f():
 def g():
 	f()
 	return 1
-def g(a):
-	a+1
-	True
-	return 2
-print (g()+1)
+def g(a,b):
+	a=a+1
+	b=b+1
+	print a
+	print b
+#[22, True, "una lista muy larga", [1, 2], []]
+x=1
+y=10
+z=[22, True, "una lista muy larga", [1, 2], []]
+g(x,y)
+print x
+print y
