@@ -66,17 +66,17 @@ public class ScopesController {
 				if(var!=null)//tiene valor asignado
 					return var;
 				else//no tiene valor asignado
-					throw new ParsingException("Variable "+var_name+" sin instanciar");
+					throw new ParsingException("Variable \'"+var_name+"\' sin instanciar");
 			}
 			
 		}
-		throw new ParsingException("Variable "+var_name+" no definida");
+		throw new ParsingException("Variable \'"+var_name+"\' no definida");
 	}
 	
 	public FunctionExpression getFunction(String name, int cant_params){
 		for(int i= 0; i< scopes.size();i++){
-			FunctionExpression fun = scopes.elementAt(i).getFunction(name);
-			if(fun!=null&&cant_params==fun.cantParam()){//si la encontre
+			FunctionExpression fun = scopes.elementAt(i).getFunction(name,cant_params);
+			if(fun!=null){//si la encontre
 				return fun;
 			}
 		}
