@@ -104,7 +104,6 @@ non terminal List<String> parameters;
 non terminal List<String> individual_parameters;
 non terminal List<Expression> call_parameters;
 non terminal List<Expression> call_individual_parameters;
-non terminal Expression call_atom_individual_parameters;
 
 non terminal Expression stmt;
 non terminal Expression compl_stmt;
@@ -175,8 +174,7 @@ call_individual_parameters ::=expr: e {:
 									RESULT = l; :}
 						| expr: e COMMA call_individual_parameters:iparams {:	iparams.add(e);RESULT = iparams;:} ;	
 
-call_atom_individual_parameters::=ID: id {: RESULT = LiteralExpression.createIdentifier(id);  :}
-								|expr: e {: RESULT = e;  :}	;
+
 																	
 function_block ::=	DEF ID: funct_name
 					LPAREN parameters:params RPAREN 
@@ -236,7 +234,7 @@ left_side_expr ::= ID: id {: RESULT = LiteralExpression.createIdentifier(id); :}
 								/* We need to extract the variable value from the java code */
 predefined_functions_expr ::= literal_expr: le POINT predefined_dictionary_functions: pdf {: RESULT =  PredefinedFunctionExpression.createDictionaryFunction( le, pdf); :}
 							| literal_expr: le POINT predefined_string_functions: psf {: RESULT =  PredefinedFunctionExpression.createStringFunction(le, psf); :}
-							| literal_expr: le predefined_list_functions: plf {: RESULT =  PredefinedFunctionExpression.createListFunction(le, plf); :}
+							| literal_expr: le POINT predefined_list_functions: plf {: RESULT =  PredefinedFunctionExpression.createListFunction(le, plf); :}
 							| predefined_io_functions: piof {: RESULT =  piof; :}
 							| predefined_type_conversion_functions: piof {: RESULT =  piof; :}
 							| TYPE_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createEvaluateTypeFunction(le); :}

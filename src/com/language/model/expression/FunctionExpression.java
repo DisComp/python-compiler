@@ -27,8 +27,7 @@ public class FunctionExpression extends Expression {
 		return new FunctionExpression(id,_body,params);
 	}
 	
-	public Object RunFunction(/*valor de los parámetros*/) throws Exception{
-		//TODO: Cargar parámetros
+	public Object RunFunction() throws Exception{
 		if(body!=null){
 			body.execute();	
 		}

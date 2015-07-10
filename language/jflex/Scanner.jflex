@@ -28,6 +28,7 @@ import com.language.controllers.*;
 	public Symbol symbol(int type, Object value) {
 		return new Symbol(type, yyline, yycolumn, value);
 	}
+	
 %}
 
 %state COMMENT_LINE
@@ -120,6 +121,9 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		}
 		else if(counter==ScopesController.getInstance().getExpectedTabs()){
 			return symbol(sym.LINETERMINATOR, "ENTER" );
+		}
+		else if(counter==ScopesController.getInstance().getExpectedTabs()){
+			throw new ParsingException("Illegal character at line " + yyline + ", column " + yycolumn + " >> " + yytext());
 		}
 
 	}

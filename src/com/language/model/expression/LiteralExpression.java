@@ -93,22 +93,23 @@ public class LiteralExpression extends Expression {
 		*/
 		List<Object> listValue = new ArrayList<Object>();
 		//Expression listElement = (Expression)value;
-		
-		if(listElement.getRight() != null){
-			// One element on the list
-			Object element = ((Expression)listElement.getLeft()).getValue();
-			listValue.add(element); 
-			listElement = (Expression)listElement.getRight();
-			
-			// Parse tree and add leaf values
-			while(listElement.getRight() != null){
-				element = ((Expression)listElement.getLeft()).getValue();
-				listValue.add(element);
+		if(listElement!=null){
+			if(listElement.getRight() != null){
+				// One element on the list
+				Object element = ((Expression)listElement.getLeft()).getValue();
+				listValue.add(element); 
 				listElement = (Expression)listElement.getRight();
+				
+				// Parse tree and add leaf values
+				while(listElement.getRight() != null){
+					element = ((Expression)listElement.getLeft()).getValue();
+					listValue.add(element);
+					listElement = (Expression)listElement.getRight();
+				}
+				// Last leaf contains last value
+				element = listElement.getValue();
+				listValue.add(element);		
 			}
-			// Last leaf contains last value
-			element = listElement.getValue();
-			listValue.add(element);						
 		}
 		return new LiteralExpression(LIST, listValue, null, null);
 	}
