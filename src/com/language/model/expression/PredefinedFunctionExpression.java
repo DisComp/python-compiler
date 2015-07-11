@@ -181,7 +181,13 @@ public class PredefinedFunctionExpression extends Expression {
 				}
 			}			
 			List<Object> l = (List<Object>) lObj;
-			l.add(index, ObjParamToFind);
+			try{
+				l.add(index, ObjParamToFind);
+			}
+			catch (Exception e){
+				throw new Exception("Se quizo insertar un elemento en la lista "+this.getLeft().getValue()+" con un índice fuera de rango");
+			}
+			
 			return l;
 		}
 		case INDEX_FUNC:{
@@ -189,18 +195,24 @@ public class PredefinedFunctionExpression extends Expression {
 			Object ObjParamToFind = this.getRight().getLeft().execute();//any value expeted
 			String dictValueClass = lObj.getClass().getSimpleName();
 			if(!dictValueClass.equals("ArrayList")){
-				throw new Exception("La función index solo está definida para el tipo List");
+				throw new Exception("La función index solo está definida para el tipo List.");
 			}
 			int start = 0;
 			if(this.getRight().getRight()!=null){//exist second parameter
 				try{
 					start = (int) this.getRight().getRight().execute();
 				}catch(Exception e){
-					throw new Exception("La función index espera un entrero como segundo parámetro");
+					throw new Exception("La función index espera un entrero como segundo parámetro.");
 				}
 			}			
 			List<Object> l = (List<Object>) lObj;
-			return l.subList(start, l.size()-1).indexOf(ObjParamToFind)+start;
+			int res=0;
+			try{
+				res=l.subList(start, l.size()-1).indexOf(ObjParamToFind)+start;
+			}catch(Exception e){
+				throw new Exception("Valor de start de la funcion index fuera de rango");
+			}
+			return res;
 		}
 			case EXTEND_FUNC:{
 				Object lObj = this.getLeft().execute();
@@ -211,7 +223,7 @@ public class PredefinedFunctionExpression extends Expression {
 				}
 				dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("La función extend solo está definida para el tipo Lista");
+					throw new Exception("La función extend solo está definida para el tipo Lista.");
 				}
 				List<Object> l = (List<Object>) lObj;
 				List<Object> lParam = (List<Object>) lObjParam;
@@ -222,7 +234,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object lObj = this.getLeft().execute();
 				String dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("La función append solo está definida para el tipo Lista");
+					throw new Exception("La función append solo está definida para el tipo Lista.");
 				}
 				List<Object> l = (List<Object>) lObj;
 				l.add(this.getRight().getLeft().execute());
@@ -232,7 +244,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object lObj = this.getLeft().execute();
 				String dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("La función append solo está definida para el tipo Lista");
+					throw new Exception("La función append solo está definida para el tipo Lista.");
 				}
 				List<Object> l = (List<Object>) lObj;
 				return l.size();
@@ -242,10 +254,10 @@ public class PredefinedFunctionExpression extends Expression {
 			case HAS_KEY_FUNC:
 				
 				if(this.getLeft() == null){
-					throw new Exception("Esta funcion no esta definida para este tipo");
+					throw new Exception("Esta funcion no esta definida para este tipo.");
 				}
 				if(this.getRight() == null){
-					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
+					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0.");
 				}
 				
 				Object dictValue_HKF = this.getLeft().execute();
@@ -310,10 +322,10 @@ public class PredefinedFunctionExpression extends Expression {
 			case POP_FUNC:{
 				
 				if(this.getLeft() == null){
-					throw new Exception("Esta funcion no esta definida para este tipo");
+					throw new Exception("Esta funcion no esta definida para este tipo.");
 				}
 				if(this.getRight() == null){
-					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
+					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0.");
 				}
 				
 				Object dictValue_PF = this.getLeft().execute();
@@ -321,17 +333,21 @@ public class PredefinedFunctionExpression extends Expression {
 				
 				String dictValueClass_PF = dictValue_PF.getClass().getSimpleName();
 				if(!dictValueClass_PF.equals("HashMap")&&!dictValueClass_PF.equals("ArrayList")){
-					throw new Exception("La funcion pop solo se encuentra disponible para los tipos Lista y Diccionario");
+					throw new Exception("La funcion pop solo se encuentra disponible para los tipos Lista y Diccionario.");
 				}
 				if(!dictValueClass_PF.equals("HashMap")){//pop in a list
 					List<Object> l = (List<Object>) dictValue_PF;
 					int index=0;
 					try{
 						index = (int) argDictValue_PF;
+					}catch(Exception e){
+						throw new Exception("La función pop para Lista espera un entrero como parámetro.");
+					}
+					try{
 						l.remove(index);
 						return true;
 					}catch(Exception e){
-						throw new Exception("La función pop para Lista espera un entrero como parámetro");
+						throw new Exception("Se quizo hacer un pop sobre la lista "+this.getLeft().getValue()+" con un índice fuera de rango");
 					}
 				}
 				else{//pop in dicc
