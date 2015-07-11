@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java_cup.runtime.Symbol;
 
 import com.language.exceptions.ParsingException;
+import com.language.exceptions.SyntaxError;
 import com.language.model.expression.Expression;
 
 public class ExpressionParser {
@@ -23,12 +24,14 @@ public class ExpressionParser {
 			Expression exp = (Expression) topsym.value;
 			return exp;
 
-		
+		} catch (SyntaxError ex) {
+			System.out.println("ERROR DE COMPILACIÓN (ERROR GENERADO POR NUESTRO COMPILADOR): "+ex.getMessage());
+			return null;
 		} catch (ParsingException ex) {
 			System.out.println("ERROR DE COMPILACIÓN (ERROR GENERADO POR NUESTRO COMPILADOR): "+ex.getMessage());
 			return null;
 		} catch (Exception ex) {
-			System.out.println("Error parsing source: " + ex.getMessage());
+			System.out.println("Error en tiempo de ejecucion: " + ex.getMessage());
 			return null;
 		}
 	

@@ -1,5 +1,6 @@
 package com.language.controllers;
 import com.language.model.expression.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -59,28 +60,28 @@ public class ScopesController {
 		log();
 	}
 	
-	public Object getVariable(String var_name){
+	public Object getVariable(String var_name) throws Exception{
 		for(int i= 0; i< scopes.size();i++){
 			if(scopes.elementAt(i).containsVariable(var_name)){//si la enconre
 				Object var = scopes.elementAt(i).getVariable(var_name);
 				if(var!=null)//tiene valor asignado
 					return var;
 				else//no tiene valor asignado
-					throw new ParsingException("Variable \'"+var_name+"\' sin instanciar");
+					throw new Exception("Variable \'"+var_name+"\' sin instanciar");
 			}
 			
 		}
-		throw new ParsingException("Variable \'"+var_name+"\' no definida.");
+		throw new Exception("Variable \'"+var_name+"\' no definida.");
 	}
 	
-	public FunctionExpression getFunction(String name, int cant_params){
+	public FunctionExpression getFunction(String name, int cant_params) throws Exception{
 		for(int i= 0; i< scopes.size();i++){
 			FunctionExpression fun = scopes.elementAt(i).getFunction(name,cant_params);
 			if(fun!=null){//si la encontre
 				return fun;
 			}
 		}
-		throw new ParsingException("Función "+name+" no disponible en el scope");
+		throw new Exception("Función "+name+" no disponible en el scope");
 	}
 	
 	

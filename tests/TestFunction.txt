@@ -24,4 +24,4 @@ g(x,y,z)
 print "------postFunc-------"
 print x
 print y
-print z.extend(2)
+print z.extend(z)

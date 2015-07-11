@@ -161,12 +161,12 @@ public class LiteralExpression extends Expression {
 		return new LiteralExpression(DICTIONARY, left, right); //type, left, right
 	}
 	
-	public static Expression createAtomDictionaryElement(Expression key, Expression value){
+	public static Expression createAtomDictionaryElement(Expression key, Expression value) throws Exception{
 		Map<Object, Object> dictionaryKeyValue= new HashMap<Object, Object>();
 		try {
 			dictionaryKeyValue.put(key.getValue(), value.getValue());
 		} catch (Exception e) {
-			throw new ParsingException("Error definiendo diccionario, tipo de clave o valor no permitidos");
+			throw new Exception("Error definiendo diccionario, tipo de clave o valor no permitidos");
 		}
 		return new LiteralExpression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
