@@ -147,7 +147,13 @@ public class PredefinedFunctionExpression extends Expression {
 		/*e.g: pop function, used for dictionaries and lists, left for object and right for the parameter */
 		return new PredefinedFunctionExpression(COUNT_FUNC, null, left, right);
 	}
-	
+	private boolean isObject(Object o,String type) throws Exception{
+		String dictValueClass = o.getClass().getSimpleName();
+		if(!dictValueClass.equals(type)){
+			throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+		}
+		return true;
+	}
 	@Override
 	public Object execute() throws Exception {
 		
@@ -155,17 +161,23 @@ public class PredefinedFunctionExpression extends Expression {
 	Expression 	left 	= this.getLeft(),
 				right	= this.getRight();
 		switch(this.getType()){
-				
-			case APPEND_FUNC:
-				Expression ex= this;
+			case EXTEND_FUNC:{
 				Object lObj = this.getLeft().execute();
-				String dictValueClass = lObj.getClass().getSimpleName();
-				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
-				}
+				Object lObjParam = this.getRight().getRight().execute();
+				isObject(lObj,"ArrayList");
+				isObject(lObjParam,"ArrayList");
+				List<Object> l = (List<Object>) lObj;
+				List<Object> lParam = (List<Object>) lObjParam;
+				l.addAll(0, lParam);
+				return l;
+			}
+			case APPEND_FUNC:{
+				Object lObj = this.getLeft().execute();
+				isObject(lObj,"ArrayList");
 				List<Object> l = (List<Object>) lObj;
 				l.add(this.getRight().getRight().execute());
 				return l;
+			}
 	
 			
 			case HAS_KEY_FUNC:
