@@ -211,7 +211,7 @@ public class PredefinedFunctionExpression extends Expression {
 				}
 				dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("La función extend solo está definida para el tipo List");
+					throw new Exception("La función extend solo está definida para el tipo Lista");
 				}
 				List<Object> l = (List<Object>) lObj;
 				List<Object> lParam = (List<Object>) lObjParam;
@@ -222,7 +222,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object lObj = this.getLeft().execute();
 				String dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("La función append solo está definida para el tipo List");
+					throw new Exception("La función append solo está definida para el tipo Lista");
 				}
 				List<Object> l = (List<Object>) lObj;
 				l.add(this.getRight().getLeft().execute());
@@ -232,7 +232,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object lObj = this.getLeft().execute();
 				String dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("La función append solo está definida para el tipo List");
+					throw new Exception("La función append solo está definida para el tipo Lista");
 				}
 				List<Object> l = (List<Object>) lObj;
 				return l.size();
@@ -307,7 +307,7 @@ public class PredefinedFunctionExpression extends Expression {
 					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_IF);
 				}
 			
-			case POP_FUNC:
+			case POP_FUNC:{
 				
 				if(this.getLeft() == null){
 					throw new Exception("Esta funcion no esta definida para este tipo");
@@ -320,18 +320,31 @@ public class PredefinedFunctionExpression extends Expression {
 				Object argDictValue_PF = this.getRight().execute();
 				
 				String dictValueClass_PF = dictValue_PF.getClass().getSimpleName();
-				if(!dictValueClass_PF.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass_PF);
+				if(!dictValueClass_PF.equals("HashMap")&&!dictValueClass_PF.equals("ArrayList")){
+					throw new Exception("La funcion pop solo se encuentra disponible para los tipos Lista y Diccionario");
 				}
-				try {
-					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue_PF;
-					dictionary.remove(argDictValue_PF);
-					return true;
-					
-				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_PF);
+				if(!dictValueClass_PF.equals("HashMap")){//pop in a list
+					List<Object> l = (List<Object>) dictValue_PF;
+					int index=0;
+					try{
+						index = (int) argDictValue_PF;
+						l.remove(index);
+						return true;
+					}catch(Exception e){
+						throw new Exception("La función pop para Lista espera un entrero como parámetro");
+					}
 				}
-				
+				else{//pop in dicc
+					try {
+						HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue_PF;
+						dictionary.remove(argDictValue_PF);
+						return true;
+						
+					} catch(Exception e){
+						throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue_PF);
+					}
+				}
+			}
 			case VALUES_FUNC:
 				
 				if(this.getLeft() == null){
