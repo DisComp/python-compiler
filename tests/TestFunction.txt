@@ -5,7 +5,6 @@ def f():
 	True
 def g():
 	f()
-	return 1
 def g(a,b,c):
 	a=a+1
 	b=b+1
@@ -25,4 +24,4 @@ g(x,y,z)
 print "------postFunc-------"
 print x
 print y
-print z
+print z.extend(z).size()+1

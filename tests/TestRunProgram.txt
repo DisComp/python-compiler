@@ -3,7 +3,22 @@ b[0:2] = ["Hola", "Que tul", False]
 print b
 # se rompio comentario en la misma linea
 # se rompio dictionary multilinea
-a = { "Soy una clave": 5, True: "Yo un valor"} 
-print a
-a[True]= 124
+r = { "Soy una clave": 5, True: "Yo un valor"} 
+print r
+r[True]= 124
+print r
+a = {"Chau": 5, 3: True}
+x = "Chau chau hadios"
+x.split("h")
+x.length()
+y = "Hola Mundo !!!"
+y.replace("Mundo","Chiche")
+print a.has_key(x)
+s = "Buen dia Benito"
+print s.find("Benito")
+print s.find("Benito", 3)
+print a.keys()
+print a.items()
+print a.values()
+print a.pop(3)
 print a

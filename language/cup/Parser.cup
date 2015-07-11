@@ -7,6 +7,17 @@ import com.language.model.expression.*;
 import com.language.exceptions.*;
 import com.language.controllers.*;
 
+parser code  {: 
+  Scanner scanner;
+
+  public Parser(java_cup.runtime.Scanner s, Scanner scan) { super(s); scanner = scan; }
+
+  public void syntax_error(java_cup.runtime.Symbol current) {
+    scanner.errorMs("Syntax error (" + current.sym + ")", current);
+  }
+
+
+:};
 /* Numbers */
 terminal String INTEGER, FLOAT, LONG_INT;
 
@@ -133,7 +144,8 @@ precedence left STRING;
 precedence left ID;
 precedence left ELSE;
 precedence left PRINT_FUNC;
-
+precedence left POINT;
+precedence left LBRACKET;
 start with program;
 
 program ::= stmt: s 
@@ -146,7 +158,8 @@ program ::= stmt: s
 stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
 		| instr:i LINETERMINATOR stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
 		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
-		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :};
+		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :}
+		|LINETERMINATOR stmt:s {: RESULT = s; :};
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 
@@ -261,7 +274,7 @@ predefined_list_functions ::= APPEND_FUNC LPAREN literal_expr:le RPAREN {: RESUL
 							| EXTEND_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.EXTEND_FUNC, le); :}
 							| INDEX_FUNC LPAREN literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le); :}
 							| INDEX_FUNC LPAREN literal_expr:le COMMA literal_expr: le_i RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le, le_i); :}
-							| INSERT_FUNC LPAREN literal_expr: le_i COMMA literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le_i, le ); :}
+							| INSERT_FUNC LPAREN literal_expr: le_i COMMA literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INSERT_FUNC, le_i, le ); :}
 							| SIZE_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.SIZE_FUNC, null); :};
 
 predefined_io_functions ::= RAW_INPUT_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createIOFunction(PredefinedFunctionExpression.RAW_INPUT_FUNC, le); :}
@@ -367,9 +380,9 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :}
 				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :}
 				| structured_types_access: sta {: RESULT = sta; :}
-				| function_call:fc {: RESULT = fc; :};
+				| function_call:fc {: RESULT = fc; :}
+				| predefined_functions_expr: pfe {: RESULT = pfe; :};
 
-expr  ::= boolean_expr: b {: RESULT = b; :}
-		| predefined_functions_expr: pfe {: RESULT = pfe; :};  
+expr  ::= boolean_expr: b {: RESULT = b; :}	;  
 	
 

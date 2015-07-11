@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.language.controllers.ScopesController;
 
@@ -108,9 +109,9 @@ public class PredefinedFunctionExpression extends Expression {
 		return new PredefinedFunctionExpression(expr.getType(), list_left, expr);
 	}
 	
-	public static Expression createListFunctionElement(String type, Expression right) {
-		/* Save list function parameters on the right (List object will be on the left) */
-		return new PredefinedFunctionExpression(type, null, right);
+	public static Expression createListFunctionElement(String type, Expression left) {
+		/* Save list function parameters on the left */
+		return new PredefinedFunctionExpression(type, left, null);
 	}
 	
 	public static Expression createListFunctionElement(String type, Expression right_param_one, Expression right_param_two) {
@@ -118,8 +119,12 @@ public class PredefinedFunctionExpression extends Expression {
 		 	Save list function parameters on the right (List object will be on the left)
 		 	This function receives two parameters, they're saved on an Expression 
 		*/
-		Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
-		return new PredefinedFunctionExpression(type, null, arguments);
+		//Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
+		//return new PredefinedFunctionExpression(type, null, arguments);
+		/*
+		 	Save the tow parameters as childs
+		 */
+		return new PredefinedFunctionExpression(type, right_param_one, right_param_two);
 	}
 	
 	public static Expression createIOFunction(String type, Expression expr) {
@@ -146,7 +151,13 @@ public class PredefinedFunctionExpression extends Expression {
 		/*e.g: pop function, used for dictionaries and lists, left for object and right for the parameter */
 		return new PredefinedFunctionExpression(COUNT_FUNC, null, left, right);
 	}
-	
+	/*private boolean isObject(Object o,String type) throws Exception{
+		String dictValueClass = o.getClass().getSimpleName();
+		if(!dictValueClass.equals(type)){
+			throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+		}
+		return true;
+	}*/
 	@Override
 	public Object execute() throws Exception {
 		
@@ -154,17 +165,78 @@ public class PredefinedFunctionExpression extends Expression {
 	Expression 	left 	= this.getLeft(),
 				right	= this.getRight();
 		switch(this.getType()){
-				
-			case APPEND_FUNC:
-				Expression ex= this;
+		case INSERT_FUNC:{
+			Object lObj = this.getLeft().execute();
+			Object ObjParamToFind = this.getRight().getRight().execute();//any value expeted
+			String dictValueClass = lObj.getClass().getSimpleName();
+			if(!dictValueClass.equals("ArrayList")){
+				throw new Exception("La función insert solo está definida para el tipo List");
+			}
+			int index = 0;
+			if(this.getRight().getLeft()!=null){//exist second parameter
+				try{
+					index = (int) this.getRight().getLeft().execute();
+				}catch(Exception e){
+					throw new Exception("La función insert espera un entrero como segundo parámetro");
+				}
+			}			
+			List<Object> l = (List<Object>) lObj;
+			l.add(index, ObjParamToFind);
+			return l;
+		}
+		case INDEX_FUNC:{
+			Object lObj = this.getLeft().execute();
+			Object ObjParamToFind = this.getRight().getLeft().execute();//any value expeted
+			String dictValueClass = lObj.getClass().getSimpleName();
+			if(!dictValueClass.equals("ArrayList")){
+				throw new Exception("La función index solo está definida para el tipo List");
+			}
+			int start = 0;
+			if(this.getRight().getRight()!=null){//exist second parameter
+				try{
+					start = (int) this.getRight().getRight().execute();
+				}catch(Exception e){
+					throw new Exception("La función index espera un entrero como segundo parámetro");
+				}
+			}			
+			List<Object> l = (List<Object>) lObj;
+			return l.subList(start, l.size()-1).indexOf(ObjParamToFind)+start;
+		}
+			case EXTEND_FUNC:{
+				Object lObj = this.getLeft().execute();
+				Object lObjParam = this.getRight().getLeft().execute();
+				String dictValueClass = lObjParam.getClass().getSimpleName();
+				if(!dictValueClass.equals("ArrayList")){
+					throw new Exception("Se esperaba un parámetro de tipo List");
+				}
+				dictValueClass = lObj.getClass().getSimpleName();
+				if(!dictValueClass.equals("ArrayList")){
+					throw new Exception("La función extend solo está definida para el tipo List");
+				}
+				List<Object> l = (List<Object>) lObj;
+				List<Object> lParam = (List<Object>) lObjParam;
+				l.addAll(0, lParam);
+				return l;
+			}
+			case APPEND_FUNC:{
 				Object lObj = this.getLeft().execute();
 				String dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+					throw new Exception("La función append solo está definida para el tipo List");
 				}
 				List<Object> l = (List<Object>) lObj;
-				l.add(this.getRight().getRight().execute());
+				l.add(this.getRight().getLeft().execute());
 				return l;
+			}
+			case SIZE_FUNC:{
+				Object lObj = this.getLeft().execute();
+				String dictValueClass = lObj.getClass().getSimpleName();
+				if(!dictValueClass.equals("ArrayList")){
+					throw new Exception("La función append solo está definida para el tipo List");
+				}
+				List<Object> l = (List<Object>) lObj;
+				return l.size();
+			}
 	
 			
 			case HAS_KEY_FUNC:
@@ -333,19 +405,32 @@ public class PredefinedFunctionExpression extends Expression {
 				
 			case COUNT_FUNC:
 				if(left != null && right != null) {
-					int index 		= 0,
-						occurrences = 0;
-					String 	leftStr  = (String)left.execute(),
-							rightStr = (String)right.execute();
-
-					index = leftStr.indexOf(rightStr,0);
+					Object 	str = left.execute(),
+							list = right.execute();
 					
-					while(index != -1) {
-						occurrences++;
-						index = leftStr.indexOf(rightStr,index);
+					String  leftClass = str.getClass().getSimpleName(),
+							rightClass = list.getClass().getSimpleName();
+					if(leftClass.equals("String")) {
+						throw new Exception("La variable no es de tipo String");
 					}
-					
-					return occurrences;
+					else if(rightClass.equals("String")) {
+						throw new Exception("El parametro de la funcion no es de tipo String");
+					}
+					else {
+						int index 		= 0,
+							occurrences = 0;
+						String 	leftStr  = (String)left.execute(),
+								rightStr = (String)right.execute();
+
+						index = leftStr.indexOf(rightStr,0);
+						
+						while(index != -1) {
+							occurrences++;
+							index = leftStr.indexOf(rightStr,index);
+						}
+						
+						return occurrences;
+					}
 				}
 				
 				break;
@@ -402,10 +487,53 @@ public class PredefinedFunctionExpression extends Expression {
 						throw new Exception("La variable no es un String");
 					}
 					else if(!sep.getClass().getSimpleName().equals("String")) {
+						throw new Exception("El parametro no es un String");
+					}
+					else {
+						String[] 		  arr = ((String)str).split(Pattern.quote((String)sep));
+						ArrayList<Object> list = new ArrayList();
+						int i 		= 0,
+							count 	= arr.length;
 						
+						
+						while( i < count) {
+							list.add(arr[i]);
+							i++;
+						}
+						
+						return list;
 					}
 				}
 				
+				break;
+				
+			case REPLACE_FUNC:
+				if (left != null  && right != null ) {
+					Object 	str 		= left.execute(),
+							substrOld 	= right.getLeft().execute(),
+							substrNew 	= right.getRight().execute();
+					
+					if(!str.getClass().getSimpleName().equals("String") ||
+					   !substrOld.getClass().getSimpleName().equals("String") ||
+					   !substrNew.getClass().getSimpleName().equals("String")) {
+						throw new Exception("La variable y sus parametros deben ser de tipo String");
+					}
+					else {
+						System.out.println(((String)str).replace((String)substrOld,(String)substrNew).toString());
+						return ((String)str).replace((String)substrOld,(String)substrNew);
+					}
+				}
+				break;
+			case LENGTH_FUNC:
+				if (left != null  && right == null ) {
+					Object str = left.execute();
+					if(!str.getClass().getSimpleName().equals("String")) {
+						throw new Exception("La variable no es un string");
+					}
+					else {
+						return ((String)str).length();
+					}
+				}
 				break;
 			default:
 				//return super.getValue();

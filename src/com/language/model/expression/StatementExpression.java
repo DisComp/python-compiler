@@ -1,10 +1,15 @@
 package com.language.model.expression;
 
+import com.language.controllers.ScopesController;
+
 public class StatementExpression extends Expression {
 	
 	public static final String STMT = "Stmt";
+	/*private boolean isBody=false;
 	
-	
+	public void setIsBody(){
+		isBody=true;
+	}*/
 	public StatementExpression() {
 		super();
 	}
@@ -23,8 +28,9 @@ public class StatementExpression extends Expression {
 	
 	@Override
 	public Object execute() throws Exception {
-        try {
-        	
+        //try {
+        	/*if(!isBody)
+        		ScopesController.getInstance().addLine();*/
 		    if(this.getLeft() != null) {
 		    	Object result = this.getLeft().execute();
 		    }
@@ -33,9 +39,9 @@ public class StatementExpression extends Expression {
 		    	Object result = this.getRight().execute();
 		    }
 
-		} catch (Exception e) {
+		/*} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	    
 	    return "FIN";
     		
