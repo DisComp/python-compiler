@@ -109,9 +109,9 @@ public class PredefinedFunctionExpression extends Expression {
 		return new PredefinedFunctionExpression(expr.getType(), list_left, expr);
 	}
 	
-	public static Expression createListFunctionElement(String type, Expression right) {
-		/* Save list function parameters on the right (List object will be on the left) */
-		return new PredefinedFunctionExpression(type, null, right);
+	public static Expression createListFunctionElement(String type, Expression left) {
+		/* Save list function parameters on the left */
+		return new PredefinedFunctionExpression(type, left, null);
 	}
 	
 	public static Expression createListFunctionElement(String type, Expression right_param_one, Expression right_param_two) {
@@ -119,8 +119,12 @@ public class PredefinedFunctionExpression extends Expression {
 		 	Save list function parameters on the right (List object will be on the left)
 		 	This function receives two parameters, they're saved on an Expression 
 		*/
-		Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
-		return new PredefinedFunctionExpression(type, null, arguments);
+		//Expression arguments = new Expression(ARGUMENTS_FUNC, right_param_one, right_param_two);
+		//return new PredefinedFunctionExpression(type, null, arguments);
+		/*
+		 	Save the tow parameters as childs
+		 */
+		return new PredefinedFunctionExpression(type, right_param_one, right_param_two);
 	}
 	
 	public static Expression createIOFunction(String type, Expression expr) {
@@ -161,9 +165,27 @@ public class PredefinedFunctionExpression extends Expression {
 	Expression 	left 	= this.getLeft(),
 				right	= this.getRight();
 		switch(this.getType()){
+		case INDEX_FUNC:{
+			Object lObj = this.getLeft().execute();
+			Object ObjParamToFind = this.getRight().getLeft().execute();//any value expeted
+			String dictValueClass = lObj.getClass().getSimpleName();
+			if(!dictValueClass.equals("ArrayList")){
+				throw new Exception("La función index solo está definida para el tipo List");
+			}
+			int start = 0;
+			if(this.getRight().getRight()!=null){//exist second parameter
+				try{
+					start = (int) this.getRight().getRight().execute();
+				}catch(Exception e){
+					throw new Exception("La función index espera un entrero como segundo parámetro");
+				}
+			}			
+			List<Object> l = (List<Object>) lObj;
+			return l.subList(start, l.size()-1).indexOf(ObjParamToFind)+start;
+		}
 			case EXTEND_FUNC:{
 				Object lObj = this.getLeft().execute();
-				Object lObjParam = this.getRight().getRight().execute();
+				Object lObjParam = this.getRight().getLeft().execute();
 				String dictValueClass = lObjParam.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
 					throw new Exception("Se esperaba un parámetro de tipo List");
@@ -184,7 +206,7 @@ public class PredefinedFunctionExpression extends Expression {
 					throw new Exception("La función append solo está definida para el tipo List");
 				}
 				List<Object> l = (List<Object>) lObj;
-				l.add(this.getRight().getRight().execute());
+				l.add(this.getRight().getLeft().execute());
 				return l;
 			}
 			case SIZE_FUNC:{
