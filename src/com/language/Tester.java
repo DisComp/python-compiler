@@ -17,7 +17,7 @@ public class Tester {
         
 
         // Creating all tests! //
-        Tests.doTests();
+        //Tests.doTests();
         
         while (line != null) {         
 			 sb.append(line);
