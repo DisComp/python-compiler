@@ -165,6 +165,25 @@ public class PredefinedFunctionExpression extends Expression {
 	Expression 	left 	= this.getLeft(),
 				right	= this.getRight();
 		switch(this.getType()){
+		case INSERT_FUNC:{
+			Object lObj = this.getLeft().execute();
+			Object ObjParamToFind = this.getRight().getRight().execute();//any value expeted
+			String dictValueClass = lObj.getClass().getSimpleName();
+			if(!dictValueClass.equals("ArrayList")){
+				throw new Exception("La función insert solo está definida para el tipo List");
+			}
+			int index = 0;
+			if(this.getRight().getLeft()!=null){//exist second parameter
+				try{
+					index = (int) this.getRight().getLeft().execute();
+				}catch(Exception e){
+					throw new Exception("La función insert espera un entrero como segundo parámetro");
+				}
+			}			
+			List<Object> l = (List<Object>) lObj;
+			l.add(index, ObjParamToFind);
+			return l;
+		}
 		case INDEX_FUNC:{
 			Object lObj = this.getLeft().execute();
 			Object ObjParamToFind = this.getRight().getLeft().execute();//any value expeted

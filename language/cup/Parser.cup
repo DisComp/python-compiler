@@ -273,7 +273,7 @@ predefined_list_functions ::= APPEND_FUNC LPAREN literal_expr:le RPAREN {: RESUL
 							| EXTEND_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.EXTEND_FUNC, le); :}
 							| INDEX_FUNC LPAREN literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le); :}
 							| INDEX_FUNC LPAREN literal_expr:le COMMA literal_expr: le_i RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le, le_i); :}
-							| INSERT_FUNC LPAREN literal_expr: le_i COMMA literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INDEX_FUNC, le_i, le ); :}
+							| INSERT_FUNC LPAREN literal_expr: le_i COMMA literal_expr:le RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.INSERT_FUNC, le_i, le ); :}
 							| SIZE_FUNC LPAREN RPAREN {: RESULT = PredefinedFunctionExpression.createListFunctionElement(PredefinedFunctionExpression.SIZE_FUNC, null); :};
 
 predefined_io_functions ::= RAW_INPUT_FUNC LPAREN literal_expr: le RPAREN {: RESULT = PredefinedFunctionExpression.createIOFunction(PredefinedFunctionExpression.RAW_INPUT_FUNC, le); :}
