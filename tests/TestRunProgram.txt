@@ -1,5 +1,9 @@
 a = {"Chau": 5, 3: True}
-x = "Chau"
+x = "Chau chau hadios"
+x.split("h")
+x.length()
+y = "Hola Mundo !!!"
+y.replace("Mundo","Chiche")
 print a.has_key(x)
 s = "Buen dia Benito"
 print s.find("Benito")

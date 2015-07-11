@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.language.controllers.ScopesController;
 
@@ -414,10 +415,53 @@ public class PredefinedFunctionExpression extends Expression {
 						throw new Exception("La variable no es un String");
 					}
 					else if(!sep.getClass().getSimpleName().equals("String")) {
+						throw new Exception("El parametro no es un String");
+					}
+					else {
+						String[] 		  arr = ((String)str).split(Pattern.quote((String)sep));
+						ArrayList<Object> list = new ArrayList();
+						int i 		= 0,
+							count 	= arr.length;
 						
+						
+						while( i < count) {
+							list.add(arr[i]);
+							i++;
+						}
+						
+						return list;
 					}
 				}
 				
+				break;
+				
+			case REPLACE_FUNC:
+				if (left != null  && right != null ) {
+					Object 	str 		= left.execute(),
+							substrOld 	= right.getLeft().execute(),
+							substrNew 	= right.getRight().execute();
+					
+					if(!str.getClass().getSimpleName().equals("String") ||
+					   !substrOld.getClass().getSimpleName().equals("String") ||
+					   !substrNew.getClass().getSimpleName().equals("String")) {
+						throw new Exception("La variable y sus parametros deben ser de tipo String");
+					}
+					else {
+						System.out.println(((String)str).replace((String)substrOld,(String)substrNew).toString());
+						return ((String)str).replace((String)substrOld,(String)substrNew);
+					}
+				}
+				break;
+			case LENGTH_FUNC:
+				if (left != null  && right == null ) {
+					Object str = left.execute();
+					if(!str.getClass().getSimpleName().equals("String")) {
+						throw new Exception("La variable no es un string");
+					}
+					else {
+						return ((String)str).length();
+					}
+				}
 				break;
 			default:
 				//return super.getValue();
