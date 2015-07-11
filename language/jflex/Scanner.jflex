@@ -41,7 +41,7 @@ import com.language.controllers.*;
 	}
 	public void errorMs(String msg, java_cup.runtime.Symbol info) {
         String syntaxMessage = "Error de sintaxis detectado cerca de la linea ";
-        syntaxMessage = syntaxMessage + (yyline+2);
+        syntaxMessage = syntaxMessage + (yyline+1);
         if(info.value != null){
             syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
         }
@@ -127,7 +127,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		    }
 		}
 		if(spaceCounter>0)
-			throw new ParsingException("Se detectaron espacios de más cerca de la linea " + yyline+2);
+			throw new ParsingException("Se detectaron espacios de más cerca de la linea " + yyline);
 		if(spaceCounter>0)
 			yybegin(COMMENT_LINE); 
 	

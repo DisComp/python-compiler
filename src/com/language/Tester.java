@@ -11,7 +11,7 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 		
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestFunction.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("tests/testSuperAnidada.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         

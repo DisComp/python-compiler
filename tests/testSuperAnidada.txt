@@ -8,6 +8,7 @@ if True:
 			True
 			True
 			True
+		True
 True
 True
 True
@@ -25,4 +26,3 @@ if True:
 True
 True
 True
-f()
