@@ -1,11 +1,10 @@
-def f():
-	def fPrima():
-		print "llegue"
-	fPrima()
-	True
-def g():
-	f()
-	return 1
+#def f():
+#	def fPrima():
+#		print "llegue"
+#	fPrima()
+#	True
+#def g():
+#	f()
 def g(a,b,c):
 	a=a+1
 	b=b+1
@@ -17,7 +16,7 @@ x=1
 y=10
 z=[22, True, "una lista muy larga", [1, 2], []]
 print "------preFunc-------"
-print x
+print h
 print y
 print z
 print "------inFunc-------"

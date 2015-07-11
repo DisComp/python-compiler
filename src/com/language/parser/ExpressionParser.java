@@ -16,7 +16,7 @@ public class ExpressionParser {
 		//Scanner s =new Scanner(bais);
 		Scanner s = new Scannerchild(bais);
 		
-		Parser parser = new Parser(s);
+		Parser parser = new Parser(s,s);
 		try {
 			Symbol topsym = parser.parse();
 
@@ -28,7 +28,8 @@ public class ExpressionParser {
 			System.out.println("ERROR DE COMPILACIÓN (ERROR GENERADO POR NUESTRO COMPILADOR): "+ex.getMessage());
 			return null;
 		} catch (Exception ex) {
-			throw new ParsingException("Error parsing source: " + ex.getMessage());
+			System.out.println("Error parsing source: " + ex.getMessage());
+			return null;
 		}
 	
 		

@@ -70,7 +70,7 @@ public class ScopesController {
 			}
 			
 		}
-		throw new ParsingException("Variable \'"+var_name+"\' no definida");
+		throw new ParsingException("Variable \'"+var_name+"\' no definida.");
 	}
 	
 	public FunctionExpression getFunction(String name, int cant_params){
@@ -114,4 +114,11 @@ public class ScopesController {
 	public int getDedentToSend(){
 		return dedentToSend;
 	}
+	/*private static int cantLines=0;
+	public void addLine(){
+		cantLines++;
+	}
+	public int getLines(){
+		return cantLines;
+	}*/
 }

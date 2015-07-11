@@ -17,7 +17,8 @@ public class FunctionExpression extends Expression {
 	}
 	public FunctionExpression(String id,Expression _body,List<String> params){
 		parameters=params;//ya se sabe que no vienen repetidos
-		body=_body.getLeft();//en el body viene el cuerpo y el return(izq y der respectivamente)
+		//en el body viene el cuerpo y el return(izq y der respectivamente)
+		body=_body.getLeft();
 		returnExp = _body.getRight();
 		name = id;
 	}

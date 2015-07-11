@@ -7,6 +7,17 @@ import com.language.model.expression.*;
 import com.language.exceptions.*;
 import com.language.controllers.*;
 
+parser code  {: 
+  Scanner scanner;
+
+  public Parser(java_cup.runtime.Scanner s, Scanner scan) { super(s); scanner = scan; }
+
+  public void syntax_error(java_cup.runtime.Symbol current) {
+    scanner.errorMs("Syntax error (" + current.sym + ")", current);
+  }
+
+
+:};
 /* Numbers */
 terminal String INTEGER, FLOAT, LONG_INT;
 
@@ -146,7 +157,8 @@ program ::= stmt: s
 stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
 		| instr:i LINETERMINATOR stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
 		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
-		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :};
+		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :}
+		|LINETERMINATOR stmt:s {: RESULT = s; :};
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 

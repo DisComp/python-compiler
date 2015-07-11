@@ -39,6 +39,18 @@ import com.language.controllers.*;
 			return str.substring(1,count - 1);
 		}
 	}
+	public void errorMs(String msg, java_cup.runtime.Symbol info) {
+        String syntaxMessage = "Error de sintaxis detectado cerca de la linea ";
+        syntaxMessage = syntaxMessage + (yyline+2);
+        if(info.value != null){
+            syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
+        }
+
+        num_errors++;
+        throw new SyntaxError(syntaxMessage);
+    }
+	 private int num_errors = 0;
+	    public int numErrors() { return num_errors; }
 %}
 
 %state COMMENT_LINE
@@ -115,7 +127,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		    }
 		}
 		if(spaceCounter>0)
-			
+			throw new ParsingException("Se detectaron espacios de más cerca de la linea " + yyline+2);
 		if(spaceCounter>0)
 			yybegin(COMMENT_LINE); 
 	
@@ -131,9 +143,6 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		}
 		else if(counter==ScopesController.getInstance().getExpectedTabs()){
 			return symbol(sym.LINETERMINATOR, "ENTER" );
-		}
-		else if(counter==ScopesController.getInstance().getExpectedTabs()){
-			throw new ParsingException("Illegal character at line " + yyline + ", column " + yycolumn + " >> " + yytext());
 		}
 
 	}
