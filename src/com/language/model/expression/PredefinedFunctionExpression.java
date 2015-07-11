@@ -187,6 +187,15 @@ public class PredefinedFunctionExpression extends Expression {
 				l.add(this.getRight().getRight().execute());
 				return l;
 			}
+			case SIZE_FUNC:{
+				Object lObj = this.getLeft().execute();
+				String dictValueClass = lObj.getClass().getSimpleName();
+				if(!dictValueClass.equals("ArrayList")){
+					throw new Exception("La función append solo está definida para el tipo List");
+				}
+				List<Object> l = (List<Object>) lObj;
+				return l.size();
+			}
 	
 			
 			case HAS_KEY_FUNC:

@@ -144,7 +144,7 @@ precedence left STRING;
 precedence left ID;
 precedence left ELSE;
 precedence left PRINT_FUNC;
-
+precedence left POINT;
 start with program;
 
 program ::= stmt: s 
@@ -379,9 +379,9 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| dictionary_expr: l {: RESULT = LiteralExpression.createDictionary(l); :}
 				| tuple_expr: l {: RESULT = LiteralExpression.createTuple(l); :}
 				| structured_types_access: sta {: RESULT = sta; :}
-				| function_call:fc {: RESULT = fc; :};
+				| function_call:fc {: RESULT = fc; :}
+				| predefined_functions_expr: pfe {: RESULT = pfe; :};
 
-expr  ::= boolean_expr: b {: RESULT = b; :}
-		| predefined_functions_expr: pfe {: RESULT = pfe; :};  
+expr  ::= boolean_expr: b {: RESULT = b; :}	;  
 	
 
