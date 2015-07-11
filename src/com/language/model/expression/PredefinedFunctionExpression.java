@@ -2,6 +2,7 @@ package com.language.model.expression;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -439,26 +440,36 @@ public class PredefinedFunctionExpression extends Expression {
 					
 					String  leftClass = str.getClass().getSimpleName(),
 							rightClass = list.getClass().getSimpleName();
-					if(leftClass.equals("String")) {
-						throw new Exception("La variable no es de tipo String");
-					}
-					else if(rightClass.equals("String")) {
-						throw new Exception("El parametro de la funcion no es de tipo String");
-					}
-					else {
-						int index 		= 0,
-							occurrences = 0;
-						String 	leftStr  = (String)left.execute(),
-								rightStr = (String)right.execute();
-
-						index = leftStr.indexOf(rightStr,0);
+					
+					if(leftClass.equals("ArrayList")){
+						//count for lists
+						List<Object> l = (List<Object>)str;
+						return Collections.frequency(l, list);
 						
-						while(index != -1) {
-							occurrences++;
-							index = leftStr.indexOf(rightStr,index);
+					}
+					else{
+						//count for strings
+						if(leftClass.equals("String")) {
+							throw new Exception("La variable no es de tipo String");
 						}
-						
-						return occurrences;
+						else if(rightClass.equals("String")) {
+							throw new Exception("El parametro de la funcion no es de tipo String");
+						}
+						else {
+							int index 		= 0,
+								occurrences = 0;
+							String 	leftStr  = (String)left.execute(),
+									rightStr = (String)right.execute();
+	
+							index = leftStr.indexOf(rightStr,0);
+							
+							while(index != -1) {
+								occurrences++;
+								index = leftStr.indexOf(rightStr,index);
+							}
+							
+							return occurrences;
+						}
 					}
 				}
 				
