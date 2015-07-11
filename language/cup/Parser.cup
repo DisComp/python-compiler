@@ -337,21 +337,21 @@ atom_element_tuple ::= COMMA literal_expr: le atom_element_tuple: aet {: RESULT 
 					|  COMMA;
 					
 // Access to lists, dictionaries and tuples elements. e.g: ( a[0], a[0:1:2], a[::2]	)
-structured_types_access ::=  ID: id LBRACKET literal_expr: init COLON literal_expr: end COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, end, jump); :}
-						|    ID: id LBRACKET COLON literal_expr: end COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, end, jump); :}
-						|    ID: id LBRACKET literal_expr: init COLON COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, null, jump); :}
-						|    ID: id LBRACKET literal_expr: init COLON literal_expr: end COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, end, null); :}
-						|    ID: id LBRACKET COLON COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, null, jump); :}
-						|    ID: id LBRACKET COLON literal_expr: end COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, end, null); :}
-						|    ID: id LBRACKET literal_expr: init COLON COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, null, null); :}
-						|    ID: id LBRACKET COLON COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, null, null); :}
+structured_types_access ::=  literal_expr: le LBRACKET literal_expr: init COLON literal_expr: end COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, init, end, jump); :}
+						|    literal_expr: le LBRACKET COLON literal_expr: end COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, null, end, jump); :}
+						|    literal_expr: le LBRACKET literal_expr: init COLON COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, init, null, jump); :}
+						|    literal_expr: le LBRACKET literal_expr: init COLON literal_expr: end COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, init, end, null); :}
+						|    literal_expr: le LBRACKET COLON COLON literal_expr: jump RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, null, null, jump); :}
+						|    literal_expr: le LBRACKET COLON literal_expr: end COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, null, end, null); :}
+						|    literal_expr: le LBRACKET literal_expr: init COLON COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, init, null, null); :}
+						|    literal_expr: le LBRACKET COLON COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, null, null, null); :}
 						|    atom_structured_types_access: asta {: RESULT = asta; :};
 			
-atom_structured_types_access ::=  ID: id LBRACKET literal_expr: init COLON literal_expr: end RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, end); :}
-								| ID: id LBRACKET COLON literal_expr: end RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, end); :}
-								| ID: id LBRACKET literal_expr: init COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), init, null); :}
-								| ID: id LBRACKET COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), null, null); :}
-             					| ID: id LBRACKET literal_expr: pos RBRACKET {: RESULT = LiteralExpression.createStructureAccess(LiteralExpression.createIdentifier(id), pos); :};
+atom_structured_types_access ::=  literal_expr: le LBRACKET literal_expr: init COLON literal_expr: end RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, init, end); :}
+								| literal_expr: le LBRACKET COLON literal_expr: end RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, null, end); :}
+								| literal_expr: le LBRACKET literal_expr: init COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, init, null); :}
+								| literal_expr: le LBRACKET COLON RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, null, null); :}
+             					| literal_expr: le LBRACKET literal_expr: pos RBRACKET {: RESULT = LiteralExpression.createStructureAccess(le, pos); :};
 
              
 literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :}

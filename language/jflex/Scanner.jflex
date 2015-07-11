@@ -54,7 +54,7 @@ Identifier = [_a-zA-Z][_a-zA-Z0-9]{0,30}/*[:jletter:][:jletterdigit:]* */
 
 LongLiteral    =  (0 | [1-9][0-9]*)L
 FloatLiteral   =  (0 | [1-9][0-9]*)\.[0-9]+
-IntegerLiteral =   0 | [1-9][0-9]*
+IntegerLiteral =   0 | -?[1-9][0-9]*
 
 
 %%
