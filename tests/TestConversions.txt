@@ -3,7 +3,7 @@ b = int(a)
 print b
 
 a = False
-c = int(a) + 2
+c = int(a)
 b = b + c
 print b
 
@@ -11,3 +11,6 @@ a = 5.4
 c = int(a)
 b = b + c
 print b
+
+l = ["123",123, 4.5, "EL JUAIL"]
+print dict(l)

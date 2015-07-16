@@ -174,7 +174,8 @@ suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 
 compl_stmt ::= 	if_block: iff {: RESULT = iff; :}
 				|function_block:fb {: RESULT = fb; :}
-				|for_in_block:fib {: RESULT = fib; :};	 
+				|for_in_block:fib {: RESULT = fib; :}
+				|while_block:wb {: RESULT = wb; :};	 
 
 indent_ins ::= IDENT stmt:s {: RESULT = s; :}
 			|  IDENT stmt:s indent_ins:iis {: s.setRight(iis); RESULT = s; :};	
@@ -245,7 +246,7 @@ simple_if ::= IF expr: e COLON suit: iis {: RESULT = StructureControlExpression.
 for_in_block ::= FOR ID:id IN list_expr: l COLON suit: s {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN,id,l,s); :}; 
 
 /* While block */
-//while_block ::= WHILE expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, "while", e, iis); :};
+while_block ::= WHILE expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, e, iis); :};
 
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  
