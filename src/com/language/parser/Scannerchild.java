@@ -28,7 +28,8 @@ public class Scannerchild extends Scanner {
 			System.out.println("devuelvo: "+result.value.toString());
 		else
 			System.out.println("EOF");*/
-			
+		//ScopesController.getInstance().setActualLine(result.left);	
+		//int l = result.left;
 		return result;
 	}
 	

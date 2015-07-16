@@ -1,12 +1,16 @@
 package com.language.model.expression;
 
+import com.language.controllers.Scope;
+import com.language.controllers.ScopesController;
+import com.sun.xml.internal.ws.api.server.LazyMOMProvider.ScopeChangeListener;
+
 
 public class Expression {	
 	
 	private String type;
 	private Object value; 
 	private Expression left, right;
-	
+	private int lineNumber=0;
 	public Expression(){
 		
 	}
@@ -27,11 +31,21 @@ public class Expression {
 		this.left = left;
 		this.right = right;
 	}
+	public Expression(String type, Object value, Expression left, Expression right, int _lineNumber) {
+		this.type = type;
+		this.value = value;		
+		this.left = left;
+		this.right = right;
+		lineNumber=_lineNumber;
+	}
 	
 	/*
 	 * This method is redefined for each Expression subclass 
 	 * which handle its conditions to give the value from an expression
 	*/
+	public int getLine(){
+		return lineNumber;
+	}
 	public Object execute() throws Exception {
 		return value;
 	}

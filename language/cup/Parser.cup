@@ -9,6 +9,9 @@ import com.language.controllers.*;
 
 parser code  {: 
   Scanner scanner;
+public int getLine(){
+return scanner.nLine();
+}
 
   public Parser(java_cup.runtime.Scanner s, Scanner scan) { super(s); scanner = scan; }
 
@@ -17,9 +20,10 @@ parser code  {:
 	//System.out.print("ERROOOOOOOOOOOOOOOOOOOR!");
   }
 
-public void unrecovered_syntax_error(Symbol s) {
+public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
   System.out.println("Error de sintaxis cerca del token "+s.value);
 }
+
 
 
 :};
@@ -33,8 +37,8 @@ terminal String PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
 terminal String AND_BIT, OR_BIT, XOR_BIT, NOT_BIT, LSHIFT, RSHIFT;
 
 /* Strings */
-terminal String STRING, ESCAPE,DEDENT, IDENT, SYNERROR,LINETERMINATOR;
-
+terminal String STRING, ESCAPE,DEDENT, IDENT, SYNERROR,COMMENTLINE;
+terminal String LINETERMINATOR;
 /* Boolean */
 terminal String TRUE, FALSE;
 
@@ -157,16 +161,18 @@ program ::= stmt: s
 			{: 
 				if(ScopesController.getInstance().parsingOk()){
 					System.out.println("-----------------------PARSING OK---------------------------");
-					s.execute();
+					//s.execute();
 					RESULT = s;
 				}
 			:};
 
-stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
-		| instr:i LINETERMINATOR stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
-		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
-		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :}
-		|LINETERMINATOR stmt:s {: RESULT = s; :}
+stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s,parser.getLine()); :}
+		| instr:i LINETERMINATOR:LT stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s,parser.getLine()); :}
+		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null,parser.getLine()); :}
+		| instr:i LINETERMINATOR:LT{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null,parser.getLine()); :}
+		|LINETERMINATOR:LT stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, null, s,parser.getLine()); :} //consume saltos de linea vacios y los agrega al arbol para saber cantidad de lineas en runtime
+		|COMMENTLINE LINETERMINATOR:LT stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, null, s,parser.getLine()); :} //consume comentarios y los agrega al arbol para saber cantidad de lineas en runtime
+		|COMMENTLINE LINETERMINATOR:LT {: RESULT = StatementExpression.create(StatementExpression.STMT, null, null,parser.getLine()); :}//consume comentarios y los agrega al arbol para saber cantidad de lineas en runtime
 		|error LINETERMINATOR stmt:s {: RESULT = s; :}
 		|error LINETERMINATOR;
 	

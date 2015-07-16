@@ -1,0 +1,22 @@
+"hola"
+a=4
+print a
+#hola
+#hola
+#hola
+#hola
+if(True):
+	True
+	True
+	True
+	if(True):
+		True
+		True
+zdfg
+
+
+
+a
+if(a==4):
+	print "a es 4"
+True

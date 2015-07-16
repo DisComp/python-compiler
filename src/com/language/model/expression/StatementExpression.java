@@ -14,16 +14,16 @@ public class StatementExpression extends Expression {
 		super();
 	}
 	
-	public StatementExpression(String type, Object value, Expression left, Expression right) {
-		super(type,value,left,right);
+	public StatementExpression(String type, Object value, Expression left, Expression right,int _lineNUmber) {
+		super(type,value,left,right,_lineNUmber);
 	}
 	
 	public StatementExpression(String type, Expression left, Expression right) {
 		super(type, left, right);
 	}
 	
-	public static Expression create(String type, Expression left, Expression right) {
-		return new StatementExpression(type, null, left, right);
+	public static Expression create(String type, Expression left, Expression right,int _lineNumber) {
+		return new StatementExpression(type, null, left, right,_lineNumber);
 	}
 	
 	@Override
@@ -31,6 +31,7 @@ public class StatementExpression extends Expression {
         //try {
         	/*if(!isBody)
         		ScopesController.getInstance().addLine();*/
+			ScopesController.getInstance().setActualLine(getLine());
 		    if(this.getLeft() != null) {
 		    	Object result = this.getLeft().execute();
 		    }

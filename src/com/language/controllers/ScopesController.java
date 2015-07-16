@@ -144,13 +144,7 @@ public class ScopesController {
 	public int getDedentToSend(){
 		return dedentToSend;
 	}
-	/*private static int cantLines=0;
-	public void addLine(){
-		cantLines++;
-	}
-	public int getLines(){
-		return cantLines;
-	}*/
+	
 	
 	/***Syntax error control***/
 	public void addSynError(String err){
@@ -167,5 +161,20 @@ public class ScopesController {
 			System.out.println("\t"+(i+1)+" - "+synErrors.get(i));
 		}
 		return false;
+	}
+	/**Line counter in parsing**/
+	/*private int countedLines=0;
+	public int getMyLine(){
+		int res = countedLines;
+		countedLines++;
+		return res;
+	}*/
+	
+	private int actualLine=0;
+	public void setActualLine(int n){
+		actualLine=n;
+	}
+	public int getActualLine(){
+		return actualLine;
 	}
 }

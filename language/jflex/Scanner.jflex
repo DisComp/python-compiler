@@ -28,6 +28,11 @@ import com.language.controllers.*;
 	public Symbol symbol(int type, Object value) {
 		return new Symbol(type, yyline, yycolumn, value);
 	}
+	public int nLine(){
+		int l = yyline;
+		System.out.println(l);
+		return yyline;
+	}
 	
 	private String getString(String str) {
 		int count = str.length();
@@ -70,6 +75,7 @@ LineTerminator = \r|\n|\r\n
 WhiteSpace     = [ \f\t]
 Triple_quotes = \"\"\"([^\"\r\n\t]*)\"\"\"
 Identifier = [_a-zA-Z][_a-zA-Z0-9]{0,30}/*[:jletter:][:jletterdigit:]* */
+Comments = #[^\n]*
 
 LongLiteral    =  (0 | [1-9][0-9]*)L
 FloatLiteral   =  (0 | [1-9][0-9]*)\.[0-9]+
@@ -245,20 +251,22 @@ IntegerLiteral =   0 | -?[1-9][0-9]*
 	{Identifier}		{ return symbol(sym.ID, yytext()); }
 
 	{WhiteSpace}        { /* ignore */ }
-	
+	{Comments}			{return symbol(sym.COMMENTLINE, "comment");}
 }
 
 
 /* Comment single line */
 
-<YYINITIAL> 		"#" 		{ yybegin(COMMENT_LINE); }
+/*<YYINITIAL> 		"#" 		{ yybegin(COMMENT_LINE); }
 <COMMENT_LINE> { 	
-					[^\n] 		{ /*dismiss everything until eol*/}
+					[^\n] 		{ }
 				 	[\n] 		{ yybegin(YYINITIAL); }
-}
+}*/
 
 
 . 					{
-						throw new ParsingException("Illegal character at line " + yyline + ", column " + yycolumn + " >> " + yytext());
+						String syntaxMessage = "Error de sintaxis detectado cerca de la linea ";
+						syntaxMessage = syntaxMessage + (yyline+1);
+						throw new ParsingException(syntaxMessage);
 					}
 
