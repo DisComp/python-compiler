@@ -724,11 +724,17 @@ public class PredefinedFunctionExpression extends Expression {
 							Object element 	= null;
 							int i 			= 0;
 							
-							while( iter.hasNext()) {
-								element = iter.next();
-								map.put(i, element);
-								
-								i++;
+							
+							try {
+								while( iter.hasNext()) {
+									element = iter.next();
+									map.put(i, element);
+									
+									i++;
+								}
+							}
+							catch(Exception e) {
+								throw new Exception("Error al insertar en el diccionario");
 							}
 							
 							return map;

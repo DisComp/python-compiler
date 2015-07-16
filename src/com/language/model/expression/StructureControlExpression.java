@@ -77,6 +77,7 @@ public class StructureControlExpression extends Expression {
 			}
 			case StructureControlExpression.FOR_IN:
 			{
+				
 				// Open Scope //
 				sc.openScope(StructureControlExpression.FOR_IN);
 				
@@ -94,6 +95,7 @@ public class StructureControlExpression extends Expression {
 				
 				// Iterating through the list //
 				while(iter.hasNext()) {
+					
 					// Replacing the variable value //
 					element = iter.next();
 					sc.addVariable(variableName,element);
@@ -115,7 +117,6 @@ public class StructureControlExpression extends Expression {
 				Expression iis = this.getLeft();
 				
 				while((boolean)this.expr.execute()) {
-					
 					// Executing //
 					iis.execute();
 				}

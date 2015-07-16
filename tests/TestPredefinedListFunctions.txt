@@ -13,3 +13,4 @@ print a
 print a.count(22)
 print a.extend(a).append(69).index(True,2)+100
 
+
