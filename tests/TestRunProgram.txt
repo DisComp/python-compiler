@@ -27,9 +27,11 @@ entero = 143
 largo = 23L
 real = 34.0212 
 booleano = True
+tupla = (1,)
 print type(entero)
 print type(largo)
 print type(real)
 print type(booleano)
+print type(tupla)
 nombre = raw_input("Como te llamas?  ")
 print nombre
