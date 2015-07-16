@@ -1,4 +1,4 @@
-list=[22, True, "una lista muy larga", [1, 2], []]
+a=[22, True, "una lista muy larga", [1, 2], []]
 print a
 a=a.extend(a)
 print a

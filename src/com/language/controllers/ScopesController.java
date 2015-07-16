@@ -79,17 +79,27 @@ public class ScopesController {
 	}
 	
 	public Object getVariable(String var_name) throws Exception{
-		for(int i= 0; i< scopes.size();i++){
-			if(scopes.elementAt(i).containsVariable(var_name)){//si la enconre
-				Object var = scopes.elementAt(i).getVariable(var_name);
-				if(var!=null)//tiene valor asignado
-					return var;
-				else//no tiene valor asignado
-					throw new Exception("Variable \'"+var_name+"\' sin instanciar");
+		if(scopes.peek().getName().equals("fun")){
+			if(scopes.peek().containsVariable(var_name)){
+				return scopes.peek().getVariable(var_name);
 			}
-			
+			else{
+				throw new Exception("Variable \'"+var_name+"\' no definida.");
+			}
 		}
-		throw new Exception("Variable \'"+var_name+"\' no definida.");
+		else{
+			for(int i= 0; i< scopes.size();i++){
+				if(scopes.elementAt(i).containsVariable(var_name)){//si la enconre
+					Object var = scopes.elementAt(i).getVariable(var_name);
+					if(var!=null)//tiene valor asignado
+						return var;
+					else//no tiene valor asignado
+						throw new Exception("Variable \'"+var_name+"\' sin instanciar");
+				}
+				
+			}
+			throw new Exception("Variable \'"+var_name+"\' no definida.");
+		}
 	}
 	
 	public FunctionExpression getFunction(String name, int cant_params) throws Exception{

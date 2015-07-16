@@ -27,5 +27,7 @@ True
 True
 True
 a=1
-a=a+1
+def fun():
+	print a
+fun()
 print a
