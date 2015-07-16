@@ -47,7 +47,8 @@ import com.language.controllers.*;
         }
 
         num_errors++;
-        throw new SyntaxError(syntaxMessage);
+        //throw new SyntaxError(syntaxMessage);
+        ScopesController.getInstance().addSynError(syntaxMessage);
     }
 	 private int num_errors = 0;
 	    public int numErrors() { return num_errors; }
@@ -127,7 +128,7 @@ IntegerLiteral =   0 | -?[1-9][0-9]*
 		    }
 		}
 		if(spaceCounter>0)
-			throw new ParsingException("Se detectaron espacios de más cerca de la linea " + yyline);
+			ScopesController.getInstance().addSynError("Se detectaron espacios de más cerca de la linea " + yyline+1);
 		if(spaceCounter>0)
 			yybegin(COMMENT_LINE); 
 	
