@@ -112,11 +112,15 @@ public class BooleanExpression extends Expression {
 			
 			switch(type)
 			{
-				
-				
 				case BooleanExpression.EQUALS:
 				{
-					if(leftType.equals("Integer") && rightType.equals("Integer")) {
+					if(leftType.equals("String")) {
+						obj = ((String)leftValue).equals(String.valueOf(rightValue));
+					}
+					else if (rightType.equals("String")) {
+						obj = ((String)rightValue).equals(String.valueOf(leftValue));
+					}
+					else if(leftType.equals("Integer") && rightType.equals("Integer")) {
 						obj = (int)leftValue == (int)rightValue;
 					}
 					else if(leftType.equals("Long") && rightType.equals("Long")) {
