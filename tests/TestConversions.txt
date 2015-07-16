@@ -8,7 +8,7 @@ b = b + c
 print b
 
 a = 5.4
-c = int(a)
+c = int(a) + 3
 b = b + c
 print b
 

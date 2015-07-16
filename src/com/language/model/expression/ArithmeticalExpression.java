@@ -51,7 +51,7 @@ public class ArithmeticalExpression extends Expression {
 	
 	public static Object operation(String type, Expression l, Expression r) throws Exception {
 		
-		Number	obj = 0;
+		Object	obj = null;
 		Object	leftValue = l.execute(),
 				rightValue = r.execute();
 		
@@ -88,8 +88,11 @@ public class ArithmeticalExpression extends Expression {
 				else if(leftType.equals("Integer") && rightType.equals("Double")) {
 					obj = (int)leftValue + (double)rightValue;
 				}
+				else if(leftType.equals("String") || rightType.equals("String")){
+					obj = String.valueOf(leftValue) + String.valueOf(rightValue);
+				}
 				else {
-					throw new Exception("Tipo de dato primitivo no reconocido");
+					throw new Exception("Tipo de dato no compatible con la suma");
 				}
 				
 				break;
@@ -157,6 +160,12 @@ public class ArithmeticalExpression extends Expression {
 				}
 				else if(leftType.equals("Integer") && rightType.equals("Double")) {
 					obj = (int)leftValue * (double)rightValue;
+				}
+				else if(leftType.equals("String") && rightType.equals("Integer")) {
+					obj = "";
+					for(int i = (int)rightValue; i > 0; i--) {
+						obj += (String)leftValue;
+					}
 				}
 				else {
 					throw new Exception("Tipo de dato primitivo no reconocido");
