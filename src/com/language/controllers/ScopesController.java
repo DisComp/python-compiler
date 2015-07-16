@@ -67,6 +67,7 @@ public class ScopesController {
 				if(scopes.elementAt(i).containsVariable(name)){//si la enconre
 					scopes.elementAt(i).addVariable(name, val);
 					find=true;
+					break;
 				}				
 			}
 			if(!find)
