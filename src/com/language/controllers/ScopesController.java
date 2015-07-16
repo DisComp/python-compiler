@@ -20,6 +20,9 @@ public class ScopesController {
 	private List<String> synErrors;
 	private Stack<Scope> scopes;
 	private boolean logOn=false;
+	private boolean loop_breaked = false;
+	private boolean loop_continue = false;
+	
 	private void log(){
 		if(logOn){
 			System.out.println("SCOPES BEGIN---------------------");
@@ -151,6 +154,15 @@ public class ScopesController {
 	public int getLines(){
 		return cantLines;
 	}*/
+	
+	/*** Break and continue commands***/
+	public boolean getLoopBreacked() {
+		return this.loop_breaked;
+	}
+	
+	public void setLoopBreacked(boolean lb) {
+		this.loop_breaked = lb;
+	}
 	
 	/***Syntax error control***/
 	public void addSynError(String err){

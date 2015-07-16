@@ -171,7 +171,7 @@ stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementEx
 		|error LINETERMINATOR;
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
-
+	
 compl_stmt ::= 	if_block: iff {: RESULT = iff; :}
 				|function_block:fb {: RESULT = fb; :}
 				|for_in_block:fib {: RESULT = fib; :}
@@ -183,7 +183,8 @@ indent_ins ::= IDENT stmt:s {: RESULT = s; :}
 
 				 
 instr ::= expr: exp {: RESULT = exp; :}		
-		| assignment_expr: v {: RESULT = v; :};
+		| assignment_expr: v {: RESULT = v; :}
+		| BREAK {:RESULT = StatementExpression.create(StatementExpression.BREAK,null,null); :};
 
 
 /*Function*/		

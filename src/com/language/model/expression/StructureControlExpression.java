@@ -116,11 +116,15 @@ public class StructureControlExpression extends Expression {
 				
 				Expression iis = this.getLeft();
 				
-				while((boolean)this.expr.execute()) {
+				while(!sc.getLoopBreacked() && (boolean)this.expr.execute()) {
 					// Executing //
 					iis.execute();
 				}
 				
+				// Setting to the default again the break//
+				sc.setLoopBreacked(false);
+				
+				System.out.println("Chahuuuu "+ ScopesController.getInstance().getLoopBreacked());
 				// Close Scope //
 				//sc.closeScope();
 				

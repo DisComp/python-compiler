@@ -5,6 +5,7 @@ import com.language.controllers.ScopesController;
 public class StatementExpression extends Expression {
 	
 	public static final String STMT = "Stmt";
+	public static final String BREAK = "Break";
 	/*private boolean isBody=false;
 	
 	public void setIsBody(){
@@ -31,13 +32,19 @@ public class StatementExpression extends Expression {
         //try {
         	/*if(!isBody)
         		ScopesController.getInstance().addLine();*/
-		    if(this.getLeft() != null) {
-		    	Object result = this.getLeft().execute();
-		    }
-		    
-		    if(this.getRight() != null) {
-		    	Object result = this.getRight().execute();
-		    }
+			ScopesController sc = ScopesController.getInstance();
+			if(this.getType() == this.BREAK) {
+				sc.setLoopBreacked(true);
+			}
+			else {
+				if(this.getLeft() != null && !sc.getLoopBreacked()) {
+			    	Object result = this.getLeft().execute();
+			    }
+			    
+			    if(this.getRight() != null && !sc.getLoopBreacked()) {
+			    	Object result = this.getRight().execute();
+			    }
+			}
 
 		/*} catch (Exception e) {
 			e.printStackTrace();
