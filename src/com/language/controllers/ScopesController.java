@@ -59,7 +59,22 @@ public class ScopesController {
 	
 	
 	public void addVariable(String name, Object val){
-		scopes.peek().addVariable(name, val);
+		if(scopes.peek().getName().equals("fun"))
+			scopes.peek().addVariable(name, val);
+		else{
+			boolean find = false;
+			for(int i= 0; i< scopes.size();i++){
+				if(scopes.elementAt(i).containsVariable(name)){//si la enconre
+					scopes.elementAt(i).addVariable(name, val);
+					find=true;
+					break;
+				}				
+			}
+			if(!find)
+				scopes.peek().addVariable(name, val);
+		}
+			//throw new Exception("Variable \'"+var_name+"\' no definida.");
+			
 		log();
 	}
 	
@@ -133,7 +148,10 @@ public class ScopesController {
 	public boolean parsingOk(){
 		if(synErrors.size()==0)
 			return true;
-		System.out.println("Se encontraron "+synErrors.size()+" errores de sintaxis:");
+		if(synErrors.size()==1)
+			System.out.println("Se encontraró "+synErrors.size()+" error de sintaxis:");
+		else
+			System.out.println("Se encontraron "+synErrors.size()+" errores de sintaxis:");
 		for (int i =0 ; i < synErrors.size();i++){
 			System.out.println("\t"+(i+1)+" - "+synErrors.get(i));
 		}

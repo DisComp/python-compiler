@@ -1,4 +1,4 @@
-a=[22, True, "una lista muy larga", [1, 2], []]
+list=[22, True, "una lista muy larga", [1, 2], []]
 print a
 a=a.extend(a)
 print a
@@ -12,3 +12,4 @@ a.pop(1)
 print a
 print a.count(22)
 print a.extend(a).append(69).index(True,2)+100
+

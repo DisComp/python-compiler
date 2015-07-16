@@ -18,7 +18,9 @@ public class Scope {
 		this.variables = new HashMap<String,Object>();
 		functions = new ArrayList<FunctionExpression>();
 	}
-	
+	public String getName(){
+		return name;
+	}
 	public boolean containsVariable(String var){
 		return variables.containsKey(var);
 	}

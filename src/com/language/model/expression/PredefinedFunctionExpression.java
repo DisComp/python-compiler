@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 
@@ -171,7 +172,11 @@ public class PredefinedFunctionExpression extends Expression {
 		
 		if(left != null){
 			leftObj 	= left.execute();
-			leftClass 	= leftObj.getClass().getSimpleName();
+			if(leftObj != null){
+				leftClass 	= leftObj.getClass().getSimpleName();
+			} else {
+				leftClass = "None";
+			}			
 		}
 
 		if(right != null) {
@@ -309,7 +314,7 @@ public class PredefinedFunctionExpression extends Expression {
 					return dictionary.keySet();
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+					throw new Exception("Error al aplicar la funcion keys sobre " + dictValue);
 				}
 			}
 			
@@ -326,15 +331,21 @@ public class PredefinedFunctionExpression extends Expression {
 				}
 				try {
 					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
-					return dictionary.entrySet(); //tal vez deberiamos devolver listas con expressions de tuplas adentro
-					/*Set<Map.Entry<Object,Object>> dictionaryElements = dictionary.entrySet();
-					Iterator iter = dictionaryElements.iterator();
+					List<Object> resultList = new ArrayList<Object>();
+					Set<Object> keys = dictionary.keySet();
+					Iterator iter = keys.iterator();
 					while(iter.hasNext()){
-						
-					}*/
+						Object key = iter.next();
+						Object value = dictionary.get(key);
+						Tuple t = new Tuple();
+						t.add(key);
+						t.add(value);
+						resultList.add(t);						
+					}
+					return resultList;
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+					throw new Exception("Error al aplicar la funcion items sobre " + dictValue);
 				}
 			}
 			
@@ -376,7 +387,7 @@ public class PredefinedFunctionExpression extends Expression {
 						return true;
 						
 					} catch(Exception e){
-						throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+						throw new Exception("Error al aplicar la funcion pop sobre " + dictValue);
 					}
 				}
 			}
@@ -396,7 +407,7 @@ public class PredefinedFunctionExpression extends Expression {
 					return dictionary.values();
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+					throw new Exception("Error al aplicar la funcion values sobre " + dictValue);
 				}
 			}	
 			case FIND_FUNC:{
@@ -447,7 +458,12 @@ public class PredefinedFunctionExpression extends Expression {
 			}
 			case PRINT_FUNC:{
 				if(this.getLeft() != null) {
-					System.out.println(this.getLeft().execute());
+					Object result = this.getLeft().execute();
+					if(result != null){
+						System.out.println(result);
+					} else {
+						System.out.println("None");
+					}
 				}
 				return null;
 			}	

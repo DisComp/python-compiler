@@ -21,7 +21,7 @@ public class FunctionCallExpression extends Expression {
 		//Find func
 		FunctionExpression fun = ScopesController.getInstance().getFunction(fname, parametersValues.size());		
 		//Open new scope
-		ScopesController.getInstance().openScope(fname);		
+		ScopesController.getInstance().openScope("fun");		
 		//Load parameters in scope as variables
 		List<String>internalParameters = fun.getParamNames();
 		for(int i =0; i<internalParameters.size();i++){

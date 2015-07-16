@@ -117,7 +117,6 @@ public class StructureControlExpression extends Expression {
 				Expression iis = this.getLeft();
 				
 				while((boolean)this.expr.execute()) {
-					System.out.println("ACA THE CHETO EN EL WHILE = " + ScopesController.getInstance().getVariable("z"));
 					// Executing //
 					iis.execute();
 				}

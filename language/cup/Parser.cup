@@ -19,7 +19,7 @@ parser code  {:
 
 public void unrecovered_syntax_error(Symbol s) throws
   java.lang.Exception {
-  report_fatal_error("", null);
+  report_fatal_error("fatal", null);
 }
 
 
@@ -168,7 +168,8 @@ stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementEx
 		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
 		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :}
 		|LINETERMINATOR stmt:s {: RESULT = s; :}
-		|error LINETERMINATOR stmt:s {: RESULT = s; :};
+		|error LINETERMINATOR stmt:s {: RESULT = s; :}
+		|error LINETERMINATOR;
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 

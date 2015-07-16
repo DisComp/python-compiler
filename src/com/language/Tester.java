@@ -10,7 +10,7 @@ import com.language.tests.Tests;
 public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
-		
+
 		BufferedReader br = new BufferedReader(new FileReader("tests/TestConversions.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
