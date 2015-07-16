@@ -59,7 +59,7 @@ public class StructureControlExpression extends Expression {
 			case StructureControlExpression.IF:
 			{
 				// Open Scope //
-				sc.openScope(StructureControlExpression.IF);
+				//sc.openScope(StructureControlExpression.IF);
 				
 				expr = (boolean)this.expr.execute();
 				
@@ -71,7 +71,7 @@ public class StructureControlExpression extends Expression {
 				}
 				
 				// Close Scope //
-				sc.closeScope();
+				//sc.closeScope();
 				
 				break;
 			}
@@ -79,7 +79,7 @@ public class StructureControlExpression extends Expression {
 			{
 				
 				// Open Scope //
-				sc.openScope(StructureControlExpression.FOR_IN);
+				//sc.openScope(StructureControlExpression.FOR_IN);
 				
 				// Getting the list and the iterator //
 				List<Object> l 			= (List<Object>)this.getLeft().execute();
@@ -105,14 +105,14 @@ public class StructureControlExpression extends Expression {
 				}
 				
 				// Close Scope //
-				sc.closeScope();
+				//sc.closeScope();
 				
 				break;
 			}
 			case StructureControlExpression.WHILE:
 			{
 				// Open Scope //
-				sc.openScope(StructureControlExpression.WHILE);
+				//sc.openScope(StructureControlExpression.WHILE);
 				
 				Expression iis = this.getLeft();
 				
@@ -122,7 +122,7 @@ public class StructureControlExpression extends Expression {
 				}
 				
 				// Close Scope //
-				sc.closeScope();
+				//sc.closeScope();
 				
 				break;
 			}

@@ -17,9 +17,8 @@ parser code  {:
 	//System.out.print("ERROOOOOOOOOOOOOOOOOOOR!");
   }
 
-public void unrecovered_syntax_error(Symbol s) throws
-  java.lang.Exception {
-  report_fatal_error("fatal", null);
+public void unrecovered_syntax_error(Symbol s) {
+  System.out.println("Error de sintaxis cerca del token "+s.value);
 }
 
 

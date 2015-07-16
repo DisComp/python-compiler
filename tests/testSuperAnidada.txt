@@ -32,5 +32,7 @@ def fun():
 	a=3
 	print a
 fun()
-
 print a
+if(True):
+	b=3
+print b

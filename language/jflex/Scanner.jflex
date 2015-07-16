@@ -46,12 +46,18 @@ import com.language.controllers.*;
             syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
         }
 
-        num_errors++;
         //throw new SyntaxError(syntaxMessage);
         ScopesController.getInstance().addSynError(syntaxMessage);
     }
-	 private int num_errors = 0;
-	    public int numErrors() { return num_errors; }
+	public String errorMsPrint(String msg, java_cup.runtime.Symbol info) {
+        String syntaxMessage = "Error de sintaxis detectado cerca de la linea ";
+        syntaxMessage = syntaxMessage + (yyline+1);
+        if(info.value != null){
+            syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
+        }
+        return syntaxMessage;
+    }
+
 %}
 
 %state COMMENT_LINE
