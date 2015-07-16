@@ -1,3 +1,13 @@
+print 2 + 2
+b = [2, True, "Vamo arriba", [2, False], []]
+b[0:2] = ["Hola", "Que tul", False]
+print b
+# se rompio comentario en la misma linea
+# se rompio dictionary multilinea
+r = { "Soy una clave": 5, True: "Yo un valor"} 
+print r
+r[True]= 124
+print r
 a = {"Chau": 5, 3: True}
 x = "Chau chau hadios"
 x.split("h")
@@ -13,3 +23,13 @@ print a.items()
 print a.values()
 print a.pop(3)
 print a
+entero = 143
+largo = 23L
+real = 34.0212 
+booleano = True
+print type(entero)
+print type(largo)
+print type(real)
+print type(booleano)
+nombre = raw_input("Como te llamas?  ")
+print nombre

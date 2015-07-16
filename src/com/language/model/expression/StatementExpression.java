@@ -28,7 +28,7 @@ public class StatementExpression extends Expression {
 	
 	@Override
 	public Object execute() throws Exception {
-        try {
+        //try {
         	/*if(!isBody)
         		ScopesController.getInstance().addLine();*/
 		    if(this.getLeft() != null) {
@@ -39,9 +39,9 @@ public class StatementExpression extends Expression {
 		    	Object result = this.getRight().execute();
 		    }
 
-		} catch (Exception e) {
+		/*} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	    
 	    return "FIN";
     		

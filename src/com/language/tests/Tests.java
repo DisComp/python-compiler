@@ -135,7 +135,7 @@ public class Tests {
         Tests.displayResult(pf3.execute(),"[Hola=2, true=false]");
         Tests.displayResult(pf4.execute(),"[2, false]");
         Tests.displayResult(pf5.execute(),"true");
-        Tests.displayResult(pf6.execute(),"true");
+        Tests.displayResult(pf6.execute(),"null");
         
         System.out.println("------------------------- END Predefined Functions TEST --------------------------------------------");
         System.out.println();

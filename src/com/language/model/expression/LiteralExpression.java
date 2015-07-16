@@ -78,9 +78,9 @@ public class LiteralExpression extends Expression {
 			String identifier = (String)expr.getValue();
 			le = new LiteralExpression(ASSIGN, identifier, value, null);
 		} else if (expr.getType() == LiteralExpression.STRUCTURE_ACCESS){
-			Expression identifier = (Expression)expr.getValue();
-			Expression structureAccess = (Expression)expr.getLeft(); 
-			le = new LiteralExpression(ASSIGN_STRUCTURE_ACCESS, identifier, value, structureAccess);
+			Expression element = (Expression)expr.getLeft();
+			Expression structureAccess = (Expression)expr.getRight(); 
+			le = new LiteralExpression(ASSIGN_STRUCTURE_ACCESS, element, value, structureAccess);
 		}
 		return le;
 	}
@@ -161,12 +161,12 @@ public class LiteralExpression extends Expression {
 		return new LiteralExpression(DICTIONARY, left, right); //type, left, right
 	}
 	
-	public static Expression createAtomDictionaryElement(Expression key, Expression value){
+	public static Expression createAtomDictionaryElement(Expression key, Expression value) throws Exception{
 		Map<Object, Object> dictionaryKeyValue= new HashMap<Object, Object>();
 		try {
 			dictionaryKeyValue.put(key.getValue(), value.getValue());
 		} catch (Exception e) {
-			throw new ParsingException("Error definiendo diccionario, tipo de clave o valor no permitidos");
+			throw new Exception("Error definiendo diccionario, tipo de clave o valor no permitidos");
 		}
 		return new LiteralExpression(DICTIONARY, dictionaryKeyValue, null, null); //type value left right
 	}
@@ -177,19 +177,23 @@ public class LiteralExpression extends Expression {
 		 	of the list is on the right side, producing a right-balanced
 		 	tree containing all tuple element objects
 		*/
-		List<Object> listValue = new ArrayList<Object>();
+		Tuple<Object> tupleValue = new Tuple<Object>();
+		
+		//List<Object> listValue = new ArrayList<Object>();
 		Expression listElement = (Expression)value;
 		
 		if(listElement.getRight() != null){
 			// One element on the list
 			Object element = ((Expression)listElement.getLeft()).getValue();
-			listValue.add(element); 
+			//listValue.add(element);
+			tupleValue.add(element);
 			listElement = (Expression)listElement.getRight();
 			
 			// Parse tree and add leaf values
 			while(listElement.getRight() != null){
 				element = ((Expression)listElement.getLeft()).getValue();
-				listValue.add(element);
+				//listValue.add(element);
+				tupleValue.add(element);
 				listElement = (Expression)listElement.getRight();
 			}
 			// Last leaf contains last value
@@ -198,13 +202,15 @@ public class LiteralExpression extends Expression {
 			} else {
 				element = ((Expression)listElement.getLeft()).getValue();
 			}
-			listValue.add(element);		
+			//listValue.add(element);
+			tupleValue.add(element);
 			
 		} else if(listElement.getLeft() != null){			
 			Object element = ((Expression)listElement.getLeft()).getValue();
-			listValue.add(element);
+			//listValue.add(element);
+			tupleValue.add(element);
 		}
-		return new LiteralExpression(TUPLE, listValue, null, null);
+		return new LiteralExpression(TUPLE, tupleValue, null, null);
 	}
 	
 	public static Expression createTupleElement(Expression left, Expression right){
@@ -218,7 +224,7 @@ public class LiteralExpression extends Expression {
 		accessElement.put("end", end);
 		accessElement.put("jump", jump);
 		LiteralExpression accessElementAtom = new LiteralExpression(STRUCTURE_ACCESS_ELEMENT, accessElement, null, null);
-		return new LiteralExpression(STRUCTURE_ACCESS, id, accessElementAtom, null);
+		return new LiteralExpression(STRUCTURE_ACCESS, null, id, accessElementAtom);
 	}
 	
 	public static Expression createStructureAccess(Expression id, Expression init, Expression end) {
@@ -227,7 +233,7 @@ public class LiteralExpression extends Expression {
 		accessElement.put("init", init);
 		accessElement.put("end", end);
 		LiteralExpression accessElementAtom = new LiteralExpression(STRUCTURE_ACCESS_ELEMENT, accessElement, null, null);
-		return new Expression(STRUCTURE_ACCESS, id, accessElementAtom, null);
+		return new LiteralExpression(STRUCTURE_ACCESS, null, id, accessElementAtom);
 	}
 	
 	public static Expression createStructureAccess(Expression id, Expression position) {
@@ -235,7 +241,7 @@ public class LiteralExpression extends Expression {
 		Map<String, Object> accessElement = new HashMap<String, Object>();
 		accessElement.put("position", position);
 		LiteralExpression accessElementAtom = new LiteralExpression(STRUCTURE_ACCESS_ELEMENT, accessElement, null, null);
-		return new Expression(STRUCTURE_ACCESS, id, accessElementAtom, null);
+		return new LiteralExpression(STRUCTURE_ACCESS, null, id, accessElementAtom);
 	}
 	
 	@Override
@@ -252,6 +258,7 @@ public class LiteralExpression extends Expression {
 			case LIST:
 			case DICTIONARY:
 			case TUPLE:
+			case STRUCTURE_ACCESS_ELEMENT:
 				return super.getValue();
 			case NONE:
 				return null;
@@ -259,7 +266,7 @@ public class LiteralExpression extends Expression {
 				Object var = sc.getVariable((String)this.getValue());
 				return var;
 				
-			case ASSIGN:
+			case ASSIGN: {
 				String name = (String)this.getValue();
 				Object value = null; 
 				if(this.getLeft() != null){
@@ -267,10 +274,166 @@ public class LiteralExpression extends Expression {
 				}
 				sc.addVariable(name, value);
 				return null;
+			}
+			case STRUCTURE_ACCESS: {
 				
-			case ASSIGN_STRUCTURE_ACCESS:
-				//replace list value at index
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para este tipo");
+				}
+				Object structureValue = this.getLeft().execute();
+				String structureValueClass = structureValue.getClass().getSimpleName();
+				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
+				}
+				try {
+					if(structureValueClass.equals("ArrayList")){
+						ArrayList<Object> listValue = (ArrayList<Object>)structureValue;
+						HashMap<String, Object> structureArgs = (HashMap<String, Object>)this.getRight().execute();
+						
+						if(structureArgs.containsKey("position")){
+							Object posObj = structureArgs.get("position");
+							posObj = ((Expression)posObj).execute();
+							Integer pos = (Integer)posObj;
+							if(pos < 0){
+								pos = listValue.size() + pos; 
+							}
+							return listValue.get(pos);						
+						}
+						//two or three parameters
+						if(structureArgs.containsKey("init") && structureArgs.containsKey("end") && structureArgs.containsKey("jump")){
+							Object initObj = structureArgs.get("init");
+							Object endObj = structureArgs.get("end");
+							Object jumpObj = structureArgs.get("jump");
+							Integer init = 0;
+							Integer end = listValue.size();
+							Integer jump = 1;
+							if(initObj != null){
+								initObj = ((Expression)initObj).execute();
+								init = (Integer)initObj;
+							}
+							if(endObj != null){
+								endObj = ((Expression)endObj).execute();
+								end = (Integer)endObj;
+							}
+							if(jumpObj != null){
+								jumpObj = ((Expression)jumpObj).execute();
+								jump = (Integer)jumpObj;
+							}
+							List<Object> result = new ArrayList<Object>();
+							for(int i = init; i < end; i=i+jump){
+								result.add(listValue.get(i));
+							}
+							return result;
+							
+						} else {
+							Object initObj = structureArgs.get("init");
+							Object endObj = structureArgs.get("end");
+							Integer init = 0;
+							Integer end = listValue.size();
+							if(initObj != null){
+								initObj = ((Expression)initObj).execute();
+								init = (Integer)initObj;
+							}
+							if(endObj != null){
+								endObj = ((Expression)endObj).execute();
+								end = (Integer)endObj;
+							}
+							List<Object> result = new ArrayList<Object>();
+							for(int i = init; i < end; i++){
+								result.add(listValue.get(i));
+							}
+							return result;
+						}
+					} else {
+						HashMap<Object, Object> dictValue = (HashMap<Object, Object>)structureValue;
+						HashMap<String, Object> structureArgs = (HashMap<String, Object>)this.getRight().execute();
+						Object posObj = structureArgs.get("position");
+						posObj = ((Expression)posObj).execute();
+						return dictValue.get(posObj);
+					}
+					
+				} catch(Exception e){
+					throw new Exception("Error al aplicar la funcion accesso a estructura sobre " + structureValue);					
+				}
 				
+			}	
+			case ASSIGN_STRUCTURE_ACCESS: {
+			
+				if(this.getLeft() == null){
+					throw new Exception("Esta funcion no esta definida para este tipo");
+				}
+				if(this.getRight() == null){
+					throw new Exception("Se esperaban argumentos para la funcion");
+				}
+				Object structureValue = ((Expression)this.getValue()).execute();
+				Object valueAssigned = this.getLeft().execute();
+				
+				String structureValueClass = structureValue.getClass().getSimpleName();
+				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap")){
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
+				}
+				try {
+					
+					if(structureValueClass.equals("ArrayList")){
+						ArrayList<Object> listValue = (ArrayList<Object>)structureValue;
+						HashMap<String, Object> structureArgs = (HashMap<String, Object>)this.getRight().execute();
+						
+						if(structureArgs.containsKey("position")){
+							Object posObj = structureArgs.get("position");
+							posObj = ((Expression)posObj).execute();
+							Integer pos = (Integer)posObj;
+							if(pos < 0){
+								pos = listValue.size() + pos; 
+							}
+							listValue.set(pos, valueAssigned);
+							return null;						
+						}
+						//two parameters init end						
+						Object initObj = structureArgs.get("init");
+						Object endObj = structureArgs.get("end");
+						Integer init = 0;
+						Integer end = listValue.size();
+						if(initObj != null){
+							initObj = ((Expression)initObj).execute();
+							init = (Integer)initObj;
+						}
+						if(endObj != null){
+							endObj = ((Expression)endObj).execute();
+							end = (Integer)endObj;
+						}
+						ArrayList<Object> result = new ArrayList<Object>();
+						for(int i = 0; i < listValue.size(); i++){
+							if(i < init || i >= end){
+								result.add(listValue.get(i));
+							}
+						}
+						String valueAssignedClass = valueAssigned.getClass().getSimpleName();
+						if(valueAssignedClass.equals("ArrayList")){
+							ArrayList<Object> valueAssignedList = (ArrayList<Object>)valueAssigned;
+							for(int i = 0; i < valueAssignedList.size(); i++){
+								result.add(init+i, valueAssignedList.get(i));
+							}
+							
+						} else {
+							result.add(init, valueAssigned);							
+						}
+						listValue.clear();
+						listValue.addAll(result);
+						return null;
+						
+					} else {
+						HashMap<Object, Object> dictValue = (HashMap<Object, Object>)structureValue;
+						HashMap<String, Object> structureArgs = (HashMap<String, Object>)this.getRight().execute();
+						Object posObj = structureArgs.get("position");
+						posObj = ((Expression)posObj).execute();
+						dictValue.put(posObj, valueAssigned);
+						return dictValue.get(posObj);
+					}
+					
+				} catch (Exception e){
+					throw new Exception("Error al aplicar la funcion asignacion sobre la estructura " + structureValue);
+				}
+			}	
 			default:
 				//return super.getValue();
 				throw new Exception("Tipo literal no reconocido");
