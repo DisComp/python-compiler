@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 
@@ -160,9 +161,25 @@ public class PredefinedFunctionExpression extends Expression {
 	@Override
 	public Object execute() throws Exception {
 		
-
 		Expression 	left 	= this.getLeft(),
 					right	= this.getRight();
+		
+		Object 		leftObj = null, 
+					rightObj = null;
+		
+		String 		leftClass = "", 
+					rightClass = "";
+		
+		if(left != null){
+			leftObj 	= left.execute();
+			leftClass 	= leftObj.getClass().getSimpleName();
+		}
+
+		if(right != null) {
+			rightObj 	= right.execute();
+			rightClass 	= right.getClass().getSimpleName();
+		}
+			
 		switch(this.getType()){
 		
 			case INSERT_FUNC:{
@@ -293,7 +310,7 @@ public class PredefinedFunctionExpression extends Expression {
 					return dictionary.keySet();
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+					throw new Exception("Error al aplicar la funcion keys sobre " + dictValue);
 				}
 			}
 			
@@ -310,15 +327,21 @@ public class PredefinedFunctionExpression extends Expression {
 				}
 				try {
 					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
-					return dictionary.entrySet(); //tal vez deberiamos devolver listas con expressions de tuplas adentro
-					/*Set<Map.Entry<Object,Object>> dictionaryElements = dictionary.entrySet();
-					Iterator iter = dictionaryElements.iterator();
+					List<Object> resultList = new ArrayList<Object>();
+					Set<Object> keys = dictionary.keySet();
+					Iterator iter = keys.iterator();
 					while(iter.hasNext()){
-						
-					}*/
+						Object key = iter.next();
+						Object value = dictionary.get(key);
+						Tuple t = new Tuple();
+						t.add(key);
+						t.add(value);
+						resultList.add(t);						
+					}
+					return resultList;
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+					throw new Exception("Error al aplicar la funcion items sobre " + dictValue);
 				}
 			}
 			
@@ -360,7 +383,7 @@ public class PredefinedFunctionExpression extends Expression {
 						return true;
 						
 					} catch(Exception e){
-						throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+						throw new Exception("Error al aplicar la funcion pop sobre " + dictValue);
 					}
 				}
 			}
@@ -380,7 +403,7 @@ public class PredefinedFunctionExpression extends Expression {
 					return dictionary.values();
 					
 				} catch(Exception e){
-					throw new Exception("Error al aplicar la funcion has_key sobre " + dictValue);
+					throw new Exception("Error al aplicar la funcion values sobre " + dictValue);
 				}
 			}	
 			case FIND_FUNC:{
@@ -437,52 +460,40 @@ public class PredefinedFunctionExpression extends Expression {
 			}	
 			case COUNT_FUNC:{
 				if(left != null && right != null) {
-					Object 	str = left.execute(),
-							list = right.execute();
 					
-					String  leftClass = str.getClass().getSimpleName(),
-							rightClass = list.getClass().getSimpleName();
-					
-					if(leftClass.equals("ArrayList")){
+					if(leftClass.equals("ArrayList")) {
 						//count for lists
-						List<Object> l = (List<Object>)str;
-						return Collections.frequency(l, list);
+						List<Object> list = (List<Object>)leftObj;
+						List<Object> l = (List<Object>)rightObj;
 						
+						return Collections.frequency(l, list);
 					}
-					else{
-						//count for strings
-						if(leftClass.equals("String")) {
-							throw new Exception("La variable no es de tipo String");
+					else if(!leftClass.equals("String")) {
+						throw new Exception("La variable no es de tipo String");
+					}
+					else if(!rightClass.equals("String")) {
+						throw new Exception("El parametro de la funcion no es de tipo String");
+					}
+					else {
+						int index 		= 0,
+							occurrences = 0;
+						String 	leftStr  = (String)left.execute(),
+								rightStr = (String)right.execute();
+
+						index = leftStr.indexOf(rightStr,0);
+						
+						while(index != -1) {
+							occurrences++;
+							index = leftStr.indexOf(rightStr,index);
 						}
-						else if(rightClass.equals("String")) {
-							throw new Exception("El parametro de la funcion no es de tipo String");
-						}
-						else {
-							int index 		= 0,
-								occurrences = 0;
-							String 	leftStr  = (String)left.execute(),
-									rightStr = (String)right.execute();
-	
-							index = leftStr.indexOf(rightStr,0);
-							
-							while(index != -1) {
-								occurrences++;
-								index = leftStr.indexOf(rightStr,index);
-							}
-							
-							return occurrences;
-						}
+						
+						return occurrences;
 					}
 				}
 				
 			}
 			case JOIN_FUNC:
 				if(left != null && right != null) {
-					Object 	str = left.execute(),
-							list = right.execute();
-					String  leftClass = str.getClass().getSimpleName(),
-							rightClass = list.getClass().getSimpleName();
-
 					
 					if(!leftClass.equals("String")) {
 						throw new Exception("La variable no es del tipo esperado 'string'");
@@ -491,9 +502,9 @@ public class PredefinedFunctionExpression extends Expression {
 						throw new Exception("El parametro recibido no es del tipo esperado 'list'");
 					}
 					else {
-						Iterator<Object> iter 	= ((List<Object>)list).iterator();
+						Iterator<Object> iter 	= ((List<Object>)rightObj).iterator();
 						String result 			= "",
-							   separator 		= (String)str; 
+							   separator 		= (String)leftObj; 
 						Object element 			= null;
 						
 						if(iter.hasNext()) {
@@ -513,7 +524,6 @@ public class PredefinedFunctionExpression extends Expression {
 							}
 						}
 						
-						System.out.println(result);
 						return result;
 					}
 				}
@@ -521,17 +531,15 @@ public class PredefinedFunctionExpression extends Expression {
 				break;
 			case SPLIT_FUNC:
 				if(left != null && right != null) {
-					Object 	str = left.execute(),
-							sep = right.execute();
 					
-					if(!str.getClass().getSimpleName().equals("String")) {
+					if(!leftClass.equals("String")) {
 						throw new Exception("La variable no es un String");
 					}
-					else if(!sep.getClass().getSimpleName().equals("String")) {
+					else if(!rightClass.equals("String")) {
 						throw new Exception("El parametro no es un String");
 					}
 					else {
-						String[] 		  arr = ((String)str).split(Pattern.quote((String)sep));
+						String[] 		  arr = ((String)leftObj).split(Pattern.quote((String)rightObj));
 						ArrayList<Object> list = new ArrayList();
 						int i 		= 0,
 							count 	= arr.length;
@@ -567,16 +575,159 @@ public class PredefinedFunctionExpression extends Expression {
 				break;
 			case LENGTH_FUNC:
 				if (left != null  && right == null ) {
-					Object str = left.execute();
-					if(!str.getClass().getSimpleName().equals("String")) {
+					if(!leftClass.equals("String")) {
 						throw new Exception("La variable no es un string");
 					}
 					else {
-						return ((String)str).length();
+						return ((String)leftObj).length();
 					}
 				}
+				
 				break;
-			
+			case INT_FUNC:
+				if (left != null && right == null) {
+					
+					switch(leftClass) {
+						case "String":
+							String str = (String)leftObj;
+							try {
+								return Integer.parseInt(str);
+							}
+							catch(Exception e) {
+								throw new Exception("No se pudo convertir de 'String' a 'Integer'. Compruebe que la variable este bien formada");
+							}
+							
+						case "Integer":
+							return (int)leftObj;
+							
+						case "Float":
+							Float f = (Float)leftObj;
+							return Math.round(f);
+							
+						case "Boolean":
+							Boolean b = (boolean)leftObj;
+							if(b) 
+								return 1;
+							else
+								return 0;
+							
+						default:
+							throw new Exception("El tipo " + leftClass + " no se puede convertir a 'Integer'");
+					}
+				}
+				
+				break;
+				
+			case FLOAT_FUNC:
+				if (left != null && right == null) {
+					
+					switch(leftClass) {
+						case "String":
+							String str = (String)leftObj;
+							try {
+								return Double.parseDouble(str);
+							}
+							catch(Exception e) {
+								throw new Exception("No se pudo convertir de 'String' a 'Float'. Compruebe que la variable este bien formada");
+							}
+							
+						case "Integer":
+							Integer i = (int)leftObj;
+							Double d = (Double)(i * 1.0);
+							return d;
+							
+						case "Double":
+							return (Double)leftObj;
+							
+						default:
+							throw new Exception("El tipo " + leftClass + " no se puede convertir a 'Float'");
+					}
+				}
+				
+				break;
+			case STR_FUNC:
+				if (left != null && right == null) {
+					
+					switch(leftClass) {
+						case "String":
+							return (String)leftObj;
+							
+						case "Integer":
+							return String.valueOf((int)leftObj);
+						
+						case "Double":
+							return String.valueOf((double)leftObj);
+							
+						case "Boolean":
+							Boolean b = (boolean)leftObj;
+							if(b)
+								return "True";
+							else
+								return "False";
+						
+						case "ArrayList":
+							ArrayList<Object> list = (ArrayList<Object>)leftObj;
+							
+							try {
+								return list.toString();
+							}
+							catch(Exception e) {
+								throw new Exception("No se pudo convertir la lista en 'String'");
+							}
+							
+						default:
+							throw new Exception("El tipo " + leftClass + " no se puede convertir a 'String'");
+					}
+				}
+				
+				break;
+			case LIST_FUNC:
+				if(left != null && right == null) {
+					
+					switch(leftClass) {
+						case "String":
+							String[] 		  arr = ((String)leftObj).split(",");
+							ArrayList<Object> list = new ArrayList();
+							int i 		= 0,
+								count 	= arr.length;
+							
+							while( i < count) {
+								list.add(arr[i]);
+								i++;
+							}
+							
+							return list;
+						
+						default:
+							throw new Exception("El tipo " + leftClass + " no se puede convertir a 'List'");
+					}
+				}
+				
+			case DICT_FUNC:
+				
+				if(left != null && right == null) {
+					switch(leftClass) {
+						case "ArrayList":
+							ArrayList<Object> list 		= (ArrayList)leftObj;
+							Iterator<Object> iter 		= list.iterator();
+							HashMap<Object,Object> map 	= new HashMap<Object,Object>();
+							
+							Object element 	= null;
+							int i 			= 0;
+							
+							while( iter.hasNext()) {
+								element = iter.next();
+								map.put(i, element);
+								
+								i++;
+							}
+							
+							return map;
+						
+						default:
+							throw new Exception("El tipo " + leftClass + " no se puede convertir a 'List'");
+					}
+				}
 			case RAW_INPUT_FUNC:{
 				Object rawObj = this.getLeft().execute();
 				System.out.print(rawObj);

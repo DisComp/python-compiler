@@ -9,12 +9,7 @@ print r
 r[True]= 124
 print r
 a = {"Chau": 5, 3: True}
-x = "Chau chau hadios"
-x.split("h")
-x.length()
-y = "Hola Mundo !!!"
-y.replace("Mundo","Chiche")
-print a.has_key(x)
+print a.has_key("3")
 s = "Buen dia Benito"
 print s.find("Benito")
 print s.find("Benito", 3)
@@ -27,9 +22,11 @@ entero = 143
 largo = 23L
 real = 34.0212 
 booleano = True
+tupla = (1,)
 print type(entero)
 print type(largo)
 print type(real)
 print type(booleano)
+print type(tupla)
 nombre = raw_input("Como te llamas?  ")
 print nombre

@@ -1,0 +1,13 @@
+a = True
+b = int(a)
+print b
+
+a = False
+c = int(a) + 2
+b = b + c
+print b
+
+a = 5.4
+c = int(a)
+b = b + c
+print b
