@@ -152,7 +152,7 @@ public class ScopesController {
 		return cantLines;
 	}*/
 	
-	/*Syntax error control*/
+	/***Syntax error control***/
 	public void addSynError(String err){
 		synErrors.add(err);
 	}
