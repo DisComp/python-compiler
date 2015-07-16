@@ -261,7 +261,7 @@ public class LiteralExpression extends Expression {
 			case STRUCTURE_ACCESS_ELEMENT:
 				return super.getValue();
 			case NONE:
-				return null;
+				return "None"; //
 			case ID:
 				Object var = sc.getVariable((String)this.getValue());
 				return var;
