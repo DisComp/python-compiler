@@ -59,7 +59,21 @@ public class ScopesController {
 	
 	
 	public void addVariable(String name, Object val){
-		scopes.peek().addVariable(name, val);
+		if(scopes.peek().getName().equals("fun"))
+			scopes.peek().addVariable(name, val);
+		else{
+			boolean find = false;
+			for(int i= 0; i< scopes.size();i++){
+				if(scopes.elementAt(i).containsVariable(name)){//si la enconre
+					scopes.elementAt(i).addVariable(name, val);
+					find=true;
+				}				
+			}
+			if(!find)
+				scopes.peek().addVariable(name, val);
+		}
+			//throw new Exception("Variable \'"+var_name+"\' no definida.");
+			
 		log();
 	}
 	
