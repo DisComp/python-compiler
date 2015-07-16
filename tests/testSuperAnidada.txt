@@ -1,3 +1,4 @@
+if
 True
 if True:
 	1
@@ -13,6 +14,7 @@ True
 True
 True
 True
+if
 if True:
 	1
 	if True:
