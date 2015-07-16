@@ -14,7 +14,13 @@ parser code  {:
 
   public void syntax_error(java_cup.runtime.Symbol current) {
     scanner.errorMs("Syntax error (" + current.sym + ")", current);
+	//System.out.print("ERROOOOOOOOOOOOOOOOOOOR!");
   }
+
+public void unrecovered_syntax_error(Symbol s) throws
+  java.lang.Exception {
+  report_fatal_error("", null);
+}
 
 
 :};
@@ -150,16 +156,19 @@ start with program;
 
 program ::= stmt: s 
 			{: 
-				System.out.println("-----------------------PARSING OK---------------------------");
-				s.execute();
-				RESULT = s;
+				if(ScopesController.getInstance().parsingOk()){
+					System.out.println("-----------------------PARSING OK---------------------------");
+					s.execute();
+					RESULT = s;
+				}
 			:};
 
 stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
 		| instr:i LINETERMINATOR stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
 		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
 		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :}
-		|LINETERMINATOR stmt:s {: RESULT = s; :};
+		|LINETERMINATOR stmt:s {: RESULT = s; :}
+		|error LINETERMINATOR stmt:s {: RESULT = s; :};
 	
 suit::= IDENT stmt:s DEDENT{: RESULT = s; :};
 
@@ -384,5 +393,3 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| predefined_functions_expr: pfe {: RESULT = pfe; :};
 
 expr  ::= boolean_expr: b {: RESULT = b; :}	;  
-	
-

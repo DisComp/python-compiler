@@ -1,7 +1,9 @@
 package com.language.controllers;
 import com.language.model.expression.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -14,7 +16,7 @@ public class ScopesController {
 	private static ScopesController instance = null;	
 	private int dedentToSend;
 	private int expectedTabs;
-	
+	private List<String> synErrors;
 	private Stack<Scope> scopes;
 	private boolean logOn=false;
 	private void log(){
@@ -29,6 +31,7 @@ public class ScopesController {
 		//tabsContados = 0;
 		dedentToSend = 0;
 		expectedTabs = 0;
+		synErrors=new ArrayList<String>();
 		scopes = new Stack<Scope>();
 		scopes.push(new Scope("main"));
 
@@ -122,4 +125,18 @@ public class ScopesController {
 	public int getLines(){
 		return cantLines;
 	}*/
+	
+	/*Syntax error control*/
+	public void addSynError(String err){
+		synErrors.add(err);
+	}
+	public boolean parsingOk(){
+		if(synErrors.size()==0)
+			return true;
+		System.out.println("Se encontraron "+synErrors.size()+" errores de sintaxis:");
+		for (int i =0 ; i < synErrors.size();i++){
+			System.out.println("\t"+(i+1)+" - "+synErrors.get(i));
+		}
+		return false;
+	}
 }
