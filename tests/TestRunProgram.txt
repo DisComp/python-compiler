@@ -9,12 +9,7 @@ print r
 r[True]= 124
 print r
 a = {"Chau": 5, 3: True}
-x = "Chau chau hadios"
-x.split("h")
-x.length()
-y = "Hola Mundo !!!"
-y.replace("Mundo","Chiche")
-print a.has_key(x)
+print a.has_key("3")
 s = "Buen dia Benito"
 print s.find("Benito")
 print s.find("Benito", 3)
