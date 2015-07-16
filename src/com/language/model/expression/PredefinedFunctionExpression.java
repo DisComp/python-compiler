@@ -170,7 +170,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object ObjParamToFind = this.getRight().getRight().execute();//any value expeted
 				String dictValueClass = lObj.getClass().getSimpleName();
 				if(!dictValueClass.equals("ArrayList")){
-					throw new Exception("La función insert solo está definida para el tipo List");
+					throw new Exception("La función insert solo está definida para el tipo list");
 				}
 				int index = 0;
 				if(this.getRight().getLeft()!=null){//exist second parameter
@@ -265,7 +265,7 @@ public class PredefinedFunctionExpression extends Expression {
 				
 				String dictValueClass = dictValue.getClass().getSimpleName();
 				if(!dictValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {
 					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
@@ -286,7 +286,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object dictValue = this.getLeft().execute();
 				String dictValueClass = dictValue.getClass().getSimpleName();
 				if(!dictValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {
 					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
@@ -306,7 +306,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object dictValue = this.getLeft().execute();
 				String dictValueClass = dictValue.getClass().getSimpleName();
 				if(!dictValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {
 					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
@@ -373,7 +373,7 @@ public class PredefinedFunctionExpression extends Expression {
 				Object dictValue = this.getLeft().execute();
 				String dictValueClass = dictValue.getClass().getSimpleName();
 				if(!dictValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + dictValueClass);
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {
 					HashMap<Object, Object> dictionary = (HashMap<Object, Object>)dictValue;
@@ -407,13 +407,13 @@ public class PredefinedFunctionExpression extends Expression {
 				String argIntClass = argIntValue != null ? argIntValue.getClass().getSimpleName() : null;
 				
 				if(!strValueClass.equals("String")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + strValueClass);
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				if(!argValueClass.equals("String")){
-					throw new Exception("Se esperaba argumento de tipo string pero se recibio " + strValueClass);
+					throw new Exception("Se esperaba argumento de tipo string");
 				}
 				if(argIntValue != null && !argIntClass.equals("Integer")){
-					throw new Exception("Se esperaba argumento de tipo int pero se recibio " + argIntClass);
+					throw new Exception("Se esperaba argumento de tipo int");
 				}
 				try {
 					String str = String.valueOf(strValue);
@@ -485,10 +485,10 @@ public class PredefinedFunctionExpression extends Expression {
 
 					
 					if(!leftClass.equals("String")) {
-						throw new Exception("La variable no es del tipo esperado 'String'. Se encontro: '"+leftClass+"'");
+						throw new Exception("La variable no es del tipo esperado 'string'");
 					}
 					else if(!rightClass.equals("ArrayList")) {
-						throw new Exception("El parametro recibido no es del tipo esperado 'List'. Se encontro: "+rightClass+"'");
+						throw new Exception("El parametro recibido no es del tipo esperado 'list'");
 					}
 					else {
 						Iterator<Object> iter 	= ((List<Object>)list).iterator();
@@ -603,7 +603,7 @@ public class PredefinedFunctionExpression extends Expression {
 				throw new Exception("Tipo literal no reconocido");
 		}
 		
-		throw new Exception("Alguno de los parametros de la funcion '"+this.getType()+"' no fueron encontrados");
+		throw new Exception("Alguno de los parametros de la funcion no fueron encontrados");
 	}
 	
 }
