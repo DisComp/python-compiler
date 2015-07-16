@@ -177,19 +177,23 @@ public class LiteralExpression extends Expression {
 		 	of the list is on the right side, producing a right-balanced
 		 	tree containing all tuple element objects
 		*/
-		List<Object> listValue = new ArrayList<Object>();
+		Tuple<Object> tupleValue = new Tuple<Object>();
+		
+		//List<Object> listValue = new ArrayList<Object>();
 		Expression listElement = (Expression)value;
 		
 		if(listElement.getRight() != null){
 			// One element on the list
 			Object element = ((Expression)listElement.getLeft()).getValue();
-			listValue.add(element); 
+			//listValue.add(element);
+			tupleValue.add(element);
 			listElement = (Expression)listElement.getRight();
 			
 			// Parse tree and add leaf values
 			while(listElement.getRight() != null){
 				element = ((Expression)listElement.getLeft()).getValue();
-				listValue.add(element);
+				//listValue.add(element);
+				tupleValue.add(element);
 				listElement = (Expression)listElement.getRight();
 			}
 			// Last leaf contains last value
@@ -198,13 +202,15 @@ public class LiteralExpression extends Expression {
 			} else {
 				element = ((Expression)listElement.getLeft()).getValue();
 			}
-			listValue.add(element);		
+			//listValue.add(element);
+			tupleValue.add(element);
 			
 		} else if(listElement.getLeft() != null){			
 			Object element = ((Expression)listElement.getLeft()).getValue();
-			listValue.add(element);
+			//listValue.add(element);
+			tupleValue.add(element);
 		}
-		return new LiteralExpression(TUPLE, listValue, null, null);
+		return new LiteralExpression(TUPLE, tupleValue, null, null);
 	}
 	
 	public static Expression createTupleElement(Expression left, Expression right){
@@ -277,7 +283,7 @@ public class LiteralExpression extends Expression {
 				Object structureValue = this.getLeft().execute();
 				String structureValueClass = structureValue.getClass().getSimpleName();
 				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + structureValueClass);
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {
 					if(structureValueClass.equals("ArrayList")){
@@ -364,7 +370,7 @@ public class LiteralExpression extends Expression {
 				
 				String structureValueClass = structureValue.getClass().getSimpleName();
 				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap")){
-					throw new Exception("Esta funcion no esta definida para el tipo " + structureValueClass);
+					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {
 					
