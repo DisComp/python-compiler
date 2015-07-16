@@ -133,7 +133,10 @@ public class ScopesController {
 	public boolean parsingOk(){
 		if(synErrors.size()==0)
 			return true;
-		System.out.println("Se encontraron "+synErrors.size()+" errores de sintaxis:");
+		if(synErrors.size()==1)
+			System.out.println("Se encontraró "+synErrors.size()+" error de sintaxis:");
+		else
+			System.out.println("Se encontraron "+synErrors.size()+" errores de sintaxis:");
 		for (int i =0 ; i < synErrors.size();i++){
 			System.out.println("\t"+(i+1)+" - "+synErrors.get(i));
 		}
