@@ -172,7 +172,11 @@ public class PredefinedFunctionExpression extends Expression {
 		
 		if(left != null){
 			leftObj 	= left.execute();
-			leftClass 	= leftObj.getClass().getSimpleName();
+			if(leftObj != null){
+				leftClass 	= leftObj.getClass().getSimpleName();
+			} else {
+				leftClass = "None";
+			}			
 		}
 
 		if(right != null) {
@@ -454,7 +458,12 @@ public class PredefinedFunctionExpression extends Expression {
 			}
 			case PRINT_FUNC:{
 				if(this.getLeft() != null) {
-					System.out.println(this.getLeft().execute());
+					Object result = this.getLeft().execute();
+					if(result != null){
+						System.out.println(result);
+					} else {
+						System.out.println("None");
+					}
 				}
 				return null;
 			}	
