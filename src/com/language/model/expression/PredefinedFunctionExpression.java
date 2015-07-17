@@ -461,7 +461,7 @@ public class PredefinedFunctionExpression extends Expression {
 			}
 			case PRINT_FUNC:{
 				if(this.getLeft() != null) {
-					Object result = this.getLeft().execute();
+					Object result = this.getLeft().execute();					
 					if(result != null){
 						System.out.println(result);
 					} else {
@@ -580,7 +580,7 @@ public class PredefinedFunctionExpression extends Expression {
 						throw new Exception("La variable y sus parametros deben ser de tipo String");
 					}
 					else {
-						System.out.println(((String)str).replace((String)substrOld,(String)substrNew).toString());
+						//System.out.println(((String)str).replace((String)substrOld,(String)substrNew).toString());
 						return ((String)str).replace((String)substrOld,(String)substrNew);
 					}
 				}
