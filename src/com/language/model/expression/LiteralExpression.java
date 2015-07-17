@@ -69,8 +69,9 @@ public class LiteralExpression extends Expression {
 	
 	public static Expression createString(Object value) {
 		String stringValue = new String((String)value);
-		stringValue = stringValue.replaceAll("([^\\\\])(\\\\\\\\)*(\\\\t)","$1$2\t")
-								 .replaceAll("([^\\\\])(\\\\\\\\)*(\\\\n)","$1$2\n")
+		
+		stringValue = stringValue.replaceAll("(^|[^\\\\])(\\\\\\\\)*(\\\\t)","$1$2\t")
+								 .replaceAll("(^|[^\\\\])(\\\\\\\\)*(\\\\n)","$1$2\n")
 								 .replaceAll("(\\\\\\\\)","\\\\");
 		return new LiteralExpression(STRING, stringValue, null, null);
 	}

@@ -1,7 +1,11 @@
-a.count(s)
-b.find(s)
-c.find(s, k)
-d.join(s)
-e.split(s)
-f.replace(s, k)
-g.length()
+a = "hola hola mis buenos amigos, como andan?"
+s = "hola"
+k = 3
+l = ["Primero que nada: "," \nSegundo: ","\nFinalmente y como era de esperarse: ","\nNo hay nada mas que agregar"]
+print a.count(s)
+print a.find(s)
+print a.find(s, k)
+print s.join(l)
+print a.split(s)
+print a.replace(s, "adios")
+print a.length()
