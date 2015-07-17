@@ -160,7 +160,7 @@ start with program;
 program ::= stmt: s 
 			{: 
 				if(ScopesController.getInstance().parsingOk()){
-					System.out.println("-----------------------PARSING OK---------------------------");
+					System.out.println("-----------------------0 Errores de parseo---------------------------");
 					s.execute();
 					RESULT = s;
 				}

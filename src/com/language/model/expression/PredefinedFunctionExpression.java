@@ -59,7 +59,7 @@ public class PredefinedFunctionExpression extends Expression {
 	
 	/* For multiple parameters*/
 	public static final String ARGUMENTS_FUNC = "ArgumentsFunc";
-	
+	public static final String ARGUMENTS_FUNC_LIST = "ArgumentsFuncList";
 	
 	public PredefinedFunctionExpression() {
 		super();
@@ -106,7 +106,9 @@ public class PredefinedFunctionExpression extends Expression {
 	
 	public static Expression createListFunction(Expression list_left, Expression expr) {
 		/*e.g: L.append(x) saves L on left and x on right */
-		return new PredefinedFunctionExpression(expr.getType(), list_left, expr);
+		String tipo =expr.getType();
+		expr.setType(ARGUMENTS_FUNC_LIST);
+		return new PredefinedFunctionExpression(tipo, list_left, expr);
 	}
 	
 	public static Expression createListFunctionElement(String type, Expression left) {
@@ -183,9 +185,10 @@ public class PredefinedFunctionExpression extends Expression {
 			rightObj 	= right.execute();
 			rightClass 	= right.getClass().getSimpleName();
 		}
-			
 		switch(this.getType()){
-		
+		case ARGUMENTS_FUNC_LIST:{
+			return null;
+			}
 			case INSERT_FUNC:{
 				Object lObj = this.getLeft().execute();
 				Object ObjParamToFind = this.getRight().getRight().execute();//any value expeted
@@ -473,9 +476,9 @@ public class PredefinedFunctionExpression extends Expression {
 					if(leftClass.equals("ArrayList")) {
 						//count for lists
 						List<Object> list = (List<Object>)leftObj;
-						List<Object> l = (List<Object>)rightObj;
+						Object l = (Object)rightObj;
 						
-						return Collections.frequency(l, list);
+						return Collections.frequency(list,l);
 					}
 					else if(!leftClass.equals("String")) {
 						throw new Exception("La variable no es de tipo String");
@@ -764,6 +767,7 @@ public class PredefinedFunctionExpression extends Expression {
 						return className.toLowerCase();
 				}
 			}
+			
 			default:
 				//return super.getValue();
 				throw new Exception("Tipo literal no reconocido");
