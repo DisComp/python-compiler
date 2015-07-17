@@ -1,6 +1,6 @@
 package com.language.parser;
 
-import com.language.controllers.ScopesController;
+import com.language.controllers.*;
 
 
 public class Scannerchild extends Scanner {
@@ -24,11 +24,16 @@ public class Scannerchild extends Scanner {
 			result= super.next_token();
 		}
 		
-		/*if(result!=null&&result.value!=null)
-			System.out.println("devuelvo: "+result.value.toString()+" numLine: "+result.left);
-		else
-			System.out.println("EOF");*/
-			
+
+			/*if(result!=null&&result.value!=null){
+				try{
+				System.out.println("devuelvo: "+((token) result.value).getX());
+				}
+			catch (Exception e){
+				System.out.println("devuelvo: "+result.value.toString());
+			}
+		}
+			*/
 		return result;
 	}
 	

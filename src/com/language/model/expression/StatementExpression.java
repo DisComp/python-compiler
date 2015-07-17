@@ -19,7 +19,7 @@ public class StatementExpression extends Expression {
 	public StatementExpression(String type, Object value, Expression left, Expression right,int _lineNumber) {
 		super(type,value,left,right);
 		this.setLn(_lineNumber);
-		
+		ScopesController.getInstance().actualLineTree=_lineNumber;
 	}
 
 	

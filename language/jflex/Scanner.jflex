@@ -49,14 +49,15 @@ import com.language.controllers.*;
         //throw new SyntaxError(syntaxMessage);
         ScopesController.getInstance().addSynError(syntaxMessage);
     }
-	public String errorMsPrint(String msg, java_cup.runtime.Symbol info) {
+	/*public String errorMsPrint(String msg, java_cup.runtime.Symbol info) {
         String syntaxMessage = "Error de sintaxis detectado cerca de la linea ";
         syntaxMessage = syntaxMessage + (yyline+1);
         if(info.value != null){
             syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
         }
         return syntaxMessage;
-    }
+    }*/
+	public int line(){return yyline;}
 
 %}
 

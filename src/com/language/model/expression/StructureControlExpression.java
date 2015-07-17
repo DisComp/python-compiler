@@ -31,17 +31,19 @@ public class StructureControlExpression extends Expression {
 		super(type, left, right);
 	}
 	
+	/*for*/
 	public static Expression create(String type, Object o, Expression left, Expression right,int line) {
 		StructureControlExpression sce = new StructureControlExpression(type, o, left, right,line);
 		return sce;
 	}
 	
-	public static Expression create(String type, Expression e, Expression left, Expression right) {
-		StructureControlExpression sce = new StructureControlExpression(type, null, left, right);
+	/*public static Expression create(String type, Expression e, Expression left, Expression right,int line) {
+		StructureControlExpression sce = new StructureControlExpression(type, null, left, right,line);
 		sce.expr = e;
 		return sce;
-	}
+	}*/
 	
+	/*usadas por el if y el while*/
 	public static Expression create(String type, Expression e, Expression left,int _line) {
 		StructureControlExpression sce = new StructureControlExpression(type, null, left, null,_line);
 		sce.expr = e;
@@ -50,6 +52,7 @@ public class StructureControlExpression extends Expression {
 	public StructureControlExpression(String type, Object value, Expression left, Expression right,int line) {
 		super(type,value,left,right);
 		this.setLn(line);
+		ScopesController.getInstance().actualLineTree=line;
 	}
 	
 	@Override
@@ -101,7 +104,8 @@ public class StructureControlExpression extends Expression {
 					// Executing //
 					iis.execute();
 				}
-				
+				// Restoring to the normal state (without 'continue' flag on) //
+				sc.setLoopContinue(false);
 				break;
 			}
 			case StructureControlExpression.WHILE:
@@ -119,7 +123,8 @@ public class StructureControlExpression extends Expression {
 				
 				// Setting to the default again the break//
 				sc.setLoopBreacked(false);
-				
+				// Restoring to the normal state (without 'continue' flag on) //
+				sc.setLoopContinue(false);
 				break;
 			}
 			default :

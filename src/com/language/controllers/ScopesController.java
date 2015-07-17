@@ -196,4 +196,7 @@ public class ScopesController {
 		}
 		return false;
 	}
+	
+	public int actualLineTree=0;
+	
 }
