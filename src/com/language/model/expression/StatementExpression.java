@@ -6,6 +6,7 @@ public class StatementExpression extends Expression {
 	
 	public static final String STMT = "Stmt";
 	public static final String BREAK = "Break";
+	public static final String CONTINUE = "Continue";
 	/*private boolean isBody=false;
 	
 	public void setIsBody(){
@@ -36,12 +37,15 @@ public class StatementExpression extends Expression {
 			if(this.getType() == this.BREAK) {
 				sc.setLoopBreacked(true);
 			}
+			else if(this.getType() == this.CONTINUE) {
+				sc.setLoopContinue(true);
+			}
 			else {
-				if(this.getLeft() != null && !sc.getLoopBreacked()) {
+				if(this.getLeft() != null && !sc.getLoopBreacked() && !sc.getLoopContinue()) {
 			    	Object result = this.getLeft().execute();
 			    }
 			    
-			    if(this.getRight() != null && !sc.getLoopBreacked()) {
+			    if(this.getRight() != null && !sc.getLoopBreacked() && !sc.getLoopContinue()) {
 			    	Object result = this.getRight().execute();
 			    }
 			}

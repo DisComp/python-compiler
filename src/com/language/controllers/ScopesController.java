@@ -164,6 +164,14 @@ public class ScopesController {
 		this.loop_breaked = lb;
 	}
 	
+	public boolean getLoopContinue() {
+		return this.loop_continue;
+	}
+	
+	public void setLoopContinue(boolean lc) {
+		this.loop_continue = lc;
+	}
+	
 	/***Syntax error control***/
 	public void addSynError(String err){
 		synErrors.add(err);

@@ -58,9 +58,6 @@ public class StructureControlExpression extends Expression {
 		
 			case StructureControlExpression.IF:
 			{
-				// Open Scope //
-				//sc.openScope(StructureControlExpression.IF);
-				
 				expr = (boolean)this.expr.execute();
 				
 				if (expr) {
@@ -70,17 +67,10 @@ public class StructureControlExpression extends Expression {
 					this.getRight().execute();
 				}
 				
-				// Close Scope //
-				//sc.closeScope();
-				
 				break;
 			}
 			case StructureControlExpression.FOR_IN:
 			{
-				
-				// Open Scope //
-				//sc.openScope(StructureControlExpression.FOR_IN);
-				
 				// Getting the list and the iterator //
 				List<Object> l 			= (List<Object>)this.getLeft().execute();
 				Iterator<Object> iter 	= l.iterator();
@@ -96,6 +86,9 @@ public class StructureControlExpression extends Expression {
 				// Iterating through the list //
 				while(iter.hasNext()) {
 					
+					// Restoring to the normal state (without 'continue' flag on) //
+					sc.setLoopContinue(false);
+					
 					// Replacing the variable value //
 					element = iter.next();
 					sc.addVariable(variableName,element);
@@ -104,29 +97,23 @@ public class StructureControlExpression extends Expression {
 					iis.execute();
 				}
 				
-				// Close Scope //
-				//sc.closeScope();
-				
 				break;
 			}
 			case StructureControlExpression.WHILE:
 			{
-				// Open Scope //
-				//sc.openScope(StructureControlExpression.WHILE);
-				
 				Expression iis = this.getLeft();
 				
 				while(!sc.getLoopBreacked() && (boolean)this.expr.execute()) {
+					
+					// Restoring to the normal state (without 'continue' flag on) //
+					sc.setLoopContinue(false);
+					
 					// Executing //
 					iis.execute();
 				}
 				
 				// Setting to the default again the break//
 				sc.setLoopBreacked(false);
-				
-				System.out.println("Chahuuuu "+ ScopesController.getInstance().getLoopBreacked());
-				// Close Scope //
-				//sc.closeScope();
 				
 				break;
 			}
