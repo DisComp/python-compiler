@@ -769,8 +769,12 @@ public class PredefinedFunctionExpression extends Expression {
 						return "int";
 					case "Boolean":
 						return "bool";
-					case "Float":
+					case "Double":
 						return "real";
+					case "ArrayList":
+						return "list";
+					case "HashMap":
+						return "dicctionary";
 					default:
 						return className.toLowerCase();
 				}
