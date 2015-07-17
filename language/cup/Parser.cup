@@ -154,6 +154,7 @@ precedence left ELSE;
 precedence left PRINT_FUNC;
 precedence left POINT;
 precedence left LBRACKET;
+//precedence left MINUS;
 start with program;
 
 program ::= stmt: s 
@@ -400,8 +401,11 @@ literal_expr ::=  ID: 		id {: RESULT = LiteralExpression.createIdentifier(id); :
 				| NONE: 	n  {: RESULT = LiteralExpression.createNone(); :}
 				| FALSE:    f  {: RESULT = LiteralExpression.createBoolean(f); :}
 				| TRUE:     t  {: RESULT = LiteralExpression.createBoolean(t); :}
-				| INTEGER:  i  {: RESULT = LiteralExpression.createInteger(i); :}				
+				| INTEGER:  i  {: RESULT = LiteralExpression.createInteger(i); :}
+				| MINUS INTEGER:  i  {: RESULT = LiteralExpression.createInteger("-"+i); :}				
 				| FLOAT:    f  {: RESULT = LiteralExpression.createFloat(f); :}
+				| MINUS FLOAT:    f  {: RESULT = LiteralExpression.createFloat("-"+f); :}
+				| MINUS LONG_INT: l  {: RESULT = LiteralExpression.createLongInt("-"+l); :}
 				| LONG_INT: l  {: RESULT = LiteralExpression.createLongInt(l); :}
 				| STRING:   s  {: RESULT = LiteralExpression.createString(s); :}
 				| parenthesized_expr: p {: RESULT = p; :}

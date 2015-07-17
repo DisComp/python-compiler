@@ -57,7 +57,7 @@ public class LiteralExpression extends Expression {
 	}
 	
 	public static Expression createFloat(Object value) {
-		Float floatValue = new Float((String)value);
+		Double floatValue = new Double((String)value);
 		return new LiteralExpression(FLOAT, floatValue, null, null);
 	}
 	

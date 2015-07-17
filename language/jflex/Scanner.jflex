@@ -45,7 +45,6 @@ import com.language.controllers.*;
         if(info.value != null){
             syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
         }
-        System.out.println("aaaaaaaaaaaaaaaaaaaa");
         //throw new SyntaxError(syntaxMessage);
         ScopesController.getInstance().addSynError(syntaxMessage);
     }
@@ -73,7 +72,7 @@ Identifier = [_a-zA-Z][_a-zA-Z0-9]{0,30}/*[:jletter:][:jletterdigit:]* */
 
 LongLiteral    =  (0 | [1-9][0-9]*)L
 FloatLiteral   =  (0 | [1-9][0-9]*)\.[0-9]+
-IntegerLiteral =   0 | -?[1-9][0-9]*
+IntegerLiteral =   0 | [1-9][0-9]*
 
 
 %%
@@ -134,7 +133,7 @@ IntegerLiteral =   0 | -?[1-9][0-9]*
 		    }
 		}
 		if(spaceCounter>0)
-			ScopesController.getInstance().addSynError("Se detectaron espacios de más cerca de la linea " + yyline+1);
+			ScopesController.getInstance().addSynError("Error de identacion cerca de la linea " + (yyline+1));
 		if(spaceCounter>0)
 			yybegin(COMMENT_LINE); 
 	
