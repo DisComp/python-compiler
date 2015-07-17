@@ -25,10 +25,10 @@ public class ExpressionParser {
 			return exp;
 
 		} catch (SyntaxError ex) {
-			System.out.println("ERROR DE COMPILACIÓN (ERROR GENERADO POR NUESTRO COMPILADOR): "+ex.getMessage());
+			System.out.println("ERROR DE COMPILACIÓN: "+ex.getMessage());
 			return null;
 		} catch (ParsingException ex) {
-			System.out.println("ERROR DE COMPILACIÓN (ERROR GENERADO POR NUESTRO COMPILADOR): "+ex.getMessage());
+			System.out.println(ex.getMessage());
 			return null;
 		} catch (Exception ex) {
 			System.out.println("Error en tiempo de ejecucion: " + ex.getMessage());

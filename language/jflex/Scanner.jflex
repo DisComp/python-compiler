@@ -259,6 +259,6 @@ IntegerLiteral =   0 | -?[1-9][0-9]*
 
 
 . 					{
-						throw new ParsingException("Illegal character at line " + yyline + ", column " + yycolumn + " >> " + yytext());
+						throw new ParsingException("Error de sintaxis detectado cerca de la linea "+yyline);
 					}
 
