@@ -140,7 +140,7 @@ IntegerLiteral =   0 | -?[1-9][0-9]*
 	
 		if(counter==ScopesController.getInstance().getExpectedTabs()+1/*counter>ScopesController.getInstance().getExpectedTabs()*/){
 			ScopesController.getInstance().addExpectedTab();
-			return symbol(sym.IDENT, "IDENT" );
+			return symbol(sym.IDENT, "Apertura de bloque" );
 		}
 		else if(counter<ScopesController.getInstance().getExpectedTabs()){
 			int toSend=ScopesController.getInstance().getExpectedTabs()-counter;//-1 porque acá ya se manda uno
