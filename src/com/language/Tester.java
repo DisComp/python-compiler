@@ -11,7 +11,7 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestPredefinedListFunctions.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("tests/TestDictionary.txt"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
@@ -28,10 +28,11 @@ public class Tester {
         }
 		String exptext = sb.toString();
 		br.close();
-		//System.out.println(exptext);
+		System.out.println(exptext);
 		Expression expobj = ExpressionParser.parse(exptext);
 			
 		//System.out.println("Expresion obtenida: ");
 		//System.out.println(expobj.toString());
 	}
 }
+
