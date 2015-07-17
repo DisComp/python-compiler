@@ -185,8 +185,9 @@ public class PredefinedFunctionExpression extends Expression {
 
 		if(right != null) {
 			rightObj 	= right.execute();
-			rightClass 	= right.getClass().getSimpleName();
-
+			if(rightObj != null) {
+				rightClass 	= rightObj.getClass().getSimpleName();
+			}
 		}
 		switch(this.getType()){
 		case ARGUMENTS_FUNC_LIST:{
@@ -425,17 +426,17 @@ public class PredefinedFunctionExpression extends Expression {
 					throw new Exception("Se esperaba 1 argumento para la funcion y se recibieron 0");
 				}
 				
-				Object strValue = this.getLeft().execute();
+				Object strValue = leftObj;
 				Object argStrValue, argIntValue = null;
 				
-				if(this.getRight().getLeft() != null){ //find with two arguments
-					argStrValue = this.getRight().getLeft().execute();
-					argIntValue = this.getRight().getRight().execute();
+				if(right.getLeft() != null){ //find with two arguments
+					argStrValue = right.getLeft().execute();
+					argIntValue = right.getRight().execute();
 				} else {
-					argStrValue = this.getRight().execute();
+					argStrValue = right.execute();
 				}				
 				
-				String strValueClass = strValue.getClass().getSimpleName();
+				String strValueClass = leftClass;
 				String argValueClass = argStrValue.getClass().getSimpleName();
 				String argIntClass = argIntValue != null ? argIntValue.getClass().getSimpleName() : null;
 				
@@ -451,10 +452,12 @@ public class PredefinedFunctionExpression extends Expression {
 				try {
 					String str = String.valueOf(strValue);
 					String argStr = String.valueOf(argStrValue).toString();
+					
 					if(argIntValue != null){
 						Integer argInt = (Integer)argIntValue;
 						return str.indexOf(argStr, argInt);
 					}
+
 					return str.indexOf(argStr);
 					
 	
@@ -487,19 +490,19 @@ public class PredefinedFunctionExpression extends Expression {
 						throw new Exception("La variable no es de tipo String");
 					}
 					else if(!rightClass.equals("String")) {
-						throw new Exception("El parametro de la funcion no es de tipo String");
+						throw new Exception("El parametro de la funcion no es de tipo String "+rightClass);
 					}
 					else {
 						int index 		= 0,
 							occurrences = 0;
-						String 	leftStr  = (String)left.execute(),
-								rightStr = (String)right.execute();
+						String 	leftStr  = (String)leftObj,
+								rightStr = (String)rightObj;
 
 						index = leftStr.indexOf(rightStr,0);
 						
 						while(index != -1) {
 							occurrences++;
-							index = leftStr.indexOf(rightStr,index);
+							index = leftStr.indexOf(rightStr,index + 1);
 						}
 						
 						return occurrences;
