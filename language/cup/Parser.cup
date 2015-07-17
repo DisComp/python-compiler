@@ -109,7 +109,10 @@ non terminal Expression element_list;
 non terminal Expression dictionary_expr;
 non terminal Expression element_dictionary;
 non terminal Expression atom_element_dictionary;
+non terminal Expression json_element_dictionary;
 non terminal Expression last_atom_element_dictionary;
+non terminal Expression json_atom_element_dictionary;
+non terminal Expression json_last_atom_element_dictionary;
 non terminal Expression tuple_expr;
 non terminal Expression element_tuple;
 non terminal Expression atom_element_tuple;
@@ -342,9 +345,9 @@ element_list ::=  literal_expr:le COMMA element_list:el {: RESULT = LiteralExpre
 
 
 dictionary_expr ::= LBRACE element_dictionary:ed RBRACE {: RESULT = ed; :}
-				|	LBRACE IDENT element_dictionary:ed DEDENT RBRACE {: RESULT = ed; :}
+				|	LBRACE IDENT json_element_dictionary:ed DEDENT RBRACE {: RESULT = ed; :}
 				|   LBRACE RBRACE {: RESULT = LiteralExpression.createDictionaryElement(null, null); :};
-    		
+/*one line format*/    		
 element_dictionary ::= atom_element_dictionary:atd element_dictionary:ed {: RESULT = LiteralExpression.createDictionaryElement(atd, ed); :}
 					|  last_atom_element_dictionary:laed {: RESULT = laed; :};
 
@@ -353,7 +356,19 @@ atom_element_dictionary ::= literal_expr:key COLON literal_expr:val COMMA {: RES
 last_atom_element_dictionary ::= literal_expr:key COLON literal_expr:val COMMA {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
 							|    literal_expr:key COLON literal_expr:val {: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
 
+/*json format*/
+json_element_dictionary ::= json_atom_element_dictionary:atd json_element_dictionary:ed {: RESULT = LiteralExpression.createDictionaryElement(atd, ed); :}
+					|  json_last_atom_element_dictionary:laed {: RESULT = laed; :};
 
+json_atom_element_dictionary ::= literal_expr:key COLON literal_expr:val COMMA LINETERMINATOR{: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
+
+json_last_atom_element_dictionary ::= literal_expr:key COLON literal_expr:val COMMA LINETERMINATOR{: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :}
+							|    literal_expr:key COLON literal_expr:val LINETERMINATOR{: RESULT = LiteralExpression.createAtomDictionaryElement(key, val); :};
+							
+							
+							
+							
+							
 tuple_expr ::= LPAREN element_tuple:et RPAREN {: RESULT = et; :}
 			|  LPAREN RPAREN {: RESULT = LiteralExpression.createTupleElement(null, null); :};
     		

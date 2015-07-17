@@ -45,7 +45,7 @@ import com.language.controllers.*;
         if(info.value != null){
             syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
         }
-
+        System.out.println("aaaaaaaaaaaaaaaaaaaa");
         //throw new SyntaxError(syntaxMessage);
         ScopesController.getInstance().addSynError(syntaxMessage);
     }
