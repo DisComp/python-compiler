@@ -122,7 +122,6 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		String lexema = yytext();
 		int counter = 0;
 		int spaceCounter=0;
-		int comentCounter=0;
 		for( int i=0; i<lexema.length(); i++ ) {
 		    if( lexema.charAt(i) == '\t' ) {
 		        counter++;
@@ -130,14 +129,9 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		    else if( lexema.charAt(i) == ' ' ) {
 		    	spaceCounter++;
 		    }
-		    else if( lexema.charAt(i) == '#' ) {
-		    	comentCounter++;
-		    }
 		}
 		if(spaceCounter>0)
-			ScopesController.getInstance().addSynError("Error de identacion cerca de la linea " + (yyline+1));
-		if(spaceCounter>0)
-			yybegin(COMMENT_LINE); 
+			ScopesController.getInstance().addSynError("Error de identacion cerca de la linea " + (yyline+1)); 
 	
 		if(counter==ScopesController.getInstance().getExpectedTabs()+1/*counter>ScopesController.getInstance().getExpectedTabs()*/){
 			ScopesController.getInstance().addExpectedTab();

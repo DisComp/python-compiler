@@ -11,7 +11,7 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		BufferedReader br = new BufferedReader(new FileReader("tests/TestPredefinedStringFunctions.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("ProgramTests/P2.py"));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         
