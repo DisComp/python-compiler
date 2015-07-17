@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.language.controllers.ScopesController;
+
 
 
 public class PredefinedFunctionExpression extends Expression {
@@ -184,6 +186,7 @@ public class PredefinedFunctionExpression extends Expression {
 		if(right != null) {
 			rightObj 	= right.execute();
 			rightClass 	= right.getClass().getSimpleName();
+
 		}
 		switch(this.getType()){
 		case ARGUMENTS_FUNC_LIST:{
@@ -581,7 +584,9 @@ public class PredefinedFunctionExpression extends Expression {
 					}
 					else {
 						//System.out.println(((String)str).replace((String)substrOld,(String)substrNew).toString());
-						return ((String)str).replace((String)substrOld,(String)substrNew);
+						String result = ((String)str).replace((String)substrOld,(String)substrNew);
+						ScopesController.getInstance().addVariable((String)left.getValue(), result);
+						return result;
 					}
 				}
 				break;

@@ -1,4 +1,4 @@
-print "**********Programa1************"
+print "**********Programa1(Predefined functions)************"
 i = 1
 print i+") **Test listas**"
 i=i+1
@@ -47,6 +47,7 @@ print "s.find('pepe'): "+s.find('pepe')
 print "s.find('la',3): "+s.find('la',3)
 #print s.join([1,2,3,4])
 #print s.split(',')
-print "s.replace('hola','h'): "+s.replace("hola","h")
+s.replace("hola","h")
+print "s.replace('hola','h'): "+s
 print "s.length(): "+s.length()
 
