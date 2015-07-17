@@ -15,7 +15,7 @@ public class Scannerchild extends Scanner {
 		java_cup.runtime.Symbol result;
 		if(ScopesController.getInstance().getDedentToSend()>0){
 			ScopesController.getInstance().sendDedent();
-			result = symbol(sym.DEDENT, "DEDENTs");
+			result = symbol(sym.DEDENT, "Cierre de bloque");
 			//if(result.sym == sym.DEDENT)
 			
 		}

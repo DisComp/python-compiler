@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.language.controllers.ScopesController;
 import com.language.exceptions.ParsingException;
@@ -59,7 +57,7 @@ public class LiteralExpression extends Expression {
 	}
 	
 	public static Expression createFloat(Object value) {
-		Float floatValue = new Float((String)value);
+		Double floatValue = new Double((String)value);
 		return new LiteralExpression(FLOAT, floatValue, null, null);
 	}
 	
