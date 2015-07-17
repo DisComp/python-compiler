@@ -1,4 +1,4 @@
-print "Aqui comienza el proceso de saludos"
+print "Aqui comienza\t el proceso de\n saludos \\ trataremos."
 print ""
 print ""
 persons = ["Jose","Juan","Jimena","Luis Suarez","Jacinto"]
