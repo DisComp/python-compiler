@@ -25,13 +25,14 @@ public class StructureControlExpression extends Expression {
 	public StructureControlExpression(String type, Object value, Expression left, Expression right) {
 		super(type,value,left,right);
 	}
+
 	
 	public StructureControlExpression(String type, Expression left, Expression right) {
 		super(type, left, right);
 	}
 	
-	public static Expression create(String type, Object o, Expression left, Expression right) {
-		StructureControlExpression sce = new StructureControlExpression(type, o, left, right);
+	public static Expression create(String type, Object o, Expression left, Expression right,int line) {
+		StructureControlExpression sce = new StructureControlExpression(type, o, left, right,line);
 		return sce;
 	}
 	
@@ -41,10 +42,14 @@ public class StructureControlExpression extends Expression {
 		return sce;
 	}
 	
-	public static Expression create(String type, Expression e, Expression left) {
-		StructureControlExpression sce = new StructureControlExpression(type, null, left, null);
+	public static Expression create(String type, Expression e, Expression left,int _line) {
+		StructureControlExpression sce = new StructureControlExpression(type, null, left, null,_line);
 		sce.expr = e;
 		return sce;
+	}
+	public StructureControlExpression(String type, Object value, Expression left, Expression right,int line) {
+		super(type,value,left,right);
+		this.setLn(line);
 	}
 	
 	@Override
@@ -53,7 +58,7 @@ public class StructureControlExpression extends Expression {
 		Object 	result 	= null;
 		
 		ScopesController sc = ScopesController.getInstance();
-		
+		sc.setActualLine(this.getLn());
 		switch (this.getType()) {
 		
 			case StructureControlExpression.IF:

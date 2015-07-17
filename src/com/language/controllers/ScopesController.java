@@ -154,6 +154,14 @@ public class ScopesController {
 	public int getLines(){
 		return cantLines;
 	}*/
+	private int actuaLine=0;
+	public void setActualLine(int l){
+		actuaLine=l;
+	}
+	public int getActualLine(){
+		return actuaLine;
+	}
+	
 	
 	/*** Break and continue commands***/
 	public boolean getLoopBreacked() {

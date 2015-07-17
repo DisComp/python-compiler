@@ -34,8 +34,8 @@ terminal String PLUS, MINUS, TIMES, EXP, DIV, DIV_INT, MOD;
 terminal String AND_BIT, OR_BIT, XOR_BIT, NOT_BIT, LSHIFT, RSHIFT;
 
 /* Strings */
-terminal String STRING, ESCAPE,DEDENT, IDENT, SYNERROR,LINETERMINATOR;
-
+terminal String STRING, ESCAPE,DEDENT, IDENT, SYNERROR;
+terminal token LINETERMINATOR;
 /* Boolean */
 terminal String TRUE, FALSE;
 
@@ -46,8 +46,8 @@ terminal String AND, OR, NOT, EQUALS, DISTINCT, LESS, GREATER, LESS_EQUAL, GREAT
 terminal String POINT, SEMICOLON, COMMA, COLON, LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, ASSIGN;
 
 /* Structure control */
-terminal String IF, ELSE, WHILE, BREAK, CONTINUE, FOR, IN, DEF, RETURN;
-
+terminal String ELSE, BREAK, CONTINUE, IN, DEF, RETURN;
+terminal token IF,WHILE,FOR;
 /* Predefined functions */
 	
 /* Dictionaries */
@@ -168,10 +168,10 @@ program ::= stmt: s
 			:};
 
 stmt ::=  compl_stmt:c stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, c, s); :}
-		| instr:i LINETERMINATOR stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s); :}
+		| instr:i LINETERMINATOR:LT stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, i, s,LT.getX()); :}
 		| compl_stmt:c {: RESULT = StatementExpression.create(StatementExpression.STMT, c, null); :}
-		| instr:i LINETERMINATOR{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null); :}
-		|LINETERMINATOR stmt:s {: RESULT = s; :}
+		| instr:i LINETERMINATOR:LT{: RESULT = StatementExpression.create(StatementExpression.STMT, i, null,LT.getX()); :}
+		|LINETERMINATOR:LT stmt:s {: RESULT = StatementExpression.create(StatementExpression.STMT, null, s,LT.getX()); :}
 		|LINETERMINATOR
 		|error LINETERMINATOR stmt:s {: RESULT = s; :}
 		|error LINETERMINATOR;
@@ -248,14 +248,14 @@ suit_func::= IDENT stmt:s RETURN expr:e LINETERMINATOR DEDENT{:	//cuerpo con ret
 if_block ::= simple_if:s_if {: RESULT = s_if; :}
 		  	|simple_if:s_if ELSE COLON suit: iis {: s_if.setRight(iis); RESULT = s_if; :};
 		  	
-simple_if ::= IF expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, e, iis); :}; 
+simple_if ::= IF:ifif expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.IF, e, iis,ifif.getX()); :}; 
 
 /* For in block */
-for_in_block ::= FOR ID:id IN list_expr: l COLON suit: s {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN,id,l,s); :}
-				|FOR ID:id IN ID:id_list COLON suit: s {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN,id,LiteralExpression.createIdentifier(id_list),s); :};
+for_in_block ::= FOR:ff ID:id IN list_expr: l COLON suit: s {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN,id,l,s,ff.getX()); :}
+				|FOR:ff ID:id IN ID:id_list COLON suit: s {: RESULT = StructureControlExpression.create(StructureControlExpression.FOR_IN,id,LiteralExpression.createIdentifier(id_list),s,ff.getX()); :};
 
 /* While block */
-while_block ::= WHILE expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, e, iis); :};
+while_block ::= WHILE:ww expr: e COLON suit: iis {: RESULT = StructureControlExpression.create(StructureControlExpression.WHILE, e, iis,ww.getX()); :};
 
 
 assignment_expr ::=   left_side_expr: lse ASSIGN expr: e {:	RESULT = LiteralExpression.createAssignment(lse, e); :};  

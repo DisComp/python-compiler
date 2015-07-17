@@ -27,6 +27,7 @@ import com.language.controllers.*;
 	}
 	public Symbol symbol(int type, Object value) {
 		return new Symbol(type, yyline, yycolumn, value);
+		//return new Symbol(type,new token(String.valueOf(type),yyline, yycolumn));
 	}
 	
 	private String getString(String str) {
@@ -144,11 +145,13 @@ IntegerLiteral =   0 | [1-9][0-9]*
 		else if(counter<ScopesController.getInstance().getExpectedTabs()){
 			int toSend=ScopesController.getInstance().getExpectedTabs()-counter;//-1 porque acá ya se manda uno
 			ScopesController.getInstance().setDedent(toSend);
-			//return symbol(sym.DEDENT, "DEDENT" );
-			return symbol(sym.LINETERMINATOR, "ENTER" );
+			
+			//return symbol(sym.LINETERMINATOR, "ENTER" );
+			return new Symbol(sym.LINETERMINATOR,new token(String.valueOf(sym.LINETERMINATOR),yyline, yycolumn));
 		}
 		else if(counter==ScopesController.getInstance().getExpectedTabs()){
-			return symbol(sym.LINETERMINATOR, "ENTER" );
+			//return symbol(sym.LINETERMINATOR, "ENTER" );
+			return new Symbol(sym.LINETERMINATOR,new token(String.valueOf(sym.LINETERMINATOR),yyline, yycolumn));
 		}
 
 	}
@@ -188,12 +191,12 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	
 	/* Structure control */
 	
-	"if"				{ return symbol(sym.IF, "if"); }
+	"if"				{ /*return symbol(sym.IF, "if");*/return new Symbol(sym.IF,new token(String.valueOf(sym.IF),yyline, yycolumn)); }
 	"else"				{ return symbol(sym.ELSE, "else"); }
-	"while"				{ return symbol(sym.WHILE, "while"); }
+	"while"				{ /*return symbol(sym.WHILE, "while");*/ return new Symbol(sym.WHILE,new token(String.valueOf(sym.WHILE),yyline, yycolumn));}
 	"break"				{ return symbol(sym.BREAK, "break"); }
 	"continue"			{ return symbol(sym.CONTINUE, "continue"); }
-	"for"				{ return symbol(sym.FOR, "for"); }
+	"for"				{/* return symbol(sym.FOR, "for");*/  return new Symbol(sym.FOR,new token(String.valueOf(sym.FOR),yyline, yycolumn));}
 	"in"				{ return symbol(sym.IN, "in"); }
 	"def"				{ return symbol(sym.DEF, "def"); }
 	"return"			{ return symbol(sym.RETURN, "return"); }

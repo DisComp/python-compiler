@@ -6,7 +6,13 @@ public class Expression {
 	private String type;
 	private Object value; 
 	private Expression left, right;
-	
+	private int lineNumber=0;
+	public void setLn(int n){
+		lineNumber=n;
+	}
+	public int getLn(){
+		return lineNumber;
+	}
 	public Expression(){
 		
 	}

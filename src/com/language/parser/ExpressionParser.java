@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import java_cup.runtime.Symbol;
 
+import com.language.controllers.ScopesController;
 import com.language.exceptions.ParsingException;
 import com.language.exceptions.SyntaxError;
 import com.language.model.expression.Expression;
@@ -31,7 +32,7 @@ public class ExpressionParser {
 			System.out.println(ex.getMessage());
 			return null;
 		} catch (Exception ex) {
-			System.out.println("Error en tiempo de ejecucion: " + ex.getMessage());
+			System.out.println("Error en tiempo de ejecucion: " + ex.getMessage()+" linea: "+(ScopesController.getInstance().getActualLine()+1));
 			return null;
 		}
 	

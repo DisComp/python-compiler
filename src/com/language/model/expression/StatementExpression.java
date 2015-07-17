@@ -16,16 +16,22 @@ public class StatementExpression extends Expression {
 		super();
 	}
 	
-	public StatementExpression(String type, Object value, Expression left, Expression right) {
+	public StatementExpression(String type, Object value, Expression left, Expression right,int _lineNumber) {
 		super(type,value,left,right);
+		this.setLn(_lineNumber);
+		
 	}
+
 	
 	public StatementExpression(String type, Expression left, Expression right) {
 		super(type, left, right);
+		
 	}
-	
+	public static Expression create(String type, Expression left, Expression right,int _lineNumber) {
+		return new StatementExpression(type, null, left, right,_lineNumber);
+	}
 	public static Expression create(String type, Expression left, Expression right) {
-		return new StatementExpression(type, null, left, right);
+		return new StatementExpression(type, null, left, right,0);
 	}
 	
 	@Override
@@ -33,6 +39,8 @@ public class StatementExpression extends Expression {
         //try {
         	/*if(!isBody)
         		ScopesController.getInstance().addLine();*/
+			ScopesController.getInstance().setActualLine(this.getLn());
+			
 			ScopesController sc = ScopesController.getInstance();
 			if(this.getType() == this.BREAK) {
 				sc.setLoopBreacked(true);

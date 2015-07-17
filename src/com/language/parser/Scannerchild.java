@@ -24,10 +24,10 @@ public class Scannerchild extends Scanner {
 			result= super.next_token();
 		}
 		
-		if(result!=null&&result.value!=null)
+		/*if(result!=null&&result.value!=null)
 			System.out.println("devuelvo: "+result.value.toString()+" numLine: "+result.left);
 		else
-			System.out.println("EOF");
+			System.out.println("EOF");*/
 			
 		return result;
 	}
