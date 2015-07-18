@@ -11,28 +11,24 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		BufferedReader br = new BufferedReader(new FileReader("ProgramTests/P1.py"));
+		String fileName = "P1.py";
+
+		if(args.length > 0)
+			fileName = args[0];
+		
+		BufferedReader br = new BufferedReader(new FileReader("tests/"+fileName));
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
-        
-
-        // Creating all tests! //
-        //Tests.doTests();
         
         while (line != null) {         
 			 sb.append(line);
 			 line = br.readLine();
-			 //if(line != null) {
-			 	sb.append("\n");
-			 //}
+			 sb.append("\n");
         }
 		String exptext = sb.toString();
 		br.close();
-		//System.out.println(exptext);
-		Expression expobj = ExpressionParser.parse(exptext);
-			
-		//System.out.println("Expresion obtenida: ");
-		//System.out.println(expobj.toString());
+
+		Expression expobj = ExpressionParser.parse(exptext);			
 	}
 }
 
