@@ -55,5 +55,8 @@ i=i+1
 tt=(10,11,12,13)
 print "tt: "+tt
 tt[1]
-#print "tt[1]: "+(tt[1])
+print "tt[1]: "+(tt[1])
+print "Test tupla inmutable: tt[0] = 2"
+tt[0] = 2
+print "tt[0]: " + tt[0]
 print "FIN"
