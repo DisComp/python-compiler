@@ -44,7 +44,10 @@ import com.language.controllers.*;
         String syntaxMessage = "Error de sintaxis detectado cerca de la linea ";
         syntaxMessage = syntaxMessage + (yyline+1);
         if(info.value != null){
-            syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
+        	String val=info.value.toString();
+        	if(info.value.toString().length()>20)
+        		val="Salto de linea";
+            syntaxMessage = syntaxMessage + " antes del token \"" + val + "\""; 
         }
         //throw new SyntaxError(syntaxMessage);
         ScopesController.getInstance().addSynError(syntaxMessage);
@@ -111,7 +114,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	
 	/* Strings */
 	
-	{Triple_quotes}				{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
+	\"\"\"([^\"\r\n\t]*)\"\"\"			{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
 	\"([^\"\r\n\t]*)\"			{ return symbol(sym.STRING, getString(yytext())); } /*Double quotes*/
 	'([^\"\r\n\t]*)'			{ return symbol(sym.STRING, getString(yytext())); } /*Single quotes*/
 	"\\" 						{ return symbol(sym.ESCAPE, "\\"); }

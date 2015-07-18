@@ -8,6 +8,8 @@ print a
 a.extend(a)
 print "a.expand(a):"
 print a
+print "a[2:6]: "+a[2:6]
+print "a[::3]: "+a[::3]
 a.append(69)
 print "a.append(69):"
 print a
@@ -55,5 +57,8 @@ i=i+1
 tt=(10,11,12,13)
 print "tt: "+tt
 tt[1]
-#print "tt[1]: "+(tt[1])
+print "tt[1]: "+(tt[1])
+print "Test tupla inmutable: tt[0] = 2"
+tt[0] = 2
+print "tt[0]: " + tt[0]
 print "FIN"

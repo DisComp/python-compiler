@@ -11,12 +11,13 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		String fileName = "P3.py";
+		String fileName = "R3.py";
 
 		if(args.length > 0)
 			fileName = args[0];
 		
 		BufferedReader br = new BufferedReader(new FileReader("tests/"+fileName));
+
 		StringBuilder sb = new StringBuilder();
         String line = br.readLine();
         

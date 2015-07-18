@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.language.controllers.ScopesController;
-import com.language.exceptions.ParsingException;
 
 
 public class LiteralExpression extends Expression {
@@ -348,6 +347,39 @@ public class LiteralExpression extends Expression {
 							}
 							return result;
 						}
+					} else if(structureValueClass.equals("Tuple")){
+						
+						Tuple<Object> tupleValue = (Tuple<Object>)structureValue;
+						HashMap<String, Object> structureArgs = (HashMap<String, Object>)this.getRight().execute();
+						
+						if(structureArgs.containsKey("position")){
+							Object posObj = structureArgs.get("position");
+							posObj = ((Expression)posObj).execute();
+							Integer pos = (Integer)posObj;
+							if(pos < 0){
+								pos = tupleValue.size() + pos; 
+							}
+							return tupleValue.get(pos);						
+						}
+						//two parameters						
+						Object initObj = structureArgs.get("init");
+						Object endObj = structureArgs.get("end");
+						Integer init = 0;
+						Integer end = tupleValue.size();
+						if(initObj != null){
+							initObj = ((Expression)initObj).execute();
+							init = (Integer)initObj;
+						}
+						if(endObj != null){
+							endObj = ((Expression)endObj).execute();
+							end = (Integer)endObj;
+						}
+						List<Object> result = new ArrayList<Object>();
+						for(int i = init; i < end; i++){
+							result.add(tupleValue.get(i));
+						}
+						return result;
+						
 					} else {
 						HashMap<Object, Object> dictValue = (HashMap<Object, Object>)structureValue;
 						HashMap<String, Object> structureArgs = (HashMap<String, Object>)this.getRight().execute();
@@ -373,7 +405,7 @@ public class LiteralExpression extends Expression {
 				Object valueAssigned = this.getLeft().execute();
 				
 				String structureValueClass = structureValue.getClass().getSimpleName();
-				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap")){
+				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap") && !structureValueClass.equals("Tuple")){
 					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {
@@ -423,6 +455,10 @@ public class LiteralExpression extends Expression {
 						}
 						listValue.clear();
 						listValue.addAll(result);
+						return null;
+					
+					} else if(structureValueClass.equals("Tuple")){
+						// tuples are inmutable
 						return null;
 						
 					} else {
