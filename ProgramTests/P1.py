@@ -50,4 +50,10 @@ print "s.find('la',3): "+s.find('la',3)
 s.replace("hola","h")
 print "s.replace('hola','h'): "+s
 print "s.length(): "+s.length()
-
+print i+") **Test tuplas**"
+i=i+1
+tt=(10,11,12,13)
+print "tt: "+tt
+tt[1]
+#print "tt[1]: "+(tt[1])
+print "FIN"

@@ -286,7 +286,7 @@ public class LiteralExpression extends Expression {
 				}
 				Object structureValue = this.getLeft().execute();
 				String structureValueClass = structureValue.getClass().getSimpleName();
-				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap")){
+				if(!structureValueClass.equals("ArrayList") && !structureValueClass.equals("HashMap")&& !structureValueClass.equals("Tuple")){
 					throw new Exception("Esta funcion no esta definida para el tipo especificado");
 				}
 				try {

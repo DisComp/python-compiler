@@ -751,7 +751,7 @@ public class PredefinedFunctionExpression extends Expression {
 							return map;
 						
 						default:
-							throw new Exception("El tipo " + leftClass + " no se puede convertir a 'List'");
+							throw new Exception("El tipo " + leftClass + " no se puede convertir a 'Dictionary'");
 					}
 				}
 			case RAW_INPUT_FUNC:{
