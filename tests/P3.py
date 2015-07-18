@@ -9,6 +9,7 @@ print "type([1,2,3]): "+type((1,2,3))
 print "****************conversion*************"
 print "float(3): "+float(3)
 print "str(123).length(): "+str(123).length()
+print "(int(4.1) + int(8.3)): " + (int(4.1) + int(8.3))
 print "int('4')+1: "+int("4")+1
 print "dict(['pepe','ana']) "+dict(["pepe","ana"])
 print "**********Operadores aritméticos********"

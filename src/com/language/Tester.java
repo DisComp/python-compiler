@@ -11,7 +11,7 @@ public class Tester {
 
 	public static void main(String[] args) throws IOException, Exception {
 
-		String fileName = "P1.py";
+		String fileName = "P3.py";
 
 		if(args.length > 0)
 			fileName = args[0];
