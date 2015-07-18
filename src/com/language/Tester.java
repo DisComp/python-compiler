@@ -12,7 +12,7 @@ public class Tester {
 	public static void main(String[] args) throws IOException, Exception {
 
 
-		String fileName = "F1.py";
+		String fileName = "S1.py";
 
 		if(args.length > 0)
 			fileName = args[0];

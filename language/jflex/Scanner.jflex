@@ -44,7 +44,10 @@ import com.language.controllers.*;
         String syntaxMessage = "Error de sintaxis detectado cerca de la linea ";
         syntaxMessage = syntaxMessage + (yyline+1);
         if(info.value != null){
-            syntaxMessage = syntaxMessage + " antes del token \"" + info.value + "\""; 
+        	String val=info.value.toString();
+        	if(info.value.toString().length()>20)
+        		val="Salto de linea";
+            syntaxMessage = syntaxMessage + " antes del token \"" + val + "\""; 
         }
         //throw new SyntaxError(syntaxMessage);
         ScopesController.getInstance().addSynError(syntaxMessage);
