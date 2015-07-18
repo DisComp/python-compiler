@@ -620,8 +620,9 @@ public class PredefinedFunctionExpression extends Expression {
 						case "Integer":
 							return (int)leftObj;
 							
+						case "Double":
 						case "Float":
-							Float f = (Float)leftObj;
+							Double f = (Double)leftObj;
 							return Math.round(f);
 							
 						case "Boolean":

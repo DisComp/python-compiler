@@ -10,6 +10,7 @@ print "****************conversion*************"
 print "float(3): "+float(3)
 print "str(123).length(): "+str(123).length()
 print "int('4')+1: "+int("4")+1
+print "(int(4.2)+int(5.3)): "+ (int(4.2)+int(5.3))
 print "dict(['pepe','ana']) "+dict(["pepe","ana"])
 print "**********Operadores aritméticos********"
 print "(1+1)="+(1+1)
