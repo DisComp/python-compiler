@@ -13,3 +13,5 @@ if(a==100):
 	print
 a=2
 if
+print a
+while
