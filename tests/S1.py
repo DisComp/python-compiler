@@ -15,3 +15,6 @@ a=2
 if
 print a
 while
+print asdads
+print asdads
+asd asd
