@@ -111,7 +111,7 @@ IntegerLiteral =   0 | [1-9][0-9]*
 	
 	/* Strings */
 	
-	{Triple_quotes}				{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
+	\"\"\"([^\"\r\n\t]*)\"\"\"			{ return symbol(sym.STRING, yytext()); } /*Triple quotes*/
 	\"([^\"\r\n\t]*)\"			{ return symbol(sym.STRING, getString(yytext())); } /*Double quotes*/
 	'([^\"\r\n\t]*)'			{ return symbol(sym.STRING, getString(yytext())); } /*Single quotes*/
 	"\\" 						{ return symbol(sym.ESCAPE, "\\"); }

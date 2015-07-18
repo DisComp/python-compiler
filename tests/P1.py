@@ -8,6 +8,8 @@ print a
 a.extend(a)
 print "a.expand(a):"
 print a
+print "a[2:6]: "+a[2:6]
+print "a[::3]: "+a[::3]
 a.append(69)
 print "a.append(69):"
 print a
