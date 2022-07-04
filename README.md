@@ -1,4 +1,4 @@
-#Python Compiler
+# Python Compiler
 
 This project is a python compiler made in Java language. It follows the python [lexical analysis](https://docs.python.org/2.6/reference/lexical_analysis.html#) to build a Syntax Tree.
 
